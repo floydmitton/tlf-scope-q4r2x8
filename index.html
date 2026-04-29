@@ -565,16 +565,17 @@
 
   <ul class="prose" style="font-size:17px; max-width:720px; margin-bottom:28px;">
     <li><strong>What:</strong> Reconciler underneath · 🎯 Today's Focus on top — one daily briefing block on Ryan's Notion workspace.</li>
+    <li><strong>The mapping:</strong> every Notion service template's milestone chain is materialised in Asana as a parent task + ordered subtask chain. Computed due dates from anchor + offset. Assignees from role mapping in Client Register.</li>
+    <li><strong>The signal:</strong> for each open service, how many subtasks remain vs how many days until the chain is due — the "chain pressure" — drives priority. <em>2 of 10 done due Friday</em> beats <em>9 of 10 done due Friday</em>, and the briefing explains why.</li>
     <li><strong>When:</strong> 06:00 reconciler · briefing refreshed 08:00 + 16:00 AEST.</li>
-    <li><strong>Shows:</strong> the 3–5 things that matter today · the full plate behind them · what slipped, what landed, what's cleared.</li>
-    <li><strong>Reads:</strong> Notion (Client Register · Services · Service Templates · Interaction Log) · Asana (10 client projects) · email triage output.</li>
+    <li><strong>Reads:</strong> Notion (Client Register · Services · Service Templates with milestone chains · Interaction Log) · Asana (10 client projects) · email triage output.</li>
     <li><strong>Scope:</strong> Ryan's workspace only this iteration. Manoli + meeting-derived commitments come later.</li>
   </ul>
 
   <div class="pills">
     <span class="pill green">Ships week 3</span>
-    <span class="pill blue">~55 hours engineering</span>
-    <span class="pill gold">No new infrastructure</span>
+    <span class="pill blue">~60 hours engineering</span>
+    <span class="pill gold">Notion milestone chains → Asana</span>
   </div>
 
   <!-- ============== SECTION 1 — FINDING ============== -->
@@ -598,7 +599,14 @@
     <ul class="prose">
       <li>This means: <strong>whether the right tasks even exist in Asana cannot be verified from inside Asana.</strong> It can only be verified by reading the Notion Service Templates milestone chains and comparing against what's present per client project.</li>
       <li>No system does this today. Tasks go missing silently. Today's Focus has no way to know — it surfaces a 3–5 priority list from a task graph that may already be incomplete.</li>
-      <li><strong>Implication.</strong> Today's Focus needs a foundation underneath it. v19 adds that foundation (the Reconciler) and folds the previously-separate AM/PM wrap-up content into the Today's Focus block itself.</li>
+    </ul>
+
+    <h3>And a third finding · chain progress is invisible</h3>
+    <ul class="prose">
+      <li>Even when a service's tasks exist in Asana, <strong>Asana has no native concept of "this BAS is 2 of 10 milestones done with 3 days to go."</strong> Each milestone is just a task in a list. There's no shape to the chain.</li>
+      <li>That shape is what tells Ryan which service is actually at risk. <strong>2-of-10 due Friday</strong> needs his attention now. <strong>9-of-10 due Friday</strong> is a 30-minute review on Friday morning.</li>
+      <li>The Notion Service Templates already define the canonical milestone chain for each of the 19 services. v19 makes that chain a first-class structure in Asana — and uses chain progress as a top-tier scoring signal in Today's Focus.</li>
+      <li><strong>Implication.</strong> v19 has three jobs: (1) materialise every service's milestone chain in Asana with computed dates and role-derived assignees, (2) make chain progress visible and quantifiable, (3) surface the result in Today's Focus with reasoning Ryan can trust.</li>
     </ul>
   </section>
 
@@ -617,11 +625,14 @@
 
     <h3>Layer 1 · Reconciler — 06:00 AEST</h3>
     <ul class="prose">
-      <li>For each client × subscribed service, compares what <strong>should</strong> be in Asana (the Notion Service Templates milestone chain) against what <strong>is</strong>.</li>
-      <li>Anything missing becomes a row in a <strong>Pending Reconciliation</strong> Notion DB with an Approve checkbox.</li>
-      <li>When Ryan ticks Approve, the next 06:00 run creates the Asana task with the right assignee, due date, and parent section.</li>
+      <li>For each client × subscribed service, expands the Notion <strong>Service Template milestone chain</strong> into a target structure: <strong>parent task = service instance · subtasks = milestones in order</strong>.</li>
+      <li>Computes each subtask's due date from <span class="mono">anchor_date + days_offset</span>. Anchor is set per service-instance (e.g. Quarterly BAS Q1 anchors at the lodgement deadline; weekly bookkeeping anchors at the Monday).</li>
+      <li>Resolves each subtask's assignee from <span class="mono">role → person</span>: offshore_lead → Sailesh / Sriram (from Client Register), AM → Ryan, accountant → derived per service.</li>
+      <li>Compares the target structure against what's actually in Asana (parent + subtask graph). Missing parents and missing subtasks both surface.</li>
+      <li>Each gap becomes a row in <strong>Pending Reconciliation</strong> grouped by service-instance. <strong>One Approve tick = create the missing parts of that whole chain.</strong> Ryan does not approve 10 individual milestones — he approves "EMPAC Q1 BAS, missing 3 subtasks, create them."</li>
       <li><strong>Detect + Suggest, not Auto-Create.</strong> The reconciler never writes to Asana without explicit human approval.</li>
-      <li><strong>Hybrid matching.</strong> New tasks are stamped with a hidden <span class="mono">Milestone Template ID</span> Asana custom field. Future runs match by ID — deterministic, immune to renames. Legacy tasks fall back to fuzzy name match (similarity ≥ 0.85). Matches below 0.92 are flagged as low-confidence.</li>
+      <li><strong>Hybrid matching.</strong> New subtasks are stamped with a hidden <span class="mono">Milestone Template ID</span> Asana custom field. Future runs match by ID — deterministic, immune to renames. Legacy subtasks fall back to fuzzy name match (similarity ≥ 0.85). Matches below 0.92 are flagged as low-confidence.</li>
+      <li><strong>Partial-chain handling.</strong> If 7 of 10 milestones already exist in Asana from legacy work, the reconciler creates only the 3 missing — never destroys legacy state. Pre-write similarity check guards against duplicates.</li>
     </ul>
 
     <h3>Layer 2 · Today's Focus, made whole — 08:00 / 16:00 AEST</h3>
@@ -629,7 +640,34 @@
       <li>Single block on Ryan's <strong>existing AM Workspace page</strong> (the v18 marker block, expanded). No new pages.</li>
       <li><strong>Morning (08:00).</strong> 🎯 the 3–5 picks · 📋 background queue (next 10 by priority score) · ✅ cleared yesterday.</li>
       <li><strong>Afternoon (16:00).</strong> Replaces the morning block. 🔴 slipped from this morning's picks · ⚠️ new today, still open · ✅ cleared today.</li>
-      <li>Same atomic marker-block write pattern as v18. Same Notion page. The block just contains more — the wrap-up content folded in.</li>
+      <li>Same atomic marker-block write pattern as v18. Same Notion page. The block contains more — wrap-up folded in, chain reasoning added.</li>
+    </ul>
+
+    <h3>The chain pressure signal</h3>
+    <p>For every open service-instance Ryan has visibility on, the system computes:</p>
+    <div class="integration-note">
+      <p style="font-family:'JetBrains Mono', monospace; font-size:13px; margin:0;">
+        chain_pressure = subtasks_remaining / max(days_until_chain_due, 0.5)
+      </p>
+    </div>
+    <ul class="prose" style="margin-top:12px;">
+      <li><strong>2 of 10 done · due Friday (3 days)</strong> → 8 / 3 = <strong>2.67 (HIGH)</strong> — Ryan needs to act now or the chain won't finish.</li>
+      <li><strong>9 of 10 done · due Friday (3 days)</strong> → 1 / 3 = <strong>0.33 (LOW)</strong> — coast, finish Friday morning.</li>
+      <li>Chain pressure is the dominant input to the priority score:</li>
+    </ul>
+    <div class="integration-note" style="margin-top:6px;">
+      <p style="font-family:'JetBrains Mono', monospace; font-size:13px; margin:0; line-height:1.6;">
+        priority_score =<br>
+        &nbsp;&nbsp;urgency × 3        &nbsp;&nbsp;<span style="color:var(--ink-3);"># 1 / max(days_until_due, 0.5)</span><br>
+        + chain_pressure × 4 &nbsp;&nbsp;<span style="color:var(--ink-3);"># subtasks_remaining / days_until_due</span><br>
+        + criticality × 2    &nbsp;&nbsp;<span style="color:var(--ink-3);"># service tier (BAS/payroll = 1.0, bookkeeping = 0.5)</span><br>
+        + sensitivity × 1    &nbsp;&nbsp;<span style="color:var(--ink-3);"># client flag from Client Register</span><br>
+        + slipped × 1.5      &nbsp;&nbsp;<span style="color:var(--ink-3);"># on this morning's picks, not done</span>
+      </p>
+    </div>
+    <ul class="prose" style="margin-top:12px;">
+      <li>The Today's Focus block surfaces both the score and the reasoning — <strong>"EMPAC Q1 BAS · 2 of 10 done · 3 days to go · chain pressure 2.67"</strong> — so Ryan can challenge or trust the ranking.</li>
+      <li>Weights are tunable in a Notion config DB Ryan owns. No code changes needed to retune.</li>
     </ul>
   </section>
 
@@ -647,6 +685,7 @@
     </ul>
 
     <h3>Pending Reconciliation row · Notion DB</h3>
+    <p style="margin-top:0; color:var(--ink-3); font-size:14px;">One row per missing service-instance. Approve = create the entire missing chain in Asana, parent + subtasks, with computed dates and assignees.</p>
     <div class="mockup-frame">
       <div class="mockup-chrome">
         <span class="dot" style="background:#FF6058;"></span>
@@ -656,20 +695,78 @@
       </div>
       <div class="mockup">
         <div class="focus-head">
-          <div class="focus-title">EMPAC · Quarterly BAS · Lodge BAS — March quarter</div>
+          <div class="focus-title">EMPAC · Quarterly BAS · Q1 2026</div>
           <div class="focus-meta">detected 06:00:14</div>
         </div>
         <div class="warn">
-          ⚠️ <strong>Template "lodge" milestone not found in EMPAC project.</strong> Closest match: "Q4 BAS prepared" (similarity 0.41).
+          ⚠️ <strong>Service-instance not found.</strong> Template <span class="mono">Quarterly BAS</span> has 10 milestones; 0 found in EMPAC project. Anchor date <span class="mono">2026-05-28</span> (statutory lodgement deadline). Suggesting full chain creation.
         </div>
+
+        <div class="section-divider">Chain to create · 10 subtasks</div>
+        <ul class="focus-list" style="margin:0 0 12px;">
+          <li><span></span><div>
+            <div class="item-title" style="font-size:13px;">1 · Gather March records from client</div>
+            <div class="item-meta" style="font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--ink-3); margin-top:2px;">due 2026-04-08 (anchor − 50d) · assignee Sailesh (offshore_lead)</div>
+          </div></li>
+          <li><span></span><div>
+            <div class="item-title" style="font-size:13px;">2 · Reconcile bank feeds + GST coding</div>
+            <div class="item-meta" style="font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--ink-3); margin-top:2px;">due 2026-04-15 · assignee Sailesh</div>
+          </div></li>
+          <li><span></span><div>
+            <div class="item-title" style="font-size:13px;">3 · Prepare draft BAS</div>
+            <div class="item-meta" style="font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--ink-3); margin-top:2px;">due 2026-04-22 · assignee Sailesh</div>
+          </div></li>
+          <li><span></span><div>
+            <div class="item-title" style="font-size:13px;">4 · Senior review of GST + PAYG calcs</div>
+            <div class="item-meta" style="font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--ink-3); margin-top:2px;">due 2026-04-29 · assignee Ryan (AM)</div>
+          </div></li>
+          <li><span></span><div>
+            <div class="item-title" style="font-size:13px;">5 · Send to client for sign-off</div>
+            <div class="item-meta" style="font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--ink-3); margin-top:2px;">due 2026-05-06 · assignee Ryan</div>
+          </div></li>
+          <li><span></span><div>
+            <div class="item-title" style="font-size:13px;">6 · Receive signed authority</div>
+            <div class="item-meta" style="font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--ink-3); margin-top:2px;">due 2026-05-13 · assignee Ryan</div>
+          </div></li>
+          <li><span></span><div>
+            <div class="item-title" style="font-size:13px;">7–10 · Lodge with ATO · Issue receipt · Update register · Close</div>
+            <div class="item-meta" style="font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--ink-3); margin-top:2px;">due 2026-05-20 → 2026-05-28 · mixed assignees</div>
+          </div></li>
+        </ul>
+
         <ul class="prose" style="margin-bottom:0;">
-          <li><strong>Suggested due date:</strong> <span class="mono">2026-04-28</span></li>
-          <li><strong>Suggested assignee:</strong> Sailesh (offshore lead, from Client Register)</li>
-          <li><strong>Approve:</strong> ☐ &nbsp; <strong>Created:</strong> ☐ <span style="font-size:11px; color:var(--ink-3);">(system-managed)</span></li>
+          <li><strong>Approve:</strong> ☐ — creates parent <span class="mono">"Quarterly BAS · Q1 2026"</span> in EMPAC project · 10 subtasks in order · template IDs stamped.</li>
+          <li><strong>Created:</strong> ☐ <span style="font-size:11px; color:var(--ink-3);">(system-managed)</span></li>
         </ul>
         <div class="focus-footer">
-          run_id <span style="color:var(--green-d);">rc_2026-04-28_0600</span> · ticked rows are picked up tomorrow at 06:00 and written to Asana
+          run_id <span style="color:var(--green-d);">rc_2026-04-28_0600</span> · ticked rows picked up tomorrow at 06:00, full chain written to Asana atomically
         </div>
+      </div>
+    </div>
+
+    <h3 style="margin-top:32px;">Partial-chain detection · also a Pending Reconciliation row</h3>
+    <p style="margin-top:0; color:var(--ink-3); font-size:14px;">When 7 of 10 milestones already exist in Asana from legacy work, only the 3 missing surface.</p>
+    <div class="mockup-frame">
+      <div class="mockup-chrome">
+        <span class="dot" style="background:#FF6058;"></span>
+        <span class="dot" style="background:#FFBD2D;"></span>
+        <span class="dot" style="background:#28C940;"></span>
+        <span class="chrome-title">notion.so / Pending Reconciliation</span>
+      </div>
+      <div class="mockup">
+        <div class="focus-head">
+          <div class="focus-title">Hudson · Monthly Bookkeeping · April 2026</div>
+          <div class="focus-meta">detected 06:00:18</div>
+        </div>
+        <div class="warn">
+          ⚠️ <strong>Partial chain.</strong> 5 of 8 milestones present (matched by name, similarity ≥ 0.92). 3 missing — likely created mid-cycle without finishing the template.
+        </div>
+        <ul class="prose" style="margin-bottom:0;">
+          <li><strong>Missing 6 · Aged payables review</strong> · due 2026-04-23 · Sriram</li>
+          <li><strong>Missing 7 · Management report draft</strong> · due 2026-04-26 · Ryan</li>
+          <li><strong>Missing 8 · Send report to client</strong> · due 2026-04-30 · Ryan</li>
+          <li><strong>Approve:</strong> ☐ — creates 3 subtasks under existing parent <span class="mono">"Monthly Bookkeeping · April 2026"</span> · existing 5 left untouched · template IDs stamped on the new 3</li>
+        </ul>
       </div>
     </div>
 
@@ -705,9 +802,9 @@
             <span class="check"></span>
             <span class="pri">🔴</span>
             <div>
-              <div class="item-title">📋 Lodge BAS — Pandamich Q1</div>
-              <div class="item-context">5 subtasks · overdue 2 days. ATO penalty + client escalation if not lodged today. <span class="src">→ asana</span></div>
-              <div class="item-rel">Last contact w/ Ana 4 days ago · sentiment: At Risk.</div>
+              <div class="item-title">📋 EMPAC · Q1 BAS — push the chain forward</div>
+              <div class="item-context"><strong>2 of 10 done · due Friday (3 days)</strong> · Sailesh stuck on bank rec at step 2. Senior review (step 4, Ryan) blocked behind 2 more offshore steps. <span class="src">→ asana · chain</span></div>
+              <div class="item-rel">Chain pressure 2.67 · highest in portfolio. Without action today, lodgement will slip. Sailesh's last update on this thread was Mon — likely needs unblocking, not chasing.</div>
             </div>
           </li>
           <li>
@@ -723,9 +820,9 @@
             <span class="check"></span>
             <span class="pri">🟠</span>
             <div>
-              <div class="item-title">📋 GRINHAM tax plan — 3 days overdue</div>
-              <div class="item-context">H&amp;E project · "Tax plan and upcoming cashflows." <span class="src">→ asana</span></div>
-              <div class="item-rel">Glenn's ATO instalment plan kicks in 28 Apr — needs to land before that conversation.</div>
+              <div class="item-title">📋 H&amp;E · GRINHAM tax plan — finish the chain</div>
+              <div class="item-context"><strong>4 of 5 done · due tomorrow (1 day)</strong> · final advisory write-up only. <span class="src">→ asana · chain</span></div>
+              <div class="item-rel">Chain pressure 1.0 — short but real. Glenn's ATO instalment plan kicks in 28 Apr; this needs to land before the conversation.</div>
             </div>
           </li>
           <li>
@@ -738,23 +835,23 @@
           </li>
         </ul>
 
-        <div class="section-divider">📋 Background queue · 12 more on the plate</div>
+        <div class="section-divider">📋 Background queue · 12 more on the plate · sorted by chain pressure</div>
         <ul class="focus-list todo">
           <li>
             <span class="check"></span>
             <span class="pri">🟠</span>
             <div>
-              <div class="item-title">Hudson management report</div>
-              <div class="item-context">8 subtasks · due today. Promised in last fortnightly call.</div>
-              <div class="item-meta">priority 6.7 · service criticality medium</div>
+              <div class="item-title">Hudson · Monthly Bookkeeping April</div>
+              <div class="item-context">5 of 8 done · due tomorrow.</div>
+              <div class="item-meta">chain pressure 3.0 · priority 6.7 · service criticality medium</div>
             </div>
           </li>
           <li>
             <span class="check"></span>
             <span class="pri">🟠</span>
             <div>
-              <div class="item-title">H&amp;E client check-in</div>
-              <div class="item-context">1 subtask · due today.</div>
+              <div class="item-title">H&amp;E · client check-in</div>
+              <div class="item-context">1 subtask · due today (not part of a chain).</div>
               <div class="item-meta">priority 5.2</div>
             </div>
           </li>
@@ -762,9 +859,18 @@
             <span class="check"></span>
             <span class="pri">🟡</span>
             <div>
-              <div class="item-title">Tussle annual statements</div>
-              <div class="item-context">4 subtasks · due tomorrow.</div>
-              <div class="item-meta">priority 4.0</div>
+              <div class="item-title">Pandamich · Q1 BAS</div>
+              <div class="item-context">9 of 10 done · due Friday. Final review only · 30 min.</div>
+              <div class="item-meta">chain pressure 0.33 · priority 3.8 · low — coast</div>
+            </div>
+          </li>
+          <li>
+            <span class="check"></span>
+            <span class="pri">🟡</span>
+            <div>
+              <div class="item-title">Tussle · Annual Statements</div>
+              <div class="item-context">2 of 6 done · due in 2 weeks.</div>
+              <div class="item-meta">chain pressure 0.29 · priority 4.0</div>
             </div>
           </li>
           <li>
@@ -827,17 +933,17 @@
             <span class="check"></span>
             <span class="pri">🔴</span>
             <div>
-              <div class="item-title">📋 Lodge BAS — Pandamich Q1</div>
-              <div class="item-context">Still overdue. Now 3 days overdue. Carried into tomorrow's 08:00 at top priority.</div>
-              <div class="item-rel">Carry-over priority 11.4.</div>
+              <div class="item-title">📋 EMPAC · Q1 BAS</div>
+              <div class="item-context"><strong>Still 2 of 10 done.</strong> No movement on Sailesh's bank rec subtask since this morning. Days until due now 2 — chain pressure 4.0.</div>
+              <div class="item-rel">If Sailesh blocked: a 5-min Slack tonight unblocks tomorrow's senior review. Otherwise lodgement slips.</div>
             </div>
           </li>
           <li>
             <span class="check"></span>
             <span class="pri">🔴</span>
             <div>
-              <div class="item-title">📋 GRINHAM tax plan</div>
-              <div class="item-context">Not started. Glenn's instalment plan kicks in tomorrow.</div>
+              <div class="item-title">📋 H&amp;E · GRINHAM tax plan</div>
+              <div class="item-context"><strong>4 of 5 done. Final write-up not started.</strong> Glenn's instalment plan kicks in tomorrow.</div>
               <div class="item-rel">Slack Glenn now or it's an awkward conversation in the morning.</div>
             </div>
           </li>
@@ -934,32 +1040,40 @@
       <div class="pipe-row">
         <div class="pipe-num">1</div>
         <div>
-          <div class="pipe-title">Read Notion config</div>
-          <div class="pipe-body">Client Register (active clients) · Services (subscriptions per client) · Service Templates (canonical milestone chains) · Pending Reconciliation (checked rows since last run).</div>
+          <div class="pipe-title">Read Notion · Service Templates + chains</div>
+          <div class="pipe-body">Client Register (active clients) · Services (subscriptions + anchor dates per client × service) · <strong>Service Templates with nested milestone chains</strong> (~6 milestones avg, each with <span class="mono">seq, name, days_offset, assignee_role</span>) · Pending Reconciliation (checked rows since last run).</div>
         </div>
-        <div class="pipe-stat">~6 calls<br><span class="arrow">notion</span></div>
+        <div class="pipe-stat">~8 calls<br><span class="arrow">notion</span></div>
       </div>
       <div class="pipe-row">
         <div class="pipe-num">2</div>
         <div>
-          <div class="pipe-title">Read Asana state</div>
-          <div class="pipe-body">Tasks per active client project, with <span class="mono">Milestone Template ID</span> custom field. ~30 calls across 9 projects.</div>
+          <div class="pipe-title">Expand templates → target chain</div>
+          <div class="pipe-body">For each (client × service-instance), expand the template chain: compute each subtask's due date from <span class="mono">anchor + days_offset</span>; resolve assignee from <span class="mono">role → person</span> via Client Register. Build the target parent + subtask graph.</div>
         </div>
-        <div class="pipe-stat">~30 calls<br><span class="arrow">asana</span></div>
+        <div class="pipe-stat">deterministic<br><span class="arrow">in-memory</span></div>
       </div>
       <div class="pipe-row">
         <div class="pipe-num">3</div>
         <div>
-          <div class="pipe-title">Match (in-process)</div>
-          <div class="pipe-body">ID-first match for stamped tasks · fuzzy name fallback for legacy. Compute expected − present = missing.</div>
+          <div class="pipe-title">Read Asana · current chain state</div>
+          <div class="pipe-body">Tasks + subtasks per active client project, with <span class="mono">Milestone Template ID</span> custom field. ~30 calls across 9 projects.</div>
         </div>
-        <div class="pipe-stat">deterministic<br><span class="arrow">no LLM</span></div>
+        <div class="pipe-stat">~30 calls<br><span class="arrow">asana</span></div>
       </div>
       <div class="pipe-row">
         <div class="pipe-num">4</div>
         <div>
+          <div class="pipe-title">Match · target vs present (per service-instance)</div>
+          <div class="pipe-body">ID-first match for stamped subtasks · fuzzy name fallback for legacy. For each service-instance: target chain − present subtasks = missing subtasks. Group missing into one Pending Reconciliation row per service-instance.</div>
+        </div>
+        <div class="pipe-stat">deterministic<br><span class="arrow">no LLM</span></div>
+      </div>
+      <div class="pipe-row">
+        <div class="pipe-num">5</div>
+        <div>
           <div class="pipe-title">Apply approved · write missing · log</div>
-          <div class="pipe-body">Create Asana tasks for ticked rows (stamp template ID, mark Notion Created) · write new Pending Reconciliation rows for newly-detected gaps · one Reconciliation Log row.</div>
+          <div class="pipe-body">For each ticked Pending Reconciliation row: create the parent task (if missing) + ordered subtasks. Stamp template IDs. Mark Notion Created. New gaps detected today become new Pending Reconciliation rows. One Reconciliation Log row summarises the run.</div>
         </div>
         <div class="pipe-stat">~45 total<br><span class="arrow">~40s runtime</span></div>
       </div>
@@ -971,31 +1085,39 @@
         <div class="pipe-num">1</div>
         <div>
           <div class="pipe-title">Read state + sources</div>
-          <div class="pipe-body">Briefing State (this morning's picks, for slipped detection) · Asana (Ryan's tasks across 10 projects) · Email Triage (today's items) · Interaction Log · Client Register.</div>
+          <div class="pipe-body">Briefing State (this morning's picks, for slipped detection) · Asana (Ryan's tasks + subtasks across 10 projects, parent-child structure preserved) · Email Triage (today's items) · Interaction Log · Client Register · Service Templates (for chain anchor + criticality lookup).</div>
         </div>
-        <div class="pipe-stat">~25 calls<br><span class="arrow">read</span></div>
+        <div class="pipe-stat">~28 calls<br><span class="arrow">read</span></div>
       </div>
       <div class="pipe-row">
         <div class="pipe-num">2</div>
         <div>
+          <div class="pipe-title">Compute chain pressure per service-instance</div>
+          <div class="pipe-body">For each open parent task (= service-instance): count <span class="mono">subtasks_total</span> · <span class="mono">subtasks_done</span> · <span class="mono">days_until_chain_due</span>. Compute <span class="mono">chain_pressure = subtasks_remaining / max(days_until_due, 0.5)</span>. Attach to every subtask in the chain.</div>
+        </div>
+        <div class="pipe-stat">deterministic<br><span class="arrow">in-memory</span></div>
+      </div>
+      <div class="pipe-row">
+        <div class="pipe-num">3</div>
+        <div>
           <div class="pipe-title">Apply rules 1–4 · score · diff</div>
-          <div class="pipe-body">v18 four-rule filter pipeline (name pattern, SOP drop, &gt;90d drop, cluster rollup). Priority scoring (urgency × 4 + size + criticality × 2 + sensitivity + slipped × 1.5). Afternoon: diff against this morning's Briefing State.</div>
+          <div class="pipe-body">v18 four-rule filter pipeline (name pattern, SOP drop, &gt;90d drop, cluster rollup). Priority scoring: <span class="mono">urgency × 3 + chain_pressure × 4 + criticality × 2 + sensitivity + slipped × 1.5</span>. Afternoon: diff against this morning's Briefing State.</div>
         </div>
         <div class="pipe-stat">deterministic<br><span class="arrow">in-memory</span></div>
       </div>
       <div class="pipe-row llm">
-        <div class="pipe-num">3</div>
+        <div class="pipe-num">4</div>
         <div>
-          <div class="pipe-title">LLM ranks + enriches</div>
-          <div class="pipe-body">One Claude Sonnet 4.6 call · picks 3–5 from ~45 candidates · generates per-item risk lines + italic context lines from Interaction Log. ~15K input + ~800 output tokens.</div>
+          <div class="pipe-title">LLM ranks + enriches with chain reasoning</div>
+          <div class="pipe-body">One Claude Sonnet 4.6 call · picks 3–5 from ~45 candidates · generates per-item reasoning lines that explain chain progress in plain English ("2 of 10 done · Sailesh stuck at step 2 · senior review blocked behind 2 offshore steps") + italic context from Interaction Log. ~16K input + ~900 output tokens.</div>
         </div>
         <div class="pipe-stat" style="color:var(--green-d);">1 call<br><span class="arrow">~6s</span></div>
       </div>
       <div class="pipe-row">
-        <div class="pipe-num">4</div>
+        <div class="pipe-num">5</div>
         <div>
           <div class="pipe-title">Render + write</div>
-          <div class="pipe-body">Atomic marker-block rewrite on Ryan's AM Workspace page · Briefing State row (today's snapshot for tomorrow's diff) · Run Log row · Decision Log rows (one per candidate).</div>
+          <div class="pipe-body">Atomic marker-block rewrite on Ryan's AM Workspace page · Briefing State row (today's snapshot, including chain progress per service-instance for tomorrow's diff) · Run Log row · Decision Log rows (one per candidate, including its chain pressure).</div>
         </div>
         <div class="pipe-stat">~50 calls<br><span class="arrow">~3m total</span></div>
       </div>
@@ -1035,9 +1157,9 @@
           <td><span class="tag live">Live</span><br><span style="font-size:12px;color:var(--ink-3);">Iter 0</span></td>
         </tr>
         <tr>
-          <td><strong>Service Templates</strong></td>
-          <td>Read · canonical milestone chains for all 19 services.</td>
-          <td><span class="tag live">Live</span><br><span style="font-size:12px;color:var(--ink-3);">Iter 0</span></td>
+          <td><strong>Service Templates</strong> (with milestone chains)</td>
+          <td>Read · canonical milestone chains for all 19 services. Each chain is an ordered list of milestones with <span class="mono">seq, name, days_offset, assignee_role</span>. Chains are nested children of each Service Template page in Notion. The reconciler expands these into Asana parent + subtask graphs; Today's Focus reads chain progress for the chain pressure signal.</td>
+          <td><span class="tag live">Live</span><br><span style="font-size:12px;color:var(--ink-3);">Iter 0 · core to v19</span></td>
         </tr>
         <tr>
           <td><strong>Interaction Log</strong></td>
@@ -1168,13 +1290,25 @@
       <div class="step">
         <span class="ts">06:00:00</span>
         <div class="body">
-          <div class="h">Read Notion config + state</div>
+          <div class="h">Read Notion config + chains</div>
           <ul class="prose" style="margin:4px 0 0;">
-            <li>Client Register → 9 active clients with Asana Project URLs.</li>
-            <li>Services → 32 client × service subscriptions.</li>
-            <li>Service Templates → 19 templates with nested milestone chains (~6 milestones average).</li>
+            <li>Client Register → 9 active clients with Asana Project URLs and role-to-person mappings.</li>
+            <li>Services → 32 client × service subscriptions, each with an anchor date.</li>
+            <li>Service Templates → 19 templates · expand each milestone chain (avg 6 milestones/chain, max 12).</li>
             <li>Pending Reconciliation → 4 checked rows since yesterday's run.</li>
-            <li><strong>~6 Notion calls.</strong></li>
+            <li><strong>~8 Notion calls.</strong></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step">
+        <span class="ts">06:00:06</span>
+        <div class="body">
+          <div class="h">Expand templates → 32 target chains</div>
+          <ul class="prose" style="margin:4px 0 0;">
+            <li>For each of 32 service-instances, build the target chain: parent task name = <span class="mono">"&lt;Service&gt; · &lt;Period&gt;"</span>, subtasks in <span class="mono">seq</span> order with <span class="mono">due = anchor + days_offset</span>, assignees from <span class="mono">role → person</span> resolution.</li>
+            <li>247 expected subtasks across 32 service-instances.</li>
+            <li>In-process, no API calls.</li>
           </ul>
         </div>
       </div>
@@ -1182,9 +1316,9 @@
       <div class="step">
         <span class="ts">06:00:08</span>
         <div class="body">
-          <div class="h">Pull Asana</div>
+          <div class="h">Pull Asana state</div>
           <ul class="prose" style="margin:4px 0 0;">
-            <li>For each of 9 active client projects: <span class="api">GET /projects/{gid}/tasks?completed_since=now-30d</span> with <span class="mono">Milestone Template ID</span> custom field.</li>
+            <li>For each of 9 active client projects: <span class="api">GET /projects/{gid}/tasks?completed_since=now-30d</span> with subtasks expanded · with <span class="mono">Milestone Template ID</span> custom field.</li>
             <li>~30 Asana calls in ~15s. Rate limit unchanged from v18.</li>
           </ul>
         </div>
@@ -1195,11 +1329,12 @@
       <div class="step">
         <span class="ts">06:00:25</span>
         <div class="body">
-          <div class="h">Two-pass match</div>
+          <div class="h">Match per service-instance</div>
           <ul class="prose" style="margin:4px 0 0;">
-            <li><strong>Pass 1 · ID match.</strong> 142 of 247 expected milestones match by stamped Template ID. Deterministic.</li>
-            <li><strong>Pass 2 · fuzzy name.</strong> Remaining 105 expected milestones compared against unstamped tasks. 90 matched at similarity ≥ 0.92 · 5 matched at 0.85–0.92 (flagged low-confidence) · 10 unmatched.</li>
-            <li><strong>Output: 12 missing milestones detected.</strong> 9 already in Pending Reconciliation from prior days, 3 new.</li>
+            <li><strong>Pass 1 · ID match.</strong> 142 of 247 target subtasks match by stamped Template ID. Deterministic.</li>
+            <li><strong>Pass 2 · fuzzy name.</strong> Remaining 105 compared against unstamped tasks within the same service-instance. 90 matched at similarity ≥ 0.92 · 5 at 0.85–0.92 (flagged low-confidence) · 10 unmatched.</li>
+            <li>Group missing into Pending Reconciliation rows <strong>by service-instance</strong>: e.g. "EMPAC · Q1 BAS" missing 3 subtasks → one row.</li>
+            <li><strong>Output: 12 missing subtasks across 5 service-instances.</strong> 4 service-instances already in Pending Reconciliation from prior days; 1 newly surfaced today.</li>
           </ul>
         </div>
       </div>
@@ -1209,12 +1344,14 @@
       <div class="step">
         <span class="ts">06:00:32</span>
         <div class="body">
-          <div class="h">Apply 4 approved rows</div>
+          <div class="h">Apply 4 approved service-instances</div>
           <ul class="prose" style="margin:4px 0 0;">
-            <li>For each ticked Pending Reconciliation row:</li>
-            <li><span class="api">POST /tasks</span> on Asana — create the milestone task with assignee, due date, parent section.</li>
-            <li><span class="api">PATCH /tasks/{gid}/custom_fields/{milestone_template_id_gid}</span> — stamp the template ID.</li>
+            <li>For each ticked Pending Reconciliation row (one per service-instance):</li>
+            <li>If parent task missing: <span class="api">POST /tasks</span> create parent <span class="mono">"&lt;Service&gt; · &lt;Period&gt;"</span> in client project.</li>
+            <li>For each missing subtask in seq order: <span class="api">POST /tasks</span> with <span class="mono">parent={parent_gid}</span>, due date, role-resolved assignee.</li>
+            <li>For each newly-created subtask: <span class="api">PATCH /tasks/{gid}/custom_fields/{milestone_template_id_gid}</span> stamps the template ID.</li>
             <li><span class="api">PATCH</span> Notion row → set Created = ✓.</li>
+            <li>4 service-instances · ~12 subtasks created · ~16 Asana writes.</li>
           </ul>
         </div>
       </div>
@@ -1311,35 +1448,39 @@
       </div>
 
       <div class="phase checkpoint">
-        <div class="phase-tag">Phase 2 · Reconciler<span class="days">Tue wk 1 – Mon wk 2</span></div>
+        <div class="phase-tag">Phase 2 · Reconciler · chain expansion<span class="days">Tue wk 1 – Mon wk 2</span></div>
         <div class="phase-body">
           <p><span class="lbl">Lead</span>Whitecrow</p>
           <ul class="prose" style="margin:6px 0 0;">
-            <li><span class="lbl">Build</span>Two-pass matcher (ID + fuzzy name) with confidence scoring.</li>
-            <li>Detect-and-suggest: write Pending Reconciliation rows with reasoning.</li>
-            <li>Apply-approved: create Asana tasks for ticked rows, stamp template IDs.</li>
+            <li><span class="lbl">Build</span>Service Templates parser · expand nested milestone chains into typed structures.</li>
+            <li>Anchor-date logic (per service-instance) · <span class="mono">days_offset → due_date</span> computation.</li>
+            <li>Role-to-person resolution from Client Register (offshore_lead, AM, accountant).</li>
+            <li>Two-pass matcher (ID + fuzzy name) with confidence scoring · per service-instance.</li>
+            <li>Detect-and-suggest: write Pending Reconciliation rows grouped by service-instance, with full chain detail and reasoning.</li>
+            <li>Apply-approved: create parent + ordered subtasks · stamp template IDs · partial-chain handling preserves legacy state.</li>
             <li>Sandbox testing against a designated Asana sandbox project.</li>
             <li>Reconciliation Log structured output.</li>
           </ul>
-          <p class="ships" style="margin-top:8px;"><span class="lbl">Ships Mon AM wk 2</span>Sandbox runs producing valid Pending Reconciliation rows from real Notion + Asana data</p>
-          <p class="checkpoint-line"><strong>⚑ Go / no-go · Mon 5pm wk 2</strong> · Floyd + Ryan review matcher accuracy on real client data. Tune similarity threshold and Service Template completeness here, not later.</p>
+          <p class="ships" style="margin-top:8px;"><span class="lbl">Ships Mon AM wk 2</span>Sandbox runs producing valid Pending Reconciliation rows with full chain expansion from real Notion + Asana data</p>
+          <p class="checkpoint-line"><strong>⚑ Go / no-go · Mon 5pm wk 2</strong> · Floyd + Ryan review matcher accuracy and chain expansion on real client data. Tune similarity threshold, Service Template completeness, and anchor-date conventions here.</p>
         </div>
       </div>
 
       <div class="phase">
-        <div class="phase-tag">Phase 3 · Today's Focus engine<span class="days">Tue–Fri · wk 2</span></div>
+        <div class="phase-tag">Phase 3 · Today's Focus + chain pressure<span class="days">Tue–Fri · wk 2</span></div>
         <div class="phase-body">
           <p><span class="lbl">Lead</span>Whitecrow</p>
           <ul class="prose" style="margin:6px 0 0;">
             <li><span class="lbl">Build</span>v18 four-rule filter pipeline (name pattern, SOP drop, &gt;90d drop, cluster rollup).</li>
-            <li>Priority scoring formula (urgency × 4 + size + criticality × 2 + sensitivity + slipped × 1.5) for the background queue.</li>
-            <li>Briefing State snapshotting for the 16:00 slipped/cleared diff.</li>
-            <li>One Claude call · ranks 3–5 picks · generates risk lines + italic context from Interaction Log.</li>
+            <li><strong>Chain-pressure engine.</strong> Per service-instance: count subtasks_total / done · compute days_until_chain_due · derive chain_pressure. Attach to every subtask in the chain.</li>
+            <li>Priority scoring (urgency × 3 + chain_pressure × 4 + criticality × 2 + sensitivity + slipped × 1.5).</li>
+            <li>Briefing State snapshotting (including chain progress per service-instance) for the 16:00 slipped/cleared diff.</li>
+            <li>One Claude call · ranks 3–5 picks · generates chain-aware reasoning lines + italic context from Interaction Log.</li>
             <li>Marker-block renderer · morning state + afternoon state.</li>
             <li>Wire to Email Triage DB (already populated by Iter 1).</li>
             <li>Output to sandbox page first, then Ryan's live AM Workspace page after Floyd sign-off.</li>
           </ul>
-          <p class="ships" style="margin-top:8px;"><span class="lbl">Ships Fri wk 2</span>Today's Focus running end-to-end against real data, both morning + afternoon states sandbox-rendered</p>
+          <p class="ships" style="margin-top:8px;"><span class="lbl">Ships Fri wk 2</span>Today's Focus running end-to-end · chain pressure surfacing the right service-instances · both morning + afternoon states sandbox-rendered</p>
         </div>
       </div>
 
@@ -1362,12 +1503,12 @@
     <div class="totals">
       <div>
         <div class="label">Total engineering</div>
-        <div class="value"><strong>~55 hours</strong> over 3 weeks</div>
+        <div class="value"><strong>~60 hours</strong> over 3 weeks</div>
       </div>
     </div>
     <ul class="prose" style="margin-top:10px;">
-      <li><strong>Splits:</strong> P1 ~8h · P2 ~18h · P3 ~18h · P4 ~11h.</li>
-      <li><strong>Ryan's effort:</strong> 30-min mapping call (Mon wk 1) · 1-hour matcher accuracy review (Mon wk 2) · 30-min format review (Fri wk 2) · 5-min daily Slack across week 3 (~25 min).</li>
+      <li><strong>Splits:</strong> P1 ~8h · P2 ~22h (chain expansion + role mapping) · P3 ~19h (chain-pressure engine + reasoning) · P4 ~11h.</li>
+      <li><strong>Ryan's effort:</strong> 30-min mapping call (Mon wk 1) · 1-hour matcher + chain expansion review (Mon wk 2) · 30-min format review (Fri wk 2) · 5-min daily Slack across week 3 (~25 min).</li>
     </ul>
   </section>
 

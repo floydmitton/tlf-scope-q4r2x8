@@ -564,18 +564,18 @@
   <h1>Today's Focus, made <span class="accent">whole.</span></h1>
 
   <ul class="prose" style="font-size:17px; max-width:720px; margin-bottom:28px;">
-    <li><strong>What:</strong> Reconciler underneath · 🎯 Today's Focus on top — one daily briefing block on Ryan's Notion workspace.</li>
-    <li><strong>The mapping:</strong> every Notion service template's milestone chain is materialised in Asana as a parent task + ordered subtask chain. Computed due dates from anchor + offset. Assignees from role mapping in Client Register.</li>
-    <li><strong>The signal:</strong> for each open service, how many subtasks remain vs how many days until the chain is due — the "chain pressure" — drives priority. <em>2 of 10 done due Friday</em> beats <em>9 of 10 done due Friday</em>, and the briefing explains why.</li>
-    <li><strong>When:</strong> 06:00 reconciler · briefing refreshed 08:00 + 16:00 AEST.</li>
-    <li><strong>Reads:</strong> Notion (Client Register · Services · Service Templates with milestone chains · Interaction Log) · Asana (10 client projects) · email triage output.</li>
-    <li><strong>Scope:</strong> Ryan's workspace only this iteration. Manoli + meeting-derived commitments come later.</li>
+    <li><strong>What:</strong> a single daily briefing block on Ryan's Notion workspace, sitting on top of a reconciler that keeps Asana's task graph correct.</li>
+    <li><strong>The mapping:</strong> every Notion service template's milestone chain is materialised in Asana as a parent task + ordered subtask chain. Computed due dates from <span class="mono">anchor + offset</span>. Assignees from role mapping in Client Register.</li>
+    <li><strong>The urgency model:</strong> service-specific thresholds drive a four-state colour code — 🔴 act today · 🟠 this week · 🟡 on the radar · 🟢 background. Monthly reports turn yellow at T-7, BAS at T-14, weekly payroll at T-1. Chain progress modifies the state — <em>2 of 10 due Friday</em> turns red even on a normally-yellow service.</li>
+    <li><strong>When:</strong> 06:00 reconciler · 08:00 + 16:00 briefing (same block, refreshed twice — not two different views).</li>
+    <li><strong>Reads:</strong> Notion (Client Register · Services · Service Templates with milestone chains and per-service thresholds · Interaction Log) · Asana (10 client projects) · email triage output.</li>
+    <li><strong>Scope:</strong> Ryan's workspace only this iteration. Manoli + meeting-derived commitments come later. <strong>Commitments DB is intentionally not read in v19.</strong></li>
   </ul>
 
   <div class="pills">
     <span class="pill green">Ships week 3</span>
     <span class="pill blue">~60 hours engineering</span>
-    <span class="pill gold">Notion milestone chains → Asana</span>
+    <span class="pill gold">Service-aware urgency · 4 states</span>
   </div>
 
   <!-- ============== SECTION 1 — FINDING ============== -->
@@ -635,40 +635,74 @@
       <li><strong>Partial-chain handling.</strong> If 7 of 10 milestones already exist in Asana from legacy work, the reconciler creates only the 3 missing — never destroys legacy state. Pre-write similarity check guards against duplicates.</li>
     </ul>
 
-    <h3>Layer 2 · Today's Focus, made whole — 08:00 / 16:00 AEST</h3>
+    <h3>Layer 2 · Today's Focus — 08:00 / 16:00 AEST</h3>
     <ul class="prose">
-      <li>Single block on Ryan's <strong>existing AM Workspace page</strong> (the v18 marker block, expanded). No new pages.</li>
-      <li><strong>Morning (08:00).</strong> 🎯 the 3–5 picks · 📋 background queue (next 10 by priority score) · ✅ cleared yesterday.</li>
-      <li><strong>Afternoon (16:00).</strong> Replaces the morning block. 🔴 slipped from this morning's picks · ⚠️ new today, still open · ✅ cleared today.</li>
-      <li>Same atomic marker-block write pattern as v18. Same Notion page. The block contains more — wrap-up folded in, chain reasoning added.</li>
+      <li><strong>One briefing.</strong> Single marker block on Ryan's existing AM Workspace page. Same shape both times — refreshed at 08:00 with the start-of-day picture, refreshed at 16:00 with where things stand at end of day. <em>Not</em> a separate "morning view" and "afternoon view" — one surface, two refreshes.</li>
+      <li>The block always shows: 🔴 critical · 🟠 this week · 🟡 on the radar · ✅ cleared since last refresh — sorted by service-specific urgency state.</li>
+      <li>Same atomic marker-block write pattern as v18. Same Notion page.</li>
     </ul>
 
-    <h3>The chain pressure signal</h3>
-    <p>For every open service-instance Ryan has visibility on, the system computes:</p>
-    <div class="integration-note">
-      <p style="font-family:'JetBrains Mono', monospace; font-size:13px; margin:0;">
-        chain_pressure = subtasks_remaining / max(days_until_chain_due, 0.5)
-      </p>
-    </div>
-    <ul class="prose" style="margin-top:12px;">
-      <li><strong>2 of 10 done · due Friday (3 days)</strong> → 8 / 3 = <strong>2.67 (HIGH)</strong> — Ryan needs to act now or the chain won't finish.</li>
-      <li><strong>9 of 10 done · due Friday (3 days)</strong> → 1 / 3 = <strong>0.33 (LOW)</strong> — coast, finish Friday morning.</li>
-      <li>Chain pressure is the dominant input to the priority score:</li>
+    <h3>Why two layers and not one?</h3>
+    <p>The reconciler and the briefing answer two different questions. Conflating them would mean every briefing run has to also do reconciliation — doubling its runtime, coupling its failure modes, and confusing what the system is actually doing.</p>
+    <ul class="prose">
+      <li><strong>Reconciler asks:</strong> <em>"Are the right tasks even in Asana?"</em> Reads Notion templates · creates missing chain pieces. Once a day, before anyone is at their desk.</li>
+      <li><strong>Briefing asks:</strong> <em>"Of all the tasks Ryan has, which matter most right now?"</em> Reads the verified Asana state · ranks · surfaces. Twice a day, when Ryan checks in.</li>
+      <li>The reconciler runs first so the briefing operates on a complete graph. If the reconciler fails, the briefing still runs — it just operates on yesterday's state.</li>
     </ul>
-    <div class="integration-note" style="margin-top:6px;">
+
+    <h3>The urgency model · service-specific four-state</h3>
+    <p>Every open subtask gets one of four states based on its service template's thresholds, time to due, and chain progress.</p>
+
+    <table style="margin-bottom:14px;">
+      <thead>
+        <tr>
+          <th style="width:80px;">State</th>
+          <th>Meaning</th>
+          <th>Example trigger</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong style="color:var(--red);">🔴 Critical</strong></td>
+          <td>Act today or it slips. Overdue, or chain pressure too high to finish in time.</td>
+          <td>Monthly bookkeeping at T-1 · BAS at T-2 · any task overdue · chain pressure &gt; 1.0</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--orange);">🟠 This week</strong></td>
+          <td>Close enough that planning is needed. Should land in the next few days.</td>
+          <td>Monthly report at T-3 · BAS at T-7 · weekly payroll at T-1</td>
+        </tr>
+        <tr>
+          <td><strong style="color:#9C8500;">🟡 On the radar</strong></td>
+          <td><strong>Early visibility.</strong> In the lead-time window for this service. Not pressing, but Ryan should know it exists.</td>
+          <td>Monthly report at T-7 · BAS at T-14 · annual statements at T-30 · or any low-priority task at T-5</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--green-d);">🟢 Background</strong></td>
+          <td>Further out than the radar window. Collapsed by default.</td>
+          <td>Anything outside its service's lead-time threshold</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p><strong>Thresholds are per-service, defined in Service Templates.</strong> A monthly report's window starts at T-7 (yellow), tightens at T-3 (orange), and is critical at T-1. A quarterly BAS starts at T-14, tightens at T-7, critical at T-2. A weekly payroll: T-1, due-day, overdue. Each service has its own rhythm.</p>
+
+    <p><strong>Chain progress modifies the state.</strong> A service that's normally yellow at T-7 turns orange or red if only 1 of 10 subtasks are done — the chain won't finish in time at the current pace. Conversely, a service that's normally orange at T-3 stays green if 9 of 10 are done.</p>
+
+    <div class="integration-note" style="margin-top:14px;">
       <p style="font-family:'JetBrains Mono', monospace; font-size:13px; margin:0; line-height:1.6;">
-        priority_score =<br>
-        &nbsp;&nbsp;urgency × 3        &nbsp;&nbsp;<span style="color:var(--ink-3);"># 1 / max(days_until_due, 0.5)</span><br>
-        + chain_pressure × 4 &nbsp;&nbsp;<span style="color:var(--ink-3);"># subtasks_remaining / days_until_due</span><br>
-        + criticality × 2    &nbsp;&nbsp;<span style="color:var(--ink-3);"># service tier (BAS/payroll = 1.0, bookkeeping = 0.5)</span><br>
-        + sensitivity × 1    &nbsp;&nbsp;<span style="color:var(--ink-3);"># client flag from Client Register</span><br>
-        + slipped × 1.5      &nbsp;&nbsp;<span style="color:var(--ink-3);"># on this morning's picks, not done</span>
+        state = compute_state(<br>
+        &nbsp;&nbsp;days_until_due,<br>
+        &nbsp;&nbsp;chain_pressure,        &nbsp;&nbsp;<span style="color:var(--ink-3);"># subtasks_remaining / days_until_due</span><br>
+        &nbsp;&nbsp;service_template.thresholds,&nbsp;<span style="color:var(--ink-3);"># {yellow_at: 7, orange_at: 3, red_at: 1}</span><br>
+        &nbsp;&nbsp;sensitivity_flag       &nbsp;&nbsp;<span style="color:var(--ink-3);"># bumps up one state if client is sensitive</span><br>
+        )<br>
+        <br>
+        <span style="color:var(--ink-3);"># returns: red | orange | yellow | green</span>
       </p>
     </div>
-    <ul class="prose" style="margin-top:12px;">
-      <li>The Today's Focus block surfaces both the score and the reasoning — <strong>"EMPAC Q1 BAS · 2 of 10 done · 3 days to go · chain pressure 2.67"</strong> — so Ryan can challenge or trust the ranking.</li>
-      <li>Weights are tunable in a Notion config DB Ryan owns. No code changes needed to retune.</li>
-    </ul>
+
+    <p style="margin-top:14px;">The briefing groups by state and explains the reasoning per item — <strong>"Hudson April bookkeeping · T-3 · 5 of 8 done · pace OK"</strong> reads as orange because the service template says T-3 is orange, and chain progress confirms it's on track.</p>
   </section>
 
   <!-- ============== SECTION 3 — OUTPUT ============== -->
@@ -680,7 +714,7 @@
     <h2>What Ryan sees each day.</h2>
 
     <ul class="prose">
-      <li>Two new surfaces: <strong>Pending Reconciliation</strong> rows · the <strong>expanded Today's Focus block</strong> (morning state + afternoon state).</li>
+      <li>Two new surfaces: <strong>Pending Reconciliation</strong> rows · the <strong>expanded Today's Focus block</strong> (single state-grouped block, refreshed 08:00 + 16:00).</li>
       <li>Each example below is what the system produces from real Nine Advisory data.</li>
     </ul>
 
@@ -770,7 +804,8 @@
       </div>
     </div>
 
-    <h3 style="margin-top:32px;">Today's Focus · Morning · 08:00 on Ryan's workspace</h3>
+    <h3 style="margin-top:32px;">Today's Focus block · grouped by state · refreshed 08:00 + 16:00</h3>
+    <p style="margin-top:0; color:var(--ink-3); font-size:14px;">One block on Ryan's workspace. Same shape both times — content updates with current state of the world.</p>
     <div class="mockup-frame">
       <div class="mockup-chrome">
         <span class="dot" style="background:#FF6058;"></span>
@@ -784,11 +819,29 @@
           <div class="focus-meta">refreshed 08:03 AEST · next 16:00</div>
         </div>
         <div class="urgent">
-          ⚠️ <strong>Amber chased 3× on Kering. Lodge BAS Pandamich 2 days overdue.</strong>
+          🔴 <strong>3 critical · 4 this week · 6 on the radar.</strong> Lodge BAS Pandamich 2 days overdue. EMPAC Q1 BAS only 2 of 10 done with 3 days to go.
         </div>
 
-        <div class="section-divider">🎯 Today · the 3–5 picks</div>
+        <div class="section-divider" style="color:var(--red);">🔴 Critical · act today or it slips</div>
         <ul class="focus-list todo">
+          <li>
+            <span class="check"></span>
+            <span class="pri">🔴</span>
+            <div>
+              <div class="item-title">📋 EMPAC · Q1 BAS — push the chain forward</div>
+              <div class="item-context"><strong>2 of 10 done · due Friday (T-3)</strong> · Sailesh stuck at bank rec (step 2). Senior review (step 4, Ryan) blocked behind 2 more offshore steps. <span class="src">→ asana · chain</span></div>
+              <div class="item-rel">Service template says BAS is critical at T-2 · chain pressure 2.67 forces it red one day early. Without action today, lodgement slips.</div>
+            </div>
+          </li>
+          <li>
+            <span class="check"></span>
+            <span class="pri">🔴</span>
+            <div>
+              <div class="item-title">📋 Lodge BAS — Pandamich Q4</div>
+              <div class="item-context"><strong>9 of 10 done · 2 days overdue.</strong> Final lodgement step only. <span class="src">→ asana · chain</span></div>
+              <div class="item-rel">ATO penalty already accruing. 5-minute action.</div>
+            </div>
+          </li>
           <li>
             <span class="check"></span>
             <span class="pri">🔴</span>
@@ -798,21 +851,34 @@
               <div class="item-rel">Amber's tone shifted yesterday — quick reply recovers the relationship.</div>
             </div>
           </li>
+        </ul>
+
+        <div class="section-divider" style="color:var(--orange);">🟠 This week · plan around them</div>
+        <ul class="focus-list todo">
           <li>
             <span class="check"></span>
-            <span class="pri">🔴</span>
+            <span class="pri">🟠</span>
             <div>
-              <div class="item-title">📋 EMPAC · Q1 BAS — push the chain forward</div>
-              <div class="item-context"><strong>2 of 10 done · due Friday (3 days)</strong> · Sailesh stuck on bank rec at step 2. Senior review (step 4, Ryan) blocked behind 2 more offshore steps. <span class="src">→ asana · chain</span></div>
-              <div class="item-rel">Chain pressure 2.67 · highest in portfolio. Without action today, lodgement will slip. Sailesh's last update on this thread was Mon — likely needs unblocking, not chasing.</div>
+              <div class="item-title">📋 H&amp;E · GRINHAM tax plan — finish the chain</div>
+              <div class="item-context"><strong>4 of 5 done · due tomorrow (T-1)</strong> · final advisory write-up only. <span class="src">→ asana · chain</span></div>
+              <div class="item-rel">Glenn's ATO instalment plan kicks in 28 Apr — needs to land before that conversation.</div>
             </div>
           </li>
           <li>
             <span class="check"></span>
-            <span class="pri">🔴</span>
+            <span class="pri">🟠</span>
+            <div>
+              <div class="item-title">📋 Hudson · Monthly Bookkeeping April</div>
+              <div class="item-context"><strong>5 of 8 done · due tomorrow (T-1).</strong> Service template says monthly reports are orange at T-3 · this is on track.</div>
+              <div class="item-rel">Chain pressure 3.0 · pace acceptable · finish by Friday morning.</div>
+            </div>
+          </li>
+          <li>
+            <span class="check"></span>
+            <span class="pri">🟠</span>
             <div>
               <div class="item-title">📋 Clear 5 review subtasks across 4 clients</div>
-              <div class="item-context">Those Architects ×3 · Hudson · Black Market. All "Ryan to review" subtasks. Anvita owns 3 of them. <span class="src">→ asana · 5 subtasks</span></div>
+              <div class="item-context">Those Architects ×3 · Hudson · Black Market. All "Ryan to review" subtasks blocking offshore handoffs. <span class="src">→ asana</span></div>
               <div class="item-rel">Anvita flagged she's waiting — last Slack Tuesday.</div>
             </div>
           </li>
@@ -820,71 +886,60 @@
             <span class="check"></span>
             <span class="pri">🟠</span>
             <div>
-              <div class="item-title">📋 H&amp;E · GRINHAM tax plan — finish the chain</div>
-              <div class="item-context"><strong>4 of 5 done · due tomorrow (1 day)</strong> · final advisory write-up only. <span class="src">→ asana · chain</span></div>
-              <div class="item-rel">Chain pressure 1.0 — short but real. Glenn's ATO instalment plan kicks in 28 Apr; this needs to land before the conversation.</div>
-            </div>
-          </li>
-          <li>
-            <span class="check"></span>
-            <span class="pri">🟡</span>
-            <div>
               <div class="item-title">📧 Podia — issue March BAS for signing</div>
               <div class="item-context">Cameron approved yesterday. 5-min action, unblocks Friday's cashflow. <span class="src">→ email · ready-to-action</span></div>
             </div>
           </li>
         </ul>
 
-        <div class="section-divider">📋 Background queue · 12 more on the plate · sorted by chain pressure</div>
+        <div class="section-divider" style="color:#9C8500;">🟡 On the radar · early visibility</div>
         <ul class="focus-list todo">
           <li>
             <span class="check"></span>
-            <span class="pri">🟠</span>
+            <span class="pri">🟡</span>
             <div>
-              <div class="item-title">Hudson · Monthly Bookkeeping April</div>
-              <div class="item-context">5 of 8 done · due tomorrow.</div>
-              <div class="item-meta">chain pressure 3.0 · priority 6.7 · service criticality medium</div>
-            </div>
-          </li>
-          <li>
-            <span class="check"></span>
-            <span class="pri">🟠</span>
-            <div>
-              <div class="item-title">H&amp;E · client check-in</div>
-              <div class="item-context">1 subtask · due today (not part of a chain).</div>
-              <div class="item-meta">priority 5.2</div>
+              <div class="item-title">📋 Pandamich · Q2 BAS</div>
+              <div class="item-context">3 of 10 done · due in 12 days (T-12). BAS template yellow window starts at T-14.</div>
+              <div class="item-meta">on radar · pace 1.2 (slightly behind, watch)</div>
             </div>
           </li>
           <li>
             <span class="check"></span>
             <span class="pri">🟡</span>
             <div>
-              <div class="item-title">Pandamich · Q1 BAS</div>
-              <div class="item-context">9 of 10 done · due Friday. Final review only · 30 min.</div>
-              <div class="item-meta">chain pressure 0.33 · priority 3.8 · low — coast</div>
+              <div class="item-title">📋 Tussle · Annual Statements</div>
+              <div class="item-context">2 of 6 done · due in 2 weeks. Annual statements yellow at T-30 — well within window.</div>
+              <div class="item-meta">on radar · pace OK</div>
             </div>
           </li>
           <li>
             <span class="check"></span>
             <span class="pri">🟡</span>
             <div>
-              <div class="item-title">Tussle · Annual Statements</div>
-              <div class="item-context">2 of 6 done · due in 2 weeks.</div>
-              <div class="item-meta">chain pressure 0.29 · priority 4.0</div>
+              <div class="item-title">📋 Black Market · Monthly report April</div>
+              <div class="item-context">0 of 8 done · due in 5 days (T-5). Monthly reports yellow at T-7.</div>
+              <div class="item-meta">on radar · low priority service · entering window</div>
             </div>
           </li>
           <li>
             <span class="check"></span>
-            <span class="pri">⚪</span>
+            <span class="pri">🟡</span>
             <div>
-              <div class="item-title">Vaishnavi · 29 overdue on EMPAC</div>
-              <div class="item-context">Cluster — single line. Slack check-in beats a meeting.</div>
-              <div class="item-meta">priority 3.8 · cluster</div>
+              <div class="item-title">📋 Cascade · Quarterly review prep</div>
+              <div class="item-context">1 of 7 done · due in 9 days. Quarterly review yellow at T-10.</div>
+              <div class="item-meta">on radar · plan for next week</div>
+            </div>
+          </li>
+          <li>
+            <span class="check"></span>
+            <span class="pri">🟡</span>
+            <div>
+              <div class="item-title">▸ 2 more on radar (collapsed)</div>
             </div>
           </li>
         </ul>
 
-        <div class="section-divider">✅ Cleared yesterday</div>
+        <div class="section-divider" style="color:var(--green-d);">✅ Cleared since last refresh</div>
         <ul class="focus-list todo">
           <li class="done">
             <span class="check done"></span>
@@ -905,109 +960,16 @@
         </ul>
 
         <div class="focus-footer">
-          run_id <span style="color:var(--green-d);">tf_2026-04-28_0803</span> · scanned 786 + 1,022 subtasks · 5 picks + 12 background · sources: Asana · Email Triage · Interaction Log
-        </div>
-      </div>
-    </div>
-
-    <h3 style="margin-top:32px;">Today's Focus · Afternoon · 16:00 (replaces morning block)</h3>
-    <div class="mockup-frame">
-      <div class="mockup-chrome">
-        <span class="dot" style="background:#FF6058;"></span>
-        <span class="dot" style="background:#FFBD2D;"></span>
-        <span class="dot" style="background:#28C940;"></span>
-        <span class="chrome-title">notion.so / Ryan's Workspace</span>
-      </div>
-      <div class="mockup">
-        <div class="focus-head">
-          <div class="focus-title">🎯 Today's Focus</div>
-          <div class="focus-meta">refreshed 16:00 AEST · next 08:00 tomorrow</div>
-        </div>
-        <div class="urgent">
-          🔴 <strong>2 of this morning's 5 still open. Lodge BAS now 3 days overdue.</strong>
-        </div>
-
-        <div class="section-divider">🔴 Slipped from this morning</div>
-        <ul class="focus-list todo">
-          <li>
-            <span class="check"></span>
-            <span class="pri">🔴</span>
-            <div>
-              <div class="item-title">📋 EMPAC · Q1 BAS</div>
-              <div class="item-context"><strong>Still 2 of 10 done.</strong> No movement on Sailesh's bank rec subtask since this morning. Days until due now 2 — chain pressure 4.0.</div>
-              <div class="item-rel">If Sailesh blocked: a 5-min Slack tonight unblocks tomorrow's senior review. Otherwise lodgement slips.</div>
-            </div>
-          </li>
-          <li>
-            <span class="check"></span>
-            <span class="pri">🔴</span>
-            <div>
-              <div class="item-title">📋 H&amp;E · GRINHAM tax plan</div>
-              <div class="item-context"><strong>4 of 5 done. Final write-up not started.</strong> Glenn's instalment plan kicks in tomorrow.</div>
-              <div class="item-rel">Slack Glenn now or it's an awkward conversation in the morning.</div>
-            </div>
-          </li>
-        </ul>
-
-        <div class="section-divider">⚠️ New today, still open</div>
-        <ul class="focus-list todo">
-          <li>
-            <span class="check"></span>
-            <span class="pri">🟠</span>
-            <div>
-              <div class="item-title">📧 GRINHAM tax review request (came in 11:14)</div>
-              <div class="item-context">Due Friday. 2 subtasks. Priority: high.</div>
-            </div>
-          </li>
-          <li>
-            <span class="check"></span>
-            <span class="pri">🟡</span>
-            <div>
-              <div class="item-title">📧 Podia BAS query — confirm methodology</div>
-              <div class="item-context">Sailesh asked at 14:30. No deadline. Priority: medium.</div>
-            </div>
-          </li>
-        </ul>
-
-        <div class="section-divider">✅ Cleared today · 3 of 5 morning picks</div>
-        <ul class="focus-list todo">
-          <li class="done">
-            <span class="check done"></span>
-            <span class="pri">✓</span>
-            <div>
-              <div class="item-title">📧 EMPAC / Kering reply to Amber</div>
-              <div class="item-context">Sent 09:47.</div>
-            </div>
-          </li>
-          <li class="done">
-            <span class="check done"></span>
-            <span class="pri">✓</span>
-            <div>
-              <div class="item-title">📋 Cleared 5 review subtasks</div>
-              <div class="item-context">Done 10:30–11:50.</div>
-            </div>
-          </li>
-          <li class="done">
-            <span class="check done"></span>
-            <span class="pri">✓</span>
-            <div>
-              <div class="item-title">📧 Podia BAS issued for signing</div>
-              <div class="item-context">Sent 13:15.</div>
-            </div>
-          </li>
-        </ul>
-
-        <div class="focus-footer">
-          run_id <span style="color:var(--green-d);">tf_2026-04-28_1600</span> · 5 morning picks → 3 cleared, 2 slipped · 2 new today still open
+          run_id <span style="color:var(--green-d);">tf_2026-04-28_0803</span> · 13 surfaced (3 critical / 4 this week / 6 on radar) · 24 background collapsed · sources: Asana · Email Triage · Interaction Log
         </div>
       </div>
     </div>
 
     <ul class="prose" style="margin-top:24px;">
-      <li><strong>One marker block, two states.</strong> Morning → Afternoon → tomorrow's morning. Same atomic write pattern as v18.</li>
-      <li><strong>Risk lines</strong> ("→ ATO penalty + client escalation") are LLM-generated from the parent service template + Interaction Log.</li>
-      <li><strong>Italic relationship context</strong> pulls from the Interaction Log — last contact, sentiment, decision flags.</li>
-      <li><strong>Background queue</strong> can be folded into a Notion toggle if Ryan prefers — config DB controls it.</li>
+      <li><strong>One block, refreshed twice.</strong> 08:00 shows the start-of-day picture; 16:00 refreshes with where things stand at end of day. Same shape, current state. Items that slip from morning into the afternoon refresh keep their state and gain a "still open since 08:00" note.</li>
+      <li><strong>Service-specific colour</strong> · the threshold per service is in the template, not hard-coded. A monthly report at T-5 is yellow on radar; the same T-5 for an overdue payroll is critical. Ryan tunes thresholds per service in Notion.</li>
+      <li><strong>Reasoning</strong> on every item explains what drove the state — chain progress, days until due, sensitivity flag — so Ryan can challenge it.</li>
+      <li><strong>On the radar</strong> is the new layer Floyd asked for · early visibility before things become urgent. Items appear there as soon as they enter the lead-time window for their service.</li>
     </ul>
   </section>
 
@@ -1027,11 +989,11 @@
       </div>
       <div class="clock-row">
         <span class="t">08:00</span>
-        <span class="what"><strong>Today's Focus · Morning</strong> · top picks + background queue + yesterday's wins. Atomic marker-block write to Ryan's workspace.</span>
+        <span class="what"><strong>Today's Focus · 08:00 refresh</strong> · per-subtask state computed · grouped 🔴 / 🟠 / 🟡 / ✅. Atomic marker-block write to Ryan's workspace.</span>
       </div>
       <div class="clock-row">
         <span class="t">16:00</span>
-        <span class="what"><strong>Today's Focus · Afternoon</strong> · slipped + new today + cleared count. Replaces the morning block.</span>
+        <span class="what"><strong>Today's Focus · 16:00 refresh</strong> · same engine · re-bucketed against this morning's snapshot · slipped items climb a state, cleared items move to ✅. Replaces the 08:00 block.</span>
       </div>
     </div>
 
@@ -1085,31 +1047,31 @@
         <div class="pipe-num">1</div>
         <div>
           <div class="pipe-title">Read state + sources</div>
-          <div class="pipe-body">Briefing State (this morning's picks, for slipped detection) · Asana (Ryan's tasks + subtasks across 10 projects, parent-child structure preserved) · Email Triage (today's items) · Interaction Log · Client Register · Service Templates (for chain anchor + criticality lookup).</div>
+          <div class="pipe-body">Briefing State (this morning's picks, for slipped detection) · Asana (Ryan's tasks + subtasks across 10 projects, parent-child structure preserved) · Email Triage (today's items) · Interaction Log · Client Register (sensitivity flags) · <strong>Service Templates</strong> (chain anchor, criticality, and per-service urgency thresholds <span class="mono">yellow_at / orange_at / red_at</span>).</div>
         </div>
         <div class="pipe-stat">~28 calls<br><span class="arrow">read</span></div>
       </div>
       <div class="pipe-row">
         <div class="pipe-num">2</div>
         <div>
-          <div class="pipe-title">Compute chain pressure per service-instance</div>
-          <div class="pipe-body">For each open parent task (= service-instance): count <span class="mono">subtasks_total</span> · <span class="mono">subtasks_done</span> · <span class="mono">days_until_chain_due</span>. Compute <span class="mono">chain_pressure = subtasks_remaining / max(days_until_due, 0.5)</span>. Attach to every subtask in the chain.</div>
+          <div class="pipe-title">Compute state per subtask</div>
+          <div class="pipe-body">For each open subtask, compute <span class="mono">days_until_due</span> and <span class="mono">chain_pressure = subtasks_remaining / max(days_until_due, 0.5)</span>. Look up the service template's thresholds. Run <span class="mono">compute_state(days_until_due, chain_pressure, thresholds, sensitivity_flag)</span> → <strong>red · orange · yellow · green</strong>. Sensitivity bumps the state up one level. Chain pressure can also bump (e.g., monthly report at T-5 with 0 of 8 subtasks done → yellow even though report itself isn't urgent).</div>
         </div>
         <div class="pipe-stat">deterministic<br><span class="arrow">in-memory</span></div>
       </div>
       <div class="pipe-row">
         <div class="pipe-num">3</div>
         <div>
-          <div class="pipe-title">Apply rules 1–4 · score · diff</div>
-          <div class="pipe-body">v18 four-rule filter pipeline (name pattern, SOP drop, &gt;90d drop, cluster rollup). Priority scoring: <span class="mono">urgency × 3 + chain_pressure × 4 + criticality × 2 + sensitivity + slipped × 1.5</span>. Afternoon: diff against this morning's Briefing State.</div>
+          <div class="pipe-title">Filter · bucket by state · diff</div>
+          <div class="pipe-body">v18 four-rule filter pipeline runs first (name pattern, SOP drop, &gt;90d drop, cluster rollup). Surviving candidates are bucketed by their state: 🔴 red and 🟠 orange always surface (top of the briefing); 🟡 yellow forms the on-radar queue (max 5); 🟢 green is dropped. Afternoon run also diffs against this morning's Briefing State to compute slipped + cleared.</div>
         </div>
         <div class="pipe-stat">deterministic<br><span class="arrow">in-memory</span></div>
       </div>
       <div class="pipe-row llm">
         <div class="pipe-num">4</div>
         <div>
-          <div class="pipe-title">LLM ranks + enriches with chain reasoning</div>
-          <div class="pipe-body">One Claude Sonnet 4.6 call · picks 3–5 from ~45 candidates · generates per-item reasoning lines that explain chain progress in plain English ("2 of 10 done · Sailesh stuck at step 2 · senior review blocked behind 2 offshore steps") + italic context from Interaction Log. ~16K input + ~900 output tokens.</div>
+          <div class="pipe-title">LLM orders within buckets + writes reasoning</div>
+          <div class="pipe-body">One Claude Sonnet 4.6 call · orders items <em>within</em> each state bucket (red/orange/yellow), enforces the 3–5 cap on red+orange combined, and generates per-item reasoning that explains the state in plain English ("Monthly report at T-5 · 0 of 8 subtasks done · Sailesh hasn't started · senior review blocked behind 4 offshore steps") + italic context from Interaction Log. ~16K input + ~900 output tokens.</div>
         </div>
         <div class="pipe-stat" style="color:var(--green-d);">1 call<br><span class="arrow">~6s</span></div>
       </div>
@@ -1117,7 +1079,7 @@
         <div class="pipe-num">5</div>
         <div>
           <div class="pipe-title">Render + write</div>
-          <div class="pipe-body">Atomic marker-block rewrite on Ryan's AM Workspace page · Briefing State row (today's snapshot, including chain progress per service-instance for tomorrow's diff) · Run Log row · Decision Log rows (one per candidate, including its chain pressure).</div>
+          <div class="pipe-body">Atomic marker-block rewrite on Ryan's AM Workspace page · grouped under 🔴 / 🟠 / 🟡 / ✅ headings. Briefing State row (today's snapshot per service-instance + computed state per subtask for tomorrow's diff) · Run Log row · Decision Log rows (one per candidate, including its computed state and the threshold that fired).</div>
         </div>
         <div class="pipe-stat">~50 calls<br><span class="arrow">~3m total</span></div>
       </div>
@@ -1157,9 +1119,9 @@
           <td><span class="tag live">Live</span><br><span style="font-size:12px;color:var(--ink-3);">Iter 0</span></td>
         </tr>
         <tr>
-          <td><strong>Service Templates</strong> (with milestone chains)</td>
-          <td>Read · canonical milestone chains for all 19 services. Each chain is an ordered list of milestones with <span class="mono">seq, name, days_offset, assignee_role</span>. Chains are nested children of each Service Template page in Notion. The reconciler expands these into Asana parent + subtask graphs; Today's Focus reads chain progress for the chain pressure signal.</td>
-          <td><span class="tag live">Live</span><br><span style="font-size:12px;color:var(--ink-3);">Iter 0 · core to v19</span></td>
+          <td><strong>Service Templates</strong> (with chains + urgency thresholds)</td>
+          <td>Read · canonical milestone chains for all 19 services. Each chain is an ordered list of milestones with <span class="mono">seq, name, days_offset, assignee_role</span>. Chains are nested children of each Service Template page in Notion. <strong>Each template also carries urgency thresholds</strong> <span class="mono">yellow_at / orange_at / red_at</span> (days before due) plus a <span class="mono">criticality</span> tag — these drive the four-state urgency model in Today's Focus. The reconciler expands chains into Asana parent + subtask graphs; Today's Focus reads chain progress and thresholds to compute per-subtask state.</td>
+          <td><span class="tag live">Live</span><br><span style="font-size:12px;color:var(--ink-3);">Iter 0 · v19 adds thresholds</span></td>
         </tr>
         <tr>
           <td><strong>Interaction Log</strong></td>
@@ -1193,7 +1155,7 @@
         </tr>
         <tr>
           <td><strong>Ryan's AM Workspace page</strong></td>
-          <td>Write · single marker-block "🎯 Today's Focus." Atomically rewritten morning + afternoon.</td>
+          <td>Write · single marker-block "🎯 Today's Focus." Atomically rewritten at 08:00 + 16:00.</td>
           <td><span class="tag live">Live</span><br><span style="font-size:12px;color:var(--ink-3);">v18 · existing page</span></td>
         </tr>
         <tr>
@@ -1441,6 +1403,7 @@
             <li><span class="lbl">Build</span>New Notion DBs: <strong>Pending Reconciliation</strong>, <strong>Reconciliation Log</strong>, <strong>Briefing State</strong>.</li>
             <li>Add <strong>Milestone Template ID</strong> custom field to all 10 Asana client projects.</li>
             <li>Audit Service Templates for parseable milestone chains. Flag any incomplete templates for Ryan to fill.</li>
+            <li>Add per-service <strong>urgency thresholds</strong> (<span class="mono">yellow_at / orange_at / red_at</span>) and <span class="mono">criticality</span> tag to each Service Template. Whitecrow proposes defaults from existing client cadence (e.g., monthly bookkeeping <span class="mono">red_at=1</span>; monthly report <span class="mono">red_at=3</span>; BAS <span class="mono">red_at=7</span>); Ryan reviews on the mapping call.</li>
             <li>Asana MCP wired into Cowork.</li>
           </ul>
           <p class="ships" style="margin-top:8px;"><span class="lbl">Ships Mon</span>All DBs in place · custom fields stamped · cold Asana JSON pull validated in dev</p>
@@ -1467,20 +1430,21 @@
       </div>
 
       <div class="phase">
-        <div class="phase-tag">Phase 3 · Today's Focus + chain pressure<span class="days">Tue–Fri · wk 2</span></div>
+        <div class="phase-tag">Phase 3 · Today's Focus + four-state urgency<span class="days">Tue–Fri · wk 2</span></div>
         <div class="phase-body">
           <p><span class="lbl">Lead</span>Whitecrow</p>
           <ul class="prose" style="margin:6px 0 0;">
             <li><span class="lbl">Build</span>v18 four-rule filter pipeline (name pattern, SOP drop, &gt;90d drop, cluster rollup).</li>
-            <li><strong>Chain-pressure engine.</strong> Per service-instance: count subtasks_total / done · compute days_until_chain_due · derive chain_pressure. Attach to every subtask in the chain.</li>
-            <li>Priority scoring (urgency × 3 + chain_pressure × 4 + criticality × 2 + sensitivity + slipped × 1.5).</li>
-            <li>Briefing State snapshotting (including chain progress per service-instance) for the 16:00 slipped/cleared diff.</li>
-            <li>One Claude call · ranks 3–5 picks · generates chain-aware reasoning lines + italic context from Interaction Log.</li>
-            <li>Marker-block renderer · morning state + afternoon state.</li>
+            <li><strong>Chain-progress reader.</strong> Per service-instance: count <span class="mono">subtasks_total / done</span> · compute <span class="mono">days_until_due</span> per subtask · derive <span class="mono">chain_pressure</span>. Attach to every open subtask.</li>
+            <li><strong>compute_state() engine.</strong> Per subtask, run <span class="mono">compute_state(days_until_due, chain_pressure, service_template.thresholds, sensitivity_flag)</span> → <strong>red · orange · yellow · green</strong>. Sensitivity bumps state up one level. Threshold table is editable in Notion (Service Templates) — no code redeploy to retune.</li>
+            <li>Bucket + cap: red+orange combined → top of briefing (cap 5) · yellow → on-radar queue (cap 5) · green dropped.</li>
+            <li>Briefing State snapshotting (chain progress per service-instance + computed state per surfaced subtask) for the 16:00 slipped/cleared diff.</li>
+            <li>One Claude call · orders within state buckets · generates state-aware reasoning lines + italic context from Interaction Log.</li>
+            <li>Marker-block renderer · single state-grouped block · 08:00 + 16:00 atomic rewrites.</li>
             <li>Wire to Email Triage DB (already populated by Iter 1).</li>
             <li>Output to sandbox page first, then Ryan's live AM Workspace page after Floyd sign-off.</li>
           </ul>
-          <p class="ships" style="margin-top:8px;"><span class="lbl">Ships Fri wk 2</span>Today's Focus running end-to-end · chain pressure surfacing the right service-instances · both morning + afternoon states sandbox-rendered</p>
+          <p class="ships" style="margin-top:8px;"><span class="lbl">Ships Fri wk 2</span>Today's Focus running end-to-end · four-state urgency model surfacing the right items at the right state · both 08:00 + 16:00 states sandbox-rendered</p>
         </div>
       </div>
 
@@ -1507,7 +1471,7 @@
       </div>
     </div>
     <ul class="prose" style="margin-top:10px;">
-      <li><strong>Splits:</strong> P1 ~8h · P2 ~22h (chain expansion + role mapping) · P3 ~19h (chain-pressure engine + reasoning) · P4 ~11h.</li>
+      <li><strong>Splits:</strong> P1 ~8h · P2 ~22h (chain expansion + role mapping) · P3 ~19h (urgency state engine + chain reader + reasoning) · P4 ~11h.</li>
       <li><strong>Ryan's effort:</strong> 30-min mapping call (Mon wk 1) · 1-hour matcher + chain expansion review (Mon wk 2) · 30-min format review (Fri wk 2) · 5-min daily Slack across week 3 (~25 min).</li>
     </ul>
   </section>

@@ -1,0 +1,566 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Scope v19 — Three Layers of Focus</title>
+<style>
+  :root{
+    --bg:#fbfaf7;
+    --ink:#1d1b16;
+    --muted:#6b6759;
+    --rule:#e6e2d6;
+    --accent:#a8643c;
+    --code-bg:#f3efe5;
+    --warn:#b15a2e;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);}
+  body{
+    font-family: "Charter","Iowan Old Style","Source Serif Pro",Georgia,serif;
+    font-size:17px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+  .page{
+    max-width:720px;
+    margin:0 auto;
+    padding:96px 28px 160px;
+  }
+  .meta{
+    font-family:"SF Mono","Menlo","Consolas",monospace;
+    font-size:12px;
+    letter-spacing:0.03em;
+    color:var(--muted);
+    text-transform:uppercase;
+  }
+  h1{
+    font-size:42px;
+    line-height:1.1;
+    margin:6px 0 8px;
+    font-weight:600;
+    letter-spacing:-0.01em;
+  }
+  h1 .sub{
+    display:block;
+    font-size:22px;
+    color:var(--muted);
+    font-weight:400;
+    margin-top:6px;
+    letter-spacing:0;
+  }
+  .header-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:6px 24px;
+    margin:28px 0 0;
+    font-size:14px;
+    color:var(--muted);
+  }
+  .header-grid b{color:var(--ink); font-weight:500;}
+  hr{
+    border:0;
+    border-top:1px solid var(--rule);
+    margin:48px 0;
+  }
+  h2{
+    font-size:13px;
+    font-family:"SF Mono","Menlo","Consolas",monospace;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    color:var(--accent);
+    margin:64px 0 24px;
+    font-weight:500;
+  }
+  h2 .num{color:var(--muted); margin-right:8px;}
+  h3{
+    font-size:22px;
+    font-weight:600;
+    margin:40px 0 12px;
+    letter-spacing:-0.005em;
+  }
+  h4{
+    font-size:16px;
+    font-weight:600;
+    margin:28px 0 8px;
+    color:var(--ink);
+  }
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px; padding-left:22px;}
+  li{margin:0 0 6px;}
+  strong{font-weight:600;}
+  em{font-style:italic;}
+  a{color:var(--accent); text-decoration:none; border-bottom:1px solid rgba(168,100,60,0.35);}
+  a:hover{border-bottom-color:var(--accent);}
+  pre{
+    background:var(--code-bg);
+    border:1px solid var(--rule);
+    border-radius:4px;
+    padding:16px 18px;
+    font-family:"SF Mono","Menlo","Consolas",monospace;
+    font-size:13px;
+    line-height:1.55;
+    overflow-x:auto;
+    color:var(--ink);
+    margin:18px 0;
+  }
+  code{
+    font-family:"SF Mono","Menlo","Consolas",monospace;
+    font-size:0.92em;
+    background:var(--code-bg);
+    padding:1px 5px;
+    border-radius:3px;
+  }
+  pre code{background:transparent; padding:0;}
+  table{
+    width:100%;
+    border-collapse:collapse;
+    margin:18px 0 24px;
+    font-size:14.5px;
+  }
+  th,td{
+    text-align:left;
+    padding:10px 12px;
+    border-bottom:1px solid var(--rule);
+    vertical-align:top;
+  }
+  th{
+    font-family:"SF Mono","Menlo","Consolas",monospace;
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    color:var(--muted);
+    font-weight:500;
+    border-bottom:1px solid var(--ink);
+  }
+  blockquote{
+    margin:24px 0;
+    padding:12px 18px;
+    border-left:3px solid var(--accent);
+    background:rgba(168,100,60,0.05);
+    color:var(--ink);
+    font-style:italic;
+  }
+  blockquote p{margin:0;}
+  .summary{
+    background:#fff7ee;
+    border:1px solid #ead6bc;
+    border-radius:6px;
+    padding:24px 28px;
+    margin:36px 0;
+  }
+  .summary p:last-child{margin-bottom:0;}
+  .totals-table th,.totals-table td{padding:8px 12px;}
+  .totals-table tr:last-child td{border-top:1px solid var(--ink); font-weight:600;}
+  .footer{
+    margin-top:96px;
+    padding-top:24px;
+    border-top:1px solid var(--rule);
+    color:var(--muted);
+    font-size:13px;
+    font-family:"SF Mono","Menlo","Consolas",monospace;
+  }
+  .ascii{
+    background:var(--code-bg);
+    border:1px solid var(--rule);
+    padding:18px 20px;
+    font-family:"SF Mono","Menlo","Consolas",monospace;
+    font-size:12.5px;
+    line-height:1.5;
+    overflow-x:auto;
+    white-space:pre;
+    margin:18px 0;
+  }
+  .pill{
+    display:inline-block;
+    font-family:"SF Mono","Menlo","Consolas",monospace;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    padding:3px 8px;
+    border-radius:3px;
+    background:var(--code-bg);
+    color:var(--muted);
+    margin-right:6px;
+  }
+  @media (max-width:560px){
+    .page{padding:48px 18px 96px;}
+    h1{font-size:32px;}
+    h1 .sub{font-size:18px;}
+    .header-grid{grid-template-columns:1fr;}
+    pre,.ascii{font-size:12px;}
+  }
+</style>
+</head>
+<body>
+<main class="page">
+
+<div class="meta">Whitecrow · Scope v19 · 29 April 2026</div>
+<h1>Three Layers of Focus<span class="sub">A bundled MVP for Nine Advisory's daily operating system</span></h1>
+
+<div class="header-grid">
+  <div><b>Vendor</b><br/>Whitecrow</div>
+  <div><b>Client</b><br/>Nine Advisory</div>
+  <div><b>Prepared for</b><br/>Sam Musgrave</div>
+  <div><b>End users</b><br/>Ryan Garvey, Manoli Papas</div>
+  <div><b>Supersedes</b><br/>Scope v18 (Today's Focus, standalone)</div>
+  <div><b>Status</b><br/>Draft for review</div>
+</div>
+
+<div class="summary">
+<p>Today's Focus alone surfaces what matters today, but it silently assumes the right tasks exist in Asana to begin with. They don't. When a client signs up for a service in Notion, no system today guarantees the corresponding milestone tasks land in Asana. Today's Focus can only surface what's there — anything missing stays missing.</p>
+<p>Scope v19 fixes the layer underneath, then adds a daily lens for the AM, then surfaces priorities. <strong>Three layers of focus:</strong></p>
+<ol>
+  <li><strong>Reconciler</strong> — every morning at 06:00, check that every active client's services have their milestone tasks in Asana. If something's missing, draft it and ask the AM to approve.</li>
+  <li><strong>AM/PM Wrap-Up</strong> — every morning at 09:00, hand the AM a single page with their full plate, prioritised, with what's at risk if they don't act. At 17:00, replace it with what slipped and what landed today.</li>
+  <li><strong>Today's Focus</strong> — Scope v18 retained verbatim. Twice-daily 3–5 things that matter most, mixed across email, Asana, and commitments.</li>
+</ol>
+<p>A stack of trust: <em>verify the data → organise the day → surface the priorities.</em> Sam sees a complete daily operating system for Ryan and Manoli, not a feature.</p>
+<p><strong>Engineering effort:</strong> ~65 hours over 4 weeks (3 weeks build + 1 week shadow/tune). <strong>Ryan's effort:</strong> ~3 hours. <strong>Stack:</strong> Cowork + Asana MCP + Notion MCP. No new infrastructure.</p>
+</div>
+
+<hr/>
+
+<h2><span class="num">01</span> Finding</h2>
+
+<p>Two findings drive this scope.</p>
+
+<p><strong>Finding 1 (carried from v18).</strong> Ryan's work assignments live in subtask <em>names</em> rather than Asana's assignee fields. Standard "assignee = Ryan" filters return 2 tasks despite Ryan touching dozens weekly. Offshore teams embed ownership as text patterns — <code>↳ Ryan to review</code> — instead of structured assignment.</p>
+
+<p><strong>Finding 2 (new, motivates v19's foundation layer).</strong> Asana custom-field metadata across the 10 client projects is essentially empty. Industry, account manager, state, complexity, service mix — none of it lives in Asana. All of it lives in the Notion Client Register and Services databases. Asana is the execution surface; Notion is the source of truth.</p>
+
+<p>This means: <strong>whether the right tasks exist in Asana cannot be verified from inside Asana.</strong> It can only be verified by reading the Notion Service Templates milestone chains and comparing them against what is present in each client project. No system does this today. Tasks go missing silently, and Today's Focus has no way to know.</p>
+
+<p><strong>Implication.</strong> Today's Focus needs a layer beneath it that guarantees the comparison happens daily. That layer is the Reconciler.</p>
+
+<hr/>
+
+<h2><span class="num">02</span> Three layers</h2>
+
+<h3>Layer 1 — Reconciler · 06:00 AEST</h3>
+
+<p>For each client × subscribed service, compare what <em>should</em> be in Asana (the Notion Service Templates milestone chain) against what <em>is</em> in Asana. Anything missing becomes a row in a <code>Pending Reconciliation</code> Notion DB with an Approve checkbox. When Ryan ticks Approve, the next 06:00 run creates the Asana task with the right assignee, due date, and parent section.</p>
+
+<p><strong>Detect + Suggest, not Auto-Create.</strong> The reconciler never writes to Asana without explicit human approval. Two reasons: trust — false positives in the matcher would otherwise pollute the workspace; and control — Ryan reads the suggested task name, due date, and assignee before agreeing.</p>
+
+<p><strong>Hybrid matching.</strong> Tasks the reconciler creates are stamped with a hidden <code>Milestone Template ID</code> Asana custom field (one-time setup, ~5 min per project). Future runs match by ID — deterministic, immune to renames. Legacy tasks (created before the MVP) are matched by normalised name with similarity ≥ 0.85. Any match below 0.92 is flagged as low-confidence on the briefing page for human review.</p>
+
+<h3>Layer 2 — AM/PM Wrap-Up · 09:00 / 17:00 AEST, per AM</h3>
+
+<p><strong>AM Wrap-Up (09:00).</strong> For each AM, pull every incomplete Asana task assigned to them across all 10 client projects, plus their open Commitments. Score each by urgency, size, service criticality, client sensitivity, and slippage. Render the top 10 to the AM's Daily Briefing page with: priority emoji, deadline tag, subtask count, "what's at risk if you don't touch this today" line (LLM-generated from service template + Interaction Log), and italic relationship context (last contact, sentiment).</p>
+
+<p><strong>PM Wrap-Up (17:00).</strong> Replace the AM block with a two-bucket view. <strong>🔴 Slipped from this morning</strong> — items that were on the AM Wrap-Up but aren't completed. <strong>⚠️ New today, still open</strong> — items that became due, assigned, or relevant after 09:00 and aren't completed. Plus a count: <em>"✅ Cleared today: X of Y morning items."</em></p>
+
+<p>The block on the Daily Briefing page is atomically rewritten three times daily (AM at 09:00, PM at 17:00, AM again next morning). Same marker-block pattern as v18.</p>
+
+<h3>Layer 3 — Today's Focus · 08:00 / 16:00 AEST</h3>
+
+<p>Unchanged from Scope v18. Pulls ~45 candidates from Asana + Email Triage + Commitments, filters via four deterministic rules, ranks via Claude Sonnet 4.6, surfaces 3–5 lines on Ryan's existing AM Workspace page. The Reconciler runs <em>before</em> it, so Today's Focus operates on a verified task graph.</p>
+
+<hr/>
+
+<h2><span class="num">03</span> Output</h2>
+
+<h4>Pending Reconciliation row · Notion DB</h4>
+<div class="ascii">Client:           EMPAC
+Service:          Quarterly BAS
+Missing milestone: Lodge BAS — March quarter
+Suggested due:     2026-04-28
+Suggested assignee: Sailesh
+Reasoning:        Template "lodge" milestone not found in EMPAC project.
+                  Closest match: "Q4 BAS prepared" (similarity 0.41)
+Approve:          ☐
+Created:          ☐  (system-managed)
+Detected at:      2026-04-28 06:00:14</div>
+
+<h4>AM Wrap-Up block · Notion page</h4>
+<div class="ascii">🌅 AM Wrap-Up — Tuesday 28 April · 09:00
+
+⚠️ 3 items overdue — clear these first
+
+1. 🔴 Lodge BAS — Pandamich Q1     [overdue 2 days · 5 subtasks]
+   → If not lodged today: ATO penalty + client escalation
+   · Last contact w/ Ana: 4 days ago, sentiment: At Risk
+
+2. 🔴 EMPAC payroll review         [overdue 1 day · 3 subtasks]
+   → If not done today: Vaishnavi can't run Friday payroll
+   · Last contact: 2 days ago, sentiment: Neutral
+
+3. 🟠 Hudson management report     [due today · 8 subtasks]
+   → Promised in last fortnightly call
+
+4. 🟠 H&E client check-in          [due today · 1 subtask]
+5. 🟡 Tussle annual statements     [due tomorrow · 4 subtasks]
+…
+
+▸ Background queue (12 items, sorted by score)
+
+Run: 09:00:23 · 36 candidates → 10 surfaced · run_id abc123</div>
+
+<h4>PM Wrap-Up block · replaces AM block at 17:00</h4>
+<div class="ascii">🌙 PM Wrap-Up — Tuesday 28 April · 17:00
+
+🔴 Slipped from this morning (2)
+
+· Lodge BAS — Pandamich Q1
+  Status: still overdue. Now 3 days overdue.
+  Carried into tomorrow's AM at top priority.
+
+· Hudson management report
+  Status: not started. Due today.
+  → Slack Ana now or Sam will see it on Thursday review.
+
+⚠️ New today, still open (3)
+
+· GRINHAM tax review request   (came in via email at 11:14)
+  Due Friday. 2 subtasks. Priority: high.
+
+· Podia BAS query — Sailesh asked you to confirm methodology
+  Came in via Slack at 14:30. No deadline. Priority: medium.
+
+· Tussle ad-hoc bookkeeping question
+
+✅ Cleared today: 6 of 10 morning items
+Run: 17:00:18 · run_id xyz789</div>
+
+<hr/>
+
+<h2><span class="num">04</span> Pipeline</h2>
+
+<p>Five daily runs, each independent. If one fails the others are unaffected.</p>
+
+<div class="ascii">06:00  RECONCILER          → Pending Reconciliation rows + Asana creates (approved)
+08:00  TODAY'S FOCUS (AM)  → Ryan's AM Workspace block (v18, unchanged)
+09:00  AM WRAP-UP × 2 AMs  → Daily Briefing pages, AM block
+16:00  TODAY'S FOCUS (PM)  → Ryan's AM Workspace block (v18, unchanged)
+17:00  PM WRAP-UP × 2 AMs  → Daily Briefing pages, PM block (replaces AM)</div>
+
+<p>Daily totals: ~459 API calls, 6 LLM calls, ~7 minutes of compute. All within free-tier limits.</p>
+
+<h4>Reconciler run anatomy</h4>
+<ol>
+  <li>Read Notion config: Client Register, Services, Service Templates, Pending Reconciliation (checked rows)</li>
+  <li>Read Asana: tasks per active client project, with <code>Milestone Template ID</code> custom field</li>
+  <li>Match in-process: ID-first, then fuzzy name fallback</li>
+  <li>Apply approved: create new Asana tasks, stamp template IDs, mark Notion rows Created</li>
+  <li>Write missing: new Pending Reconciliation rows for newly-detected gaps</li>
+  <li>Log run</li>
+</ol>
+
+<h4>AM Wrap-Up run anatomy</h4>
+<ol>
+  <li>Read Notion: yesterday's AM Briefing State, Client Register, Commitments, Interaction Log, Service Templates</li>
+  <li>Read Asana: incomplete tasks assigned to AM</li>
+  <li>Score in-process: priority formula, top 10</li>
+  <li>One Claude call: per-item risk lines + italic context</li>
+  <li>Write Notion: AM Briefing State row + atomic block rewrite + Run Log</li>
+</ol>
+
+<h4>PM Wrap-Up run anatomy</h4>
+<ol>
+  <li>Read this morning's AM Briefing State row</li>
+  <li>Re-read Asana: completion status of morning items + new items since 09:00</li>
+  <li>Bucket: slipped vs new</li>
+  <li>One Claude call: short reasoning per item</li>
+  <li>Write Notion: atomic block replace + Run Log</li>
+</ol>
+
+<hr/>
+
+<h2><span class="num">05</span> Sources</h2>
+
+<table>
+<thead>
+<tr><th>Source</th><th>Read</th><th>Write</th><th>Notes</th></tr>
+</thead>
+<tbody>
+<tr><td>NA Client Register</td><td>✓</td><td>—</td><td>Active clients, AM, Asana Project URL, sensitivity flags</td></tr>
+<tr><td>Services</td><td>✓</td><td>—</td><td>Client × service subscriptions</td></tr>
+<tr><td>Service Templates</td><td>✓</td><td>—</td><td>Milestone chains for 19 services</td></tr>
+<tr><td>Interaction Log</td><td>✓</td><td>—</td><td>Recent contact, sentiment for italic context</td></tr>
+<tr><td>Commitments</td><td>✓</td><td>—</td><td>Open commitments per AM</td></tr>
+<tr><td>Pending Reconciliation <span class="pill">new</span></td><td>✓</td><td>✓</td><td>Detected gaps, Approve checkbox, Created flag</td></tr>
+<tr><td>Reconciliation Log <span class="pill">new</span></td><td>—</td><td>✓</td><td>Per-run summary (reconciler)</td></tr>
+<tr><td>AM Briefing State <span class="pill">new</span></td><td>✓</td><td>✓</td><td>One row per AM per day, snapshot of morning plate</td></tr>
+<tr><td>Run Log <span class="pill">extended</span></td><td>—</td><td>✓</td><td>Per-run summary (wrap-ups + Today's Focus)</td></tr>
+<tr><td>Daily Briefing pages <span class="pill">new</span></td><td>—</td><td>✓</td><td>One per AM. AM/PM block, atomic rewrites.</td></tr>
+<tr><td>Ryan's AM Workspace page</td><td>—</td><td>✓</td><td>Today's Focus block (v18)</td></tr>
+<tr><td>Asana — 10 client projects</td><td>✓</td><td>✓ gated</td><td>Tasks, subtasks, custom field <code>Milestone Template ID</code> (new)</td></tr>
+</tbody>
+</table>
+
+<p><strong>One-time Asana setup.</strong> Add custom field <code>Milestone Template ID</code> (text) to each of the 10 client projects. ~5 minutes total.</p>
+
+<hr/>
+
+<h2><span class="num">06</span> How it runs</h2>
+
+<h4>Runtime</h4>
+<p>Cowork (Anthropic's agentic runtime). No backend service, no Postgres, no Lambda, no separate cron. Same stack as Scope v18.</p>
+
+<h4>Connectors</h4>
+<ul>
+  <li><strong>asana-mcp</strong> — OAuth via Cowork. ~1-hour token, refreshed at start of each run.</li>
+  <li><strong>notion-mcp</strong> — Notion integration token. Reads config + data DBs, writes via atomic block PATCH.</li>
+  <li><strong>Claude Sonnet 4.6</strong> — one call per wrap-up run; the reconciler is deterministic and uses no LLM.</li>
+</ul>
+
+<h4>State</h4>
+<p>All state lives in Notion DBs. No external database, no warehouse, no shadow logger (deferred to a future iteration). Notion is human-readable, queryable, and at Nine Advisory's scale — well under the size where this becomes a constraint.</p>
+
+<h4>Error handling</h4>
+
+<table>
+<thead><tr><th>Failure</th><th>Outcome</th></tr></thead>
+<tbody>
+<tr><td>Asana API down</td><td>Run aborts cleanly. Briefing block shows "⚠️ Asana unavailable, retry at HH:30."</td></tr>
+<tr><td>Notion API down</td><td>Atomic writes fail-fast. No partial state. Next run resumes.</td></tr>
+<tr><td>Claude down</td><td>Wrap-up renders without LLM context lines. Header notes "↳ context unavailable."</td></tr>
+<tr><td>Asana token refresh fails</td><td>Run aborts. Slack DM to Floyd (operator).</td></tr>
+<tr><td>Mid-run crash</td><td>Idempotent — next run computes desired state from current and writes.</td></tr>
+<tr><td>Matcher false positive (low-confidence)</td><td>Surfaced on briefing page header as warning + audited weekly.</td></tr>
+<tr><td>Matcher false negative (duplicate detect)</td><td>Pre-write similarity check ≥ 0.85 against existing tasks → skip + log.</td></tr>
+<tr><td>Cowork run doesn't fire</td><td>Fallback retry 30 min later. Heartbeat alert to Floyd.</td></tr>
+</tbody>
+</table>
+
+<p>The atomic marker-block pattern from v18 means partial briefing blocks are impossible — either the previous block stays, or the new one fully replaces it.</p>
+
+<h4>Auditability</h4>
+
+<p>Every run logs to a Notion DB:</p>
+<ul>
+  <li><strong>Reconciliation Log</strong> — per reconciler run: clients scanned, milestones expected/present/missing, approvals applied, runtime, status.</li>
+  <li><strong>Run Log</strong> — per wrap-up + Today's Focus run: source counts, surfaced count, runtime, errors.</li>
+  <li><strong>Decision Log</strong> (from v18) — extended to also cover wrap-up scoring decisions.</li>
+</ul>
+<p>Filterable views: <em>"last 7 days, status ≠ ok," "this week, low-confidence matches."</em> Ryan-visible. 90-day rolling retention with auto-archive.</p>
+
+<hr/>
+
+<h2><span class="num">07</span> Build plan</h2>
+
+<p>Three weeks core build + one week shadow/cutover/tune. Five phases. ~65 engineering hours. Ryan's effort: ~3 hours.</p>
+
+<h3>Phase 1 — Groundwork · Mon–Wed wk 1 · ~12h</h3>
+<ul>
+  <li>30-minute mapping call with Ryan</li>
+  <li>Set up new Notion DBs: <code>Pending Reconciliation</code>, <code>Reconciliation Log</code>, <code>AM Briefing State</code>, <code>Daily Briefing</code> pages (Ryan + Manoli stub)</li>
+  <li>Add <code>Milestone Template ID</code> custom field to 10 Asana client projects</li>
+  <li>Verify Service Templates milestone chains parseable (audit any incomplete templates)</li>
+  <li>Wire Asana MCP into Cowork, validate authentication</li>
+  <li><strong>Ships:</strong> all DBs in place, custom fields stamped, cold JSON pull from Asana validated in dev</li>
+</ul>
+
+<h3>Phase 2 — Reconciler · Thu wk 1–Tue wk 2 · ~18h</h3>
+<ul>
+  <li>Implement matcher: ID pass + fuzzy name pass with confidence scores</li>
+  <li>Implement detect-and-suggest: write Pending Reconciliation rows</li>
+  <li>Implement apply-approved: create Asana tasks for checked rows, stamp template IDs</li>
+  <li>Sandbox testing against a designated Asana sandbox project</li>
+  <li>Reconciliation Log structured output</li>
+  <li><strong>Ships:</strong> sandbox runs producing valid Pending Reconciliation rows; manual sign-off on matcher accuracy</li>
+  <li><strong>Go/No-Go gate (Tue 5pm wk 2):</strong> Floyd + Ryan review matcher accuracy on real client data; tune threshold if needed</li>
+</ul>
+
+<h3>Phase 3 — AM/PM Wrap-Up · Wed–Fri wk 2 · ~16h</h3>
+<ul>
+  <li>Implement scoring formula</li>
+  <li>Implement AM Briefing State snapshotting</li>
+  <li>Implement PM diff + bucket logic</li>
+  <li>One LLM call per wrap-up for risk lines + italic context</li>
+  <li>Render to sandbox Daily Briefing page</li>
+  <li><strong>Ships:</strong> sandbox renders for Ryan + Manoli; format reviewed by Floyd</li>
+</ul>
+
+<h3>Phase 4 — Today's Focus · Mon–Wed wk 3 · ~10h</h3>
+<ul>
+  <li>Wire into existing Email Triage and Commitments DBs (live since Iterations 0–1)</li>
+  <li>Implement the four-rule filter pipeline, LLM ranker, marker-block renderer per v18 design</li>
+  <li>Output to sandbox page first, then to Ryan's live AM Workspace page after sign-off</li>
+  <li><strong>Ships:</strong> Today's Focus running end-to-end against real data, sandbox-rendered</li>
+</ul>
+
+<h3>Phase 5 — Shadow + Cutover + Tune · Week 4 · ~9h</h3>
+<ul>
+  <li><strong>Shadow (Mon–Wed wk 4):</strong> all five runs scheduled and live. Reconciler's Asana writes go through a double-gate — Ryan ticks Approve in Notion, <em>and</em> Floyd manually reviews each of the first ~10 creates before they push to Asana. Briefing pages render to real Daily Briefing pages with a "Shadow Week" banner.</li>
+  <li><strong>Cutover (Thu wk 4):</strong> Floyd removes the double-gate. Reconciler writes to Asana directly on Ryan's approval. Shadow banner removed.</li>
+  <li><strong>Tune (Thu–Fri wk 4 + ongoing):</strong> daily 5-minute Slack with Ryan covering false positives, scoring tweaks, copy refinements. Whitecrow tunes from flags. Editable Notion config DBs (similarity threshold, scoring weights, verb list, assignee map) handed over.</li>
+  <li><strong>Ships:</strong> unattended daily runs across all five schedules; Ryan owns format and config DBs.</li>
+</ul>
+
+<h4>Total</h4>
+<table class="totals-table">
+<thead><tr><th>Phase</th><th>Hours</th></tr></thead>
+<tbody>
+<tr><td>1 — Groundwork</td><td>12</td></tr>
+<tr><td>2 — Reconciler</td><td>18</td></tr>
+<tr><td>3 — AM/PM Wrap-Up</td><td>16</td></tr>
+<tr><td>4 — Today's Focus</td><td>10</td></tr>
+<tr><td>5 — Shadow + Live + Tune</td><td>9</td></tr>
+<tr><td>Total</td><td>65</td></tr>
+</tbody>
+</table>
+
+<p><strong>Ryan's effort:</strong></p>
+<ul>
+  <li>30-min mapping call (day 1)</li>
+  <li>1-hour matcher accuracy review (Tue wk 2)</li>
+  <li>30-min format review (Fri wk 2)</li>
+  <li>5-min daily Slack across shadow + tune week (~50 min)</li>
+</ul>
+
+<hr/>
+
+<h2><span class="num">08</span> Next steps</h2>
+
+<p><strong>During shadow week.</strong> Daily Slack DM to Ryan asking what missed/false-flagged. Whitecrow tunes verb list, similarity thresholds, scoring weights, and copy from the flags.</p>
+
+<p><strong>End of week 4.</strong> v19 stable, all five runs unattended. Hand off editable Notion config DBs (verb list, assignee map, scoring weights, similarity threshold) to Ryan.</p>
+
+<h4>Roadmap (post-v19)</h4>
+<ul>
+  <li><strong>Iteration 5</strong> — Operational risks layer: payroll dependencies, BAS lodgement deadlines, ATO/ASIC dates surfaced as ambient warnings in the briefing page.</li>
+  <li><strong>Iteration 6+</strong> — Manoli's full workspace; per-AM tuning.</li>
+  <li><strong>Iteration 7+</strong> — Client workspaces (clients see their own service progress in a read-only Notion view).</li>
+  <li><strong>Iteration 8+</strong> — External system sync: Xero (bookkeeping/payroll), XPM (contact sync), NowInfinity / ASIC (entity register).</li>
+  <li><strong>Iteration 9+</strong> — Warehouse + inference layer: BigQuery shadow logger captures every run event from day 1 of v19 <em>if</em> Sam wants the warehouse foundation now (additional ~10h, decision deferred).</li>
+</ul>
+
+<hr/>
+
+<h2><span class="num">—</span> Commercials</h2>
+
+<table>
+<tbody>
+<tr><th>Engineering effort</th><td>65 hours</td></tr>
+<tr><th>Duration</th><td>3 weeks core build + 1 week shadow/cutover/tune (~4 weeks elapsed)</td></tr>
+<tr><th>Ryan's effort</th><td>~3 hours total</td></tr>
+<tr><th>Stack costs</th><td>Asana &amp; Notion API usage well within free-tier limits. Claude API ~$10–15/month at this volume. No infrastructure spend.</td></tr>
+<tr><th>Pricing</th><td><em>[to be filled]</em></td></tr>
+</tbody>
+</table>
+
+<hr/>
+
+<h2><span class="num">—</span> What this is not</h2>
+
+<p>To set expectations explicitly:</p>
+
+<ul>
+  <li><strong>Not a two-way sync.</strong> Asana ↔ Notion bidirectional sync is deferred. The reconciler is one-way (Notion → Asana) and gated on human approval.</li>
+  <li><strong>Not a data warehouse.</strong> No BigQuery, no Postgres, no separate analytics layer. State lives in Notion. The warehouse is a future iteration.</li>
+  <li><strong>Not an AI inference layer.</strong> Claude is used tactically for ranking and risk-line generation, not as a general query interface over Nine Advisory data.</li>
+  <li><strong>Not a CRM replacement.</strong> The Interaction Log is read-only here; commitments are read-only here. They feed the briefing but aren't restructured.</li>
+</ul>
+
+<p>These are deliberate boundaries. Each is a real future iteration with its own scope. v19 is the foundation that makes all of them coherent.</p>
+
+<div class="footer">
+Whitecrow · Scope v19 · 29 April 2026 · Three Layers of Focus
+</div>
+
+</main>
+</body>
+</html>

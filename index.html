@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Three Layers of Focus · Scope · Whitecrow × Nine Advisory</title>
+<title>Today's Focus, made whole · Scope v19 · Whitecrow × Nine Advisory</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -202,6 +202,14 @@
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px; color: var(--ink-3);
     line-height: 1.6;
+  }
+
+  .section-divider {
+    border-top: 1px dashed var(--rule);
+    margin: 18px 0 14px;
+    padding-top: 12px;
+    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--ink-3); font-weight: 600;
   }
 
   .pipeline {
@@ -550,22 +558,22 @@
     <span class="gbar"></span>
     <span>Whitecrow × Nine Advisory</span>
     <span style="opacity:0.4;">·</span>
-    <span>Three Layers of Focus · Scope v19 · 29 Apr 2026</span>
+    <span>Today's Focus, made whole · Scope v19 · 29 Apr 2026</span>
   </div>
 
-  <h1>Three Layers of <span class="accent">Focus.</span></h1>
+  <h1>Today's Focus, made <span class="accent">whole.</span></h1>
 
   <ul class="prose" style="font-size:17px; max-width:720px; margin-bottom:28px;">
-    <li><strong>What:</strong> Reconciler · AM/PM Wrap-Up · Today's Focus — three layers stacked on Ryan and Manoli's Notion workspace.</li>
-    <li><strong>When:</strong> 06:00 reconciler · 08:00 + 16:00 Today's Focus · 09:00 AM Wrap-Up · 17:00 PM Wrap-Up. AEST.</li>
-    <li><strong>Shows:</strong> verified service tasks · the AM's full plate · the 3–5 things that matter today.</li>
-    <li><strong>Reads:</strong> Notion (Client Register · Services · Service Templates · Interaction Log · Commitments) · Asana (10 client projects) · email triage output.</li>
-    <li><strong>This doc:</strong> the gap below Today's Focus · the layers that fix it · what's needed to ship.</li>
+    <li><strong>What:</strong> Reconciler underneath · 🎯 Today's Focus on top — one daily briefing block on Ryan's Notion workspace.</li>
+    <li><strong>When:</strong> 06:00 reconciler · briefing refreshed 08:00 + 16:00 AEST.</li>
+    <li><strong>Shows:</strong> the 3–5 things that matter today · the full plate behind them · what slipped, what landed, what's cleared.</li>
+    <li><strong>Reads:</strong> Notion (Client Register · Services · Service Templates · Interaction Log) · Asana (10 client projects) · email triage output.</li>
+    <li><strong>Scope:</strong> Ryan's workspace only this iteration. Manoli + meeting-derived commitments come later.</li>
   </ul>
 
   <div class="pills">
     <span class="pill green">Ships week 3</span>
-    <span class="pill blue">~65 hours engineering</span>
+    <span class="pill blue">~55 hours engineering</span>
     <span class="pill gold">No new infrastructure</span>
   </div>
 
@@ -589,22 +597,22 @@
 
     <ul class="prose">
       <li>This means: <strong>whether the right tasks even exist in Asana cannot be verified from inside Asana.</strong> It can only be verified by reading the Notion Service Templates milestone chains and comparing against what's present per client project.</li>
-      <li>No system does this today. Tasks go missing silently. Today's Focus has no way to know.</li>
-      <li><strong>Implication.</strong> Today's Focus needs a layer beneath it that guarantees the comparison happens daily. That layer is the Reconciler.</li>
+      <li>No system does this today. Tasks go missing silently. Today's Focus has no way to know — it surfaces a 3–5 priority list from a task graph that may already be incomplete.</li>
+      <li><strong>Implication.</strong> Today's Focus needs a foundation underneath it. v19 adds that foundation (the Reconciler) and folds the previously-separate AM/PM wrap-up content into the Today's Focus block itself.</li>
     </ul>
   </section>
 
-  <!-- ============== SECTION 2 — THREE LAYERS ============== -->
+  <!-- ============== SECTION 2 — TWO LAYERS ============== -->
   <section>
     <div class="section-eyebrow">
       <span class="gbar"></span>
-      <span class="eyebrow">02 · Three layers</span>
+      <span class="eyebrow">02 · Two layers</span>
     </div>
-    <h2>Verify the data · organise the day · surface the priorities.</h2>
+    <h2>Verify the data · surface what matters today.</h2>
 
     <ul class="prose">
-      <li>A stack of trust. Each layer is independent and runs on its own schedule.</li>
-      <li>If one fails, the others are unaffected.</li>
+      <li>Two layers. The reconciler runs first; Today's Focus runs on top of the verified state.</li>
+      <li>If the reconciler fails, Today's Focus still runs — it just operates on yesterday's state.</li>
     </ul>
 
     <h3>Layer 1 · Reconciler — 06:00 AEST</h3>
@@ -616,17 +624,12 @@
       <li><strong>Hybrid matching.</strong> New tasks are stamped with a hidden <span class="mono">Milestone Template ID</span> Asana custom field. Future runs match by ID — deterministic, immune to renames. Legacy tasks fall back to fuzzy name match (similarity ≥ 0.85). Matches below 0.92 are flagged as low-confidence.</li>
     </ul>
 
-    <h3>Layer 2 · AM/PM Wrap-Up — 09:00 / 17:00 AEST, per AM</h3>
+    <h3>Layer 2 · Today's Focus, made whole — 08:00 / 16:00 AEST</h3>
     <ul class="prose">
-      <li><strong>AM (09:00).</strong> Pull every incomplete task assigned to the AM across all 10 projects, plus open Commitments. Score each by urgency, size, service criticality, sensitivity, slippage. Render top 10 to the AM's Daily Briefing page with risk lines and italic relationship context.</li>
-      <li><strong>PM (17:00).</strong> Replace the AM block with two buckets — <strong>🔴 Slipped from this morning</strong> (items on AM Wrap-Up not done) and <strong>⚠️ New today, still open</strong> (items that arrived after 09:00).</li>
-      <li>Same atomic marker-block write pattern as v18.</li>
-    </ul>
-
-    <h3>Layer 3 · Today's Focus — 08:00 / 16:00 AEST</h3>
-    <ul class="prose">
-      <li><strong>Unchanged from Scope v18.</strong> Pulls ~45 candidates · 4 deterministic rules · LLM ranks · 3–5 lines on Ryan's AM Workspace page.</li>
-      <li>The Reconciler runs <strong>before</strong> it, so Today's Focus operates on a verified task graph.</li>
+      <li>Single block on Ryan's <strong>existing AM Workspace page</strong> (the v18 marker block, expanded). No new pages.</li>
+      <li><strong>Morning (08:00).</strong> 🎯 the 3–5 picks · 📋 background queue (next 10 by priority score) · ✅ cleared yesterday.</li>
+      <li><strong>Afternoon (16:00).</strong> Replaces the morning block. 🔴 slipped from this morning's picks · ⚠️ new today, still open · ✅ cleared today.</li>
+      <li>Same atomic marker-block write pattern as v18. Same Notion page. The block just contains more — the wrap-up content folded in.</li>
     </ul>
   </section>
 
@@ -639,7 +642,7 @@
     <h2>What Ryan sees each day.</h2>
 
     <ul class="prose">
-      <li>Three new surfaces: <strong>Pending Reconciliation</strong> rows · <strong>AM Wrap-Up</strong> block · <strong>PM Wrap-Up</strong> block.</li>
+      <li>Two new surfaces: <strong>Pending Reconciliation</strong> rows · the <strong>expanded Today's Focus block</strong> (morning state + afternoon state).</li>
       <li>Each example below is what the system produces from real Nine Advisory data.</li>
     </ul>
 
@@ -670,43 +673,73 @@
       </div>
     </div>
 
-    <h3 style="margin-top:32px;">AM Wrap-Up · Ryan's Daily Briefing page · 09:00</h3>
+    <h3 style="margin-top:32px;">Today's Focus · Morning · 08:00 on Ryan's workspace</h3>
     <div class="mockup-frame">
       <div class="mockup-chrome">
         <span class="dot" style="background:#FF6058;"></span>
         <span class="dot" style="background:#FFBD2D;"></span>
         <span class="dot" style="background:#28C940;"></span>
-        <span class="chrome-title">notion.so / Ryan — Daily Briefing</span>
+        <span class="chrome-title">notion.so / Ryan's Workspace</span>
       </div>
       <div class="mockup">
         <div class="focus-head">
-          <div class="focus-title">🌅 AM Wrap-Up</div>
-          <div class="focus-meta">Tuesday 28 April · 09:00 AEST</div>
+          <div class="focus-title">🎯 Today's Focus</div>
+          <div class="focus-meta">refreshed 08:03 AEST · next 16:00</div>
         </div>
         <div class="urgent">
-          ⚠️ <strong>3 items overdue — clear these first.</strong>
+          ⚠️ <strong>Amber chased 3× on Kering. Lodge BAS Pandamich 2 days overdue.</strong>
         </div>
+
+        <div class="section-divider">🎯 Today · the 3–5 picks</div>
         <ul class="focus-list todo">
           <li>
             <span class="check"></span>
             <span class="pri">🔴</span>
             <div>
-              <div class="item-title">Lodge BAS — Pandamich Q1</div>
-              <div class="item-context">5 subtasks · overdue 2 days. ATO penalty + client escalation if not lodged today.</div>
-              <div class="item-rel">Last contact w/ Ana 4 days ago · sentiment: At Risk.</div>
-              <div class="item-meta">priority 9.4 · service criticality high</div>
+              <div class="item-title">📧 EMPAC / Kering — reply to Amber on Ben Masson deduction</div>
+              <div class="item-context">Third chase today. She needs the deduction split before month-end close. <span class="src">→ email · escalation</span></div>
+              <div class="item-rel">Amber's tone shifted yesterday — quick reply recovers the relationship.</div>
             </div>
           </li>
           <li>
             <span class="check"></span>
             <span class="pri">🔴</span>
             <div>
-              <div class="item-title">EMPAC payroll review</div>
-              <div class="item-context">3 subtasks · overdue 1 day. Vaishnavi can't run Friday payroll without sign-off.</div>
-              <div class="item-rel">Last contact 2 days ago · sentiment: Neutral.</div>
-              <div class="item-meta">priority 8.1 · service criticality high</div>
+              <div class="item-title">📋 Lodge BAS — Pandamich Q1</div>
+              <div class="item-context">5 subtasks · overdue 2 days. ATO penalty + client escalation if not lodged today. <span class="src">→ asana</span></div>
+              <div class="item-rel">Last contact w/ Ana 4 days ago · sentiment: At Risk.</div>
             </div>
           </li>
+          <li>
+            <span class="check"></span>
+            <span class="pri">🔴</span>
+            <div>
+              <div class="item-title">📋 Clear 5 review subtasks across 4 clients</div>
+              <div class="item-context">Those Architects ×3 · Hudson · Black Market. All "Ryan to review" subtasks. Anvita owns 3 of them. <span class="src">→ asana · 5 subtasks</span></div>
+              <div class="item-rel">Anvita flagged she's waiting — last Slack Tuesday.</div>
+            </div>
+          </li>
+          <li>
+            <span class="check"></span>
+            <span class="pri">🟠</span>
+            <div>
+              <div class="item-title">📋 GRINHAM tax plan — 3 days overdue</div>
+              <div class="item-context">H&amp;E project · "Tax plan and upcoming cashflows." <span class="src">→ asana</span></div>
+              <div class="item-rel">Glenn's ATO instalment plan kicks in 28 Apr — needs to land before that conversation.</div>
+            </div>
+          </li>
+          <li>
+            <span class="check"></span>
+            <span class="pri">🟡</span>
+            <div>
+              <div class="item-title">📧 Podia — issue March BAS for signing</div>
+              <div class="item-context">Cameron approved yesterday. 5-min action, unblocks Friday's cashflow. <span class="src">→ email · ready-to-action</span></div>
+            </div>
+          </li>
+        </ul>
+
+        <div class="section-divider">📋 Background queue · 12 more on the plate</div>
+        <ul class="focus-list todo">
           <li>
             <span class="check"></span>
             <span class="pri">🟠</span>
@@ -734,37 +767,68 @@
               <div class="item-meta">priority 4.0</div>
             </div>
           </li>
+          <li>
+            <span class="check"></span>
+            <span class="pri">⚪</span>
+            <div>
+              <div class="item-title">Vaishnavi · 29 overdue on EMPAC</div>
+              <div class="item-context">Cluster — single line. Slack check-in beats a meeting.</div>
+              <div class="item-meta">priority 3.8 · cluster</div>
+            </div>
+          </li>
         </ul>
+
+        <div class="section-divider">✅ Cleared yesterday</div>
+        <ul class="focus-list todo">
+          <li class="done">
+            <span class="check done"></span>
+            <span class="pri">✓</span>
+            <div>
+              <div class="item-title">Approved EMPAC fortnightly payroll · Katie / Phil / David / Danika</div>
+              <div class="item-context">Yesterday 16:18.</div>
+            </div>
+          </li>
+          <li class="done">
+            <span class="check done"></span>
+            <span class="pri">✓</span>
+            <div>
+              <div class="item-title">Confirmed H&amp;E weekly cashflow review with Sailesh</div>
+              <div class="item-context">Yesterday 11:02.</div>
+            </div>
+          </li>
+        </ul>
+
         <div class="focus-footer">
-          ▸ Background queue (12 items, sorted by score)<br>
-          run_id <span style="color:var(--green-d);">am_2026-04-28_0900</span> · 36 candidates → 10 surfaced · sources: Asana · Commitments · Interaction Log
+          run_id <span style="color:var(--green-d);">tf_2026-04-28_0803</span> · scanned 786 + 1,022 subtasks · 5 picks + 12 background · sources: Asana · Email Triage · Interaction Log
         </div>
       </div>
     </div>
 
-    <h3 style="margin-top:32px;">PM Wrap-Up · replaces AM block at 17:00</h3>
+    <h3 style="margin-top:32px;">Today's Focus · Afternoon · 16:00 (replaces morning block)</h3>
     <div class="mockup-frame">
       <div class="mockup-chrome">
         <span class="dot" style="background:#FF6058;"></span>
         <span class="dot" style="background:#FFBD2D;"></span>
         <span class="dot" style="background:#28C940;"></span>
-        <span class="chrome-title">notion.so / Ryan — Daily Briefing</span>
+        <span class="chrome-title">notion.so / Ryan's Workspace</span>
       </div>
       <div class="mockup">
         <div class="focus-head">
-          <div class="focus-title">🌙 PM Wrap-Up</div>
-          <div class="focus-meta">Tuesday 28 April · 17:00 AEST</div>
+          <div class="focus-title">🎯 Today's Focus</div>
+          <div class="focus-meta">refreshed 16:00 AEST · next 08:00 tomorrow</div>
         </div>
         <div class="urgent">
-          🔴 <strong>Slipped from this morning (2)</strong>
+          🔴 <strong>2 of this morning's 5 still open. Lodge BAS now 3 days overdue.</strong>
         </div>
+
+        <div class="section-divider">🔴 Slipped from this morning</div>
         <ul class="focus-list todo">
           <li>
             <span class="check"></span>
             <span class="pri">🔴</span>
             <div>
-              <div class="item-title">Lodge BAS — Pandamich Q1</div>
-              <div class="item-context">Still overdue. Now 3 days overdue. Carried into tomorrow's AM at top priority.</div>
+              <div class="item-title">📋 Lodge BAS — Pandamich Q1</div>
+              <div class="item-context">Still overdue. Now 3 days overdue. Carried into tomorrow's 08:00 at top priority.</div>
               <div class="item-rel">Carry-over priority 11.4.</div>
             </div>
           </li>
@@ -772,51 +836,72 @@
             <span class="check"></span>
             <span class="pri">🔴</span>
             <div>
-              <div class="item-title">Hudson management report</div>
-              <div class="item-context">Not started. Due today.</div>
-              <div class="item-rel">Slack Ana now or Sam will see it on Thursday review.</div>
+              <div class="item-title">📋 GRINHAM tax plan</div>
+              <div class="item-context">Not started. Glenn's instalment plan kicks in tomorrow.</div>
+              <div class="item-rel">Slack Glenn now or it's an awkward conversation in the morning.</div>
             </div>
           </li>
         </ul>
-        <div class="warn" style="margin-top:18px;">
-          ⚠️ <strong>New today, still open (3)</strong>
-        </div>
+
+        <div class="section-divider">⚠️ New today, still open</div>
         <ul class="focus-list todo">
           <li>
             <span class="check"></span>
             <span class="pri">🟠</span>
             <div>
-              <div class="item-title">GRINHAM tax review request</div>
-              <div class="item-context">Came in via email at 11:14. Due Friday. 2 subtasks. Priority: high.</div>
+              <div class="item-title">📧 GRINHAM tax review request (came in 11:14)</div>
+              <div class="item-context">Due Friday. 2 subtasks. Priority: high.</div>
             </div>
           </li>
           <li>
             <span class="check"></span>
             <span class="pri">🟡</span>
             <div>
-              <div class="item-title">Podia BAS query — confirm methodology</div>
+              <div class="item-title">📧 Podia BAS query — confirm methodology</div>
               <div class="item-context">Sailesh asked at 14:30. No deadline. Priority: medium.</div>
             </div>
           </li>
-          <li>
-            <span class="check"></span>
-            <span class="pri">🟡</span>
+        </ul>
+
+        <div class="section-divider">✅ Cleared today · 3 of 5 morning picks</div>
+        <ul class="focus-list todo">
+          <li class="done">
+            <span class="check done"></span>
+            <span class="pri">✓</span>
             <div>
-              <div class="item-title">Tussle ad-hoc bookkeeping question</div>
+              <div class="item-title">📧 EMPAC / Kering reply to Amber</div>
+              <div class="item-context">Sent 09:47.</div>
+            </div>
+          </li>
+          <li class="done">
+            <span class="check done"></span>
+            <span class="pri">✓</span>
+            <div>
+              <div class="item-title">📋 Cleared 5 review subtasks</div>
+              <div class="item-context">Done 10:30–11:50.</div>
+            </div>
+          </li>
+          <li class="done">
+            <span class="check done"></span>
+            <span class="pri">✓</span>
+            <div>
+              <div class="item-title">📧 Podia BAS issued for signing</div>
+              <div class="item-context">Sent 13:15.</div>
             </div>
           </li>
         </ul>
+
         <div class="focus-footer">
-          ✅ Cleared today: 6 of 10 morning items · run_id <span style="color:var(--green-d);">pm_2026-04-28_1700</span>
+          run_id <span style="color:var(--green-d);">tf_2026-04-28_1600</span> · 5 morning picks → 3 cleared, 2 slipped · 2 new today still open
         </div>
       </div>
     </div>
 
     <ul class="prose" style="margin-top:24px;">
+      <li><strong>One marker block, two states.</strong> Morning → Afternoon → tomorrow's morning. Same atomic write pattern as v18.</li>
       <li><strong>Risk lines</strong> ("→ ATO penalty + client escalation") are LLM-generated from the parent service template + Interaction Log.</li>
       <li><strong>Italic relationship context</strong> pulls from the Interaction Log — last contact, sentiment, decision flags.</li>
-      <li><strong>Priority score</strong> shown for transparency. Tunable via a Notion config DB Ryan owns.</li>
-      <li><strong>One block per page</strong> — AM in the morning, atomically replaced by PM at 17:00.</li>
+      <li><strong>Background queue</strong> can be folded into a Notion toggle if Ryan prefers — config DB controls it.</li>
     </ul>
   </section>
 
@@ -826,7 +911,7 @@
       <span class="gbar"></span>
       <span class="eyebrow">04 · Pipeline</span>
     </div>
-    <h2>Five daily runs. Each independent.</h2>
+    <h2>Three daily runs. Each independent.</h2>
 
     <div class="clock">
       <h4>Daily timeline</h4>
@@ -836,19 +921,11 @@
       </div>
       <div class="clock-row">
         <span class="t">08:00</span>
-        <span class="what"><strong>Today's Focus AM</strong> · Ryan's AM Workspace block (v18, unchanged)</span>
-      </div>
-      <div class="clock-row">
-        <span class="t">09:00</span>
-        <span class="what"><strong>AM Wrap-Up × 2 AMs</strong> · Daily Briefing pages, AM block</span>
+        <span class="what"><strong>Today's Focus · Morning</strong> · top picks + background queue + yesterday's wins. Atomic marker-block write to Ryan's workspace.</span>
       </div>
       <div class="clock-row">
         <span class="t">16:00</span>
-        <span class="what"><strong>Today's Focus PM</strong> · Ryan's AM Workspace block (v18, unchanged)</span>
-      </div>
-      <div class="clock-row">
-        <span class="t">17:00</span>
-        <span class="what"><strong>PM Wrap-Up × 2 AMs</strong> · Daily Briefing pages, PM block (replaces AM)</span>
+        <span class="what"><strong>Today's Focus · Afternoon</strong> · slipped + new today + cleared count. Replaces the morning block.</span>
       </div>
     </div>
 
@@ -881,60 +958,52 @@
       <div class="pipe-row">
         <div class="pipe-num">4</div>
         <div>
-          <div class="pipe-title">Apply approved</div>
-          <div class="pipe-body">Create Asana tasks for ticked Pending Reconciliation rows · stamp Milestone Template ID · mark Notion row Created.</div>
-        </div>
-        <div class="pipe-stat">~5–15 calls<br><span class="arrow">asana + notion</span></div>
-      </div>
-      <div class="pipe-row">
-        <div class="pipe-num">5</div>
-        <div>
-          <div class="pipe-title">Write missing + log</div>
-          <div class="pipe-body">New Pending Reconciliation rows for newly-detected gaps. One Reconciliation Log row summarising the run.</div>
+          <div class="pipe-title">Apply approved · write missing · log</div>
+          <div class="pipe-body">Create Asana tasks for ticked rows (stamp template ID, mark Notion Created) · write new Pending Reconciliation rows for newly-detected gaps · one Reconciliation Log row.</div>
         </div>
         <div class="pipe-stat">~45 total<br><span class="arrow">~40s runtime</span></div>
       </div>
     </div>
 
-    <h3 style="margin-top:32px;">AM/PM Wrap-Up pipeline</h3>
+    <h3 style="margin-top:32px;">Today's Focus pipeline</h3>
     <div class="pipeline">
       <div class="pipe-row">
         <div class="pipe-num">1</div>
         <div>
-          <div class="pipe-title">Read Notion + Asana</div>
-          <div class="pipe-body">Yesterday's AM Briefing State (slipped detection) · Client Register · Commitments · Interaction Log · Asana tasks assigned to AM.</div>
+          <div class="pipe-title">Read state + sources</div>
+          <div class="pipe-body">Briefing State (this morning's picks, for slipped detection) · Asana (Ryan's tasks across 10 projects) · Email Triage (today's items) · Interaction Log · Client Register.</div>
         </div>
-        <div class="pipe-stat">~17 calls<br><span class="arrow">read</span></div>
+        <div class="pipe-stat">~25 calls<br><span class="arrow">read</span></div>
       </div>
       <div class="pipe-row">
         <div class="pipe-num">2</div>
         <div>
-          <div class="pipe-title">Score (in-process)</div>
-          <div class="pipe-body">Priority formula: urgency × 4 + size + criticality × 2 + sensitivity + slipped × 1.5. Top 10 by score.</div>
+          <div class="pipe-title">Apply rules 1–4 · score · diff</div>
+          <div class="pipe-body">v18 four-rule filter pipeline (name pattern, SOP drop, &gt;90d drop, cluster rollup). Priority scoring (urgency × 4 + size + criticality × 2 + sensitivity + slipped × 1.5). Afternoon: diff against this morning's Briefing State.</div>
         </div>
         <div class="pipe-stat">deterministic<br><span class="arrow">in-memory</span></div>
       </div>
       <div class="pipe-row llm">
         <div class="pipe-num">3</div>
         <div>
-          <div class="pipe-title">LLM enriches surfaced items</div>
-          <div class="pipe-body">One Claude Sonnet 4.6 call · per-item "what's at risk" risk line + italic context line from Interaction Log. ~8K input + ~600 output tokens.</div>
+          <div class="pipe-title">LLM ranks + enriches</div>
+          <div class="pipe-body">One Claude Sonnet 4.6 call · picks 3–5 from ~45 candidates · generates per-item risk lines + italic context lines from Interaction Log. ~15K input + ~800 output tokens.</div>
         </div>
         <div class="pipe-stat" style="color:var(--green-d);">1 call<br><span class="arrow">~6s</span></div>
       </div>
       <div class="pipe-row">
         <div class="pipe-num">4</div>
         <div>
-          <div class="pipe-title">Write Notion</div>
-          <div class="pipe-body">AM Briefing State row (today's snapshot for tomorrow's diff) · atomic marker-block rewrite · Run Log row.</div>
+          <div class="pipe-title">Render + write</div>
+          <div class="pipe-body">Atomic marker-block rewrite on Ryan's AM Workspace page · Briefing State row (today's snapshot for tomorrow's diff) · Run Log row · Decision Log rows (one per candidate).</div>
         </div>
-        <div class="pipe-stat">3 calls<br><span class="arrow">~20s total</span></div>
+        <div class="pipe-stat">~50 calls<br><span class="arrow">~3m total</span></div>
       </div>
     </div>
 
     <ul class="prose" style="margin-top:14px;">
-      <li><strong>Daily total across all 5 runs:</strong> ~459 API calls + 6 LLM calls + ~7 minutes of compute.</li>
-      <li>Asana &amp; Notion within free-tier limits. Claude API ~$10–15/month at this volume.</li>
+      <li><strong>Daily total across all 3 runs:</strong> ~225 API calls + 2 LLM calls + ~7 minutes of compute.</li>
+      <li>Asana &amp; Notion within free-tier limits. Claude API ~$8/month at this volume.</li>
     </ul>
   </section>
 
@@ -976,9 +1045,9 @@
           <td><span class="tag live">Live</span><br><span style="font-size:12px;color:var(--ink-3);">Iter 0</span></td>
         </tr>
         <tr>
-          <td><strong>Commitments</strong></td>
-          <td>Read · open commitments per AM.</td>
-          <td><span class="tag live">Live</span><br><span style="font-size:12px;color:var(--ink-3);">Iter 0</span></td>
+          <td><strong>Email Triage</strong></td>
+          <td>Read · today's email triage output (already populated by Iter 1 daily run at 07:50).</td>
+          <td><span class="tag live">Live</span><br><span style="font-size:12px;color:var(--ink-3);">Iter 1</span></td>
         </tr>
         <tr>
           <td><strong>Pending Reconciliation</strong></td>
@@ -991,19 +1060,19 @@
           <td><span class="tag new">New DB</span><br><span style="font-size:12px;color:var(--ink-3);">v19 · Phase 1</span></td>
         </tr>
         <tr>
-          <td><strong>AM Briefing State</strong></td>
-          <td>Read + Write · one row per AM per day. Snapshot of morning plate for PM diff.</td>
+          <td><strong>Briefing State</strong></td>
+          <td>Read + Write · one row per day (Ryan). Snapshot of morning picks + background queue, used for the 16:00 slipped/cleared diff.</td>
           <td><span class="tag new">New DB</span><br><span style="font-size:12px;color:var(--ink-3);">v19 · Phase 1</span></td>
         </tr>
         <tr>
-          <td><strong>Run Log</strong> (extended)</td>
-          <td>Write · per-run summary for wrap-ups + Today's Focus.</td>
+          <td><strong>Run Log + Decision Log</strong></td>
+          <td>Write · per-run summary + one row per candidate considered. Filterable by client, date, surfaced/not.</td>
           <td><span class="tag live">Live</span><br><span style="font-size:12px;color:var(--ink-3);">v18 · extended</span></td>
         </tr>
         <tr>
-          <td><strong>Daily Briefing pages</strong></td>
-          <td>Write · one per AM (Ryan + Manoli). AM block + PM block (atomic rewrite).</td>
-          <td><span class="tag new">New page</span><br><span style="font-size:12px;color:var(--ink-3);">v19 · Phase 1</span></td>
+          <td><strong>Ryan's AM Workspace page</strong></td>
+          <td>Write · single marker-block "🎯 Today's Focus." Atomically rewritten morning + afternoon.</td>
+          <td><span class="tag live">Live</span><br><span style="font-size:12px;color:var(--ink-3);">v18 · existing page</span></td>
         </tr>
         <tr>
           <td><strong>Asana — 10 client projects</strong></td>
@@ -1015,6 +1084,10 @@
 
     <div class="integration-note" style="margin-top:18px;">
       <strong>One-time Asana setup.</strong> Add custom field <span class="mono">Milestone Template ID</span> (text) to each of the 10 client projects. ~5 minutes total. Done in Phase 1.
+    </div>
+
+    <div class="integration-note" style="margin-top:12px;">
+      <strong>Deferred.</strong> Commitments DB is intentionally <em>not</em> read in this iteration — meeting capture (the upstream source) ships in a later iteration. When commitments are populated by meetings, they slot into Today's Focus as another input source with no architectural change.
     </div>
   </section>
 
@@ -1028,7 +1101,8 @@
 
     <ul class="prose">
       <li>Same runtime as v18 — Cowork. No new infrastructure.</li>
-      <li>Two new playbooks beside Today's Focus: the Reconciler and the Wrap-Up engine.</li>
+      <li>One new playbook beside Today's Focus: the Reconciler.</li>
+      <li>Today's Focus playbook is extended (background queue + slipped/cleared logic) — same marker block, richer content.</li>
       <li>Walkthrough below is the <strong>06:00 reconciler run</strong> on Tuesday 28 April · synthetic data · total elapsed ~40 seconds.</li>
     </ul>
 
@@ -1053,7 +1127,7 @@
           <td><strong>Notion</strong></td>
           <td><span class="mono">notion-mcp</span></td>
           <td>Same integration token as v18</td>
-          <td>Reads Service Templates milestone chains · writes Pending Reconciliation rows · maintains Reconciliation Log + AM Briefing State · atomic marker-block rewrites on Daily Briefing pages.</td>
+          <td>Reads Service Templates milestone chains · writes Pending Reconciliation rows · maintains Reconciliation Log + Briefing State · atomic marker-block rewrites on Ryan's AM Workspace page.</td>
         </tr>
       </tbody>
     </table>
@@ -1061,16 +1135,16 @@
     <h3>B · Notion write pattern</h3>
     <ul class="prose">
       <li>Same atomic marker-block pattern as v18.</li>
-      <li>Each AM gets a new <strong>Daily Briefing page</strong> in the Nine Advisory HQ teamspace. One page per AM, one marker block per page.</li>
+      <li><strong>One page only:</strong> Ryan's existing AM Workspace page. The "🎯 Today's Focus" marker block is rewritten morning + afternoon. v19 expands what goes inside the block — it does not change which page or which block.</li>
       <li>Reconciler writes to <strong>Pending Reconciliation DB</strong> (rows) — not to any page block.</li>
     </ul>
 
     <div class="integration-note">
       <ul class="prose" style="margin:0;">
-        <li><strong>Daily Briefing block:</strong> heading "🌅 AM Wrap-Up" / "🌙 PM Wrap-Up" on each AM's Daily Briefing page. Found by ID. <span class="mono">PATCH /v1/blocks/{marker_id}/children</span> atomically replaces children.</li>
+        <li><strong>Today's Focus block:</strong> heading "🎯 Today's Focus" on Ryan's workspace page. Found by ID. <span class="mono">PATCH /v1/blocks/{marker_id}/children</span> atomically replaces children.</li>
         <li><strong>Pending Reconciliation:</strong> standard DB row writes via <span class="mono">POST /v1/pages</span> with database parent.</li>
         <li><strong>Crash-safe:</strong> commits fully or not at all. No half-rendered state.</li>
-        <li><strong>Failure mode:</strong> previous render persists until next successful run. Briefing page header shows "⚠️ Last run failed at HH:MM."</li>
+        <li><strong>Failure mode:</strong> previous render persists until next successful run. Block header shows "⚠️ Last run failed at HH:MM."</li>
       </ul>
     </div>
 
@@ -1130,7 +1204,7 @@
         </div>
       </div>
 
-      <div class="step phase-marker"><span class="phase-label">Apply phase · ~5 seconds</span></div>
+      <div class="step phase-marker"><span class="phase-label">Apply + write phase · ~10 seconds</span></div>
 
       <div class="step">
         <span class="ts">06:00:32</span>
@@ -1141,32 +1215,19 @@
             <li><span class="api">POST /tasks</span> on Asana — create the milestone task with assignee, due date, parent section.</li>
             <li><span class="api">PATCH /tasks/{gid}/custom_fields/{milestone_template_id_gid}</span> — stamp the template ID.</li>
             <li><span class="api">PATCH</span> Notion row → set Created = ✓.</li>
-            <li><strong>4 Asana writes + 4 Notion updates.</strong></li>
           </ul>
         </div>
       </div>
-
-      <div class="step phase-marker"><span class="phase-label">Write phase · ~3 seconds</span></div>
 
       <div class="step">
         <span class="ts">06:00:37</span>
         <div class="body">
-          <div class="h">Write new Pending Reconciliation rows</div>
+          <div class="h">Write new Pending Reconciliation rows + log</div>
           <ul class="prose" style="margin:4px 0 0;">
             <li>3 newly-detected missing milestones become 3 new Pending Reconciliation rows.</li>
             <li>Each row carries <strong>Reasoning</strong> field showing closest match + similarity score.</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="step">
-        <span class="ts">06:00:40</span>
-        <div class="body">
-          <div class="h">Log the run</div>
-          <ul class="prose" style="margin:4px 0 0;">
             <li>Append one summary row to <strong>Reconciliation Log DB</strong>.</li>
-            <li><span class="mono">run_id=rc_2026-04-28_0600, scanned_clients=9, expected=247, present=232, missing=12, approvals_applied=4, asana_creates=4, low_confidence=5, runtime=40s, status=success</span>.</li>
-            <li>Filterable views: "last 7 days, status ≠ ok" · "this week, low-confidence matches".</li>
+            <li><span class="mono">run_id=rc_2026-04-28_0600, scanned=9, expected=247, present=232, missing=12, applied=4, asana_creates=4, low_confidence=5, runtime=40s, status=success</span>.</li>
           </ul>
         </div>
       </div>
@@ -1185,7 +1246,7 @@
       <tbody>
         <tr>
           <td><strong>Asana API down</strong></td>
-          <td>Run aborts cleanly. Briefing block shows <span class="mono">⚠️ Asana unavailable, retry at HH:30</span>.</td>
+          <td>Run aborts cleanly. Today's Focus block shows <span class="mono">⚠️ Asana unavailable, retry at HH:30</span>.</td>
         </tr>
         <tr>
           <td><strong>Notion API down</strong></td>
@@ -1193,7 +1254,7 @@
         </tr>
         <tr>
           <td><strong>Claude down</strong></td>
-          <td>Wrap-up renders without LLM context lines. Header notes "↳ context unavailable." Reconciler unaffected (deterministic).</td>
+          <td>Today's Focus renders the deterministic top-priority list without LLM-generated risk lines. Header notes "↳ context unavailable." Reconciler unaffected.</td>
         </tr>
         <tr>
           <td><strong>Mid-run crash</strong></td>
@@ -1201,7 +1262,7 @@
         </tr>
         <tr>
           <td><strong>Matcher false positive (low-confidence)</strong></td>
-          <td>Surfaced on briefing page header as warning + audited weekly. Tightens similarity threshold from flags.</td>
+          <td>Surfaced on Today's Focus block header as warning + audited weekly. Tightens similarity threshold from flags.</td>
         </tr>
         <tr>
           <td><strong>Matcher false negative (duplicate detect)</strong></td>
@@ -1213,8 +1274,8 @@
     <h3 style="margin-top:28px;">E · Auditability</h3>
     <ul class="prose">
       <li><strong>Reconciliation Log</strong> — per reconciler run · clients scanned, milestones expected/present/missing, approvals applied, low-confidence count, runtime, status.</li>
-      <li><strong>Run Log</strong> (extended from v18) — per wrap-up + Today's Focus run · source counts, surfaced count, runtime, errors.</li>
-      <li><strong>Decision Log</strong> (from v18, extended) — covers wrap-up scoring decisions: which items scored what, why each was surfaced or shelved.</li>
+      <li><strong>Run Log</strong> (extended from v18) — per Today's Focus run · source counts, surfaced count, runtime, errors.</li>
+      <li><strong>Decision Log</strong> (from v18, extended) — one row per candidate · LLM reasoning · which rule dropped it or how it was ranked.</li>
       <li>All Ryan-visible. Filterable. 90-day rolling retention.</li>
     </ul>
   </section>
@@ -1225,7 +1286,7 @@
       <span class="gbar"></span>
       <span class="eyebrow">07 · Build plan</span>
     </div>
-    <h2>Three weeks. Five phases.</h2>
+    <h2>Three weeks. Four phases.</h2>
 
     <ul class="prose">
       <li>Whitecrow does the engineering.</li>
@@ -1236,21 +1297,21 @@
     <div class="phases">
 
       <div class="phase">
-        <div class="phase-tag">Phase 1 · Groundwork<span class="days">Mon–Tue · wk 1</span></div>
+        <div class="phase-tag">Phase 1 · Groundwork<span class="days">Mon · wk 1</span></div>
         <div class="phase-body">
           <p><span class="lbl">Lead</span>Whitecrow + 30-min mapping call with Ryan</p>
           <ul class="prose" style="margin:6px 0 0;">
-            <li><span class="lbl">Build</span>New Notion DBs: <strong>Pending Reconciliation</strong>, <strong>Reconciliation Log</strong>, <strong>AM Briefing State</strong>. Daily Briefing pages stubbed (Ryan + Manoli).</li>
+            <li><span class="lbl">Build</span>New Notion DBs: <strong>Pending Reconciliation</strong>, <strong>Reconciliation Log</strong>, <strong>Briefing State</strong>.</li>
             <li>Add <strong>Milestone Template ID</strong> custom field to all 10 Asana client projects.</li>
             <li>Audit Service Templates for parseable milestone chains. Flag any incomplete templates for Ryan to fill.</li>
             <li>Asana MCP wired into Cowork.</li>
           </ul>
-          <p class="ships" style="margin-top:8px;"><span class="lbl">Ships Tue</span>All DBs in place · custom fields stamped · cold Asana JSON pull validated in dev</p>
+          <p class="ships" style="margin-top:8px;"><span class="lbl">Ships Mon</span>All DBs in place · custom fields stamped · cold Asana JSON pull validated in dev</p>
         </div>
       </div>
 
       <div class="phase checkpoint">
-        <div class="phase-tag">Phase 2 · Reconciler<span class="days">Wed wk 1 – Tue wk 2</span></div>
+        <div class="phase-tag">Phase 2 · Reconciler<span class="days">Tue wk 1 – Mon wk 2</span></div>
         <div class="phase-body">
           <p><span class="lbl">Lead</span>Whitecrow</p>
           <ul class="prose" style="margin:6px 0 0;">
@@ -1260,49 +1321,38 @@
             <li>Sandbox testing against a designated Asana sandbox project.</li>
             <li>Reconciliation Log structured output.</li>
           </ul>
-          <p class="ships" style="margin-top:8px;"><span class="lbl">Ships Mon AM</span>Sandbox runs producing valid Pending Reconciliation rows from real Notion + Asana data</p>
-          <p class="checkpoint-line"><strong>⚑ Go / no-go · Tue 5pm wk 2</strong> · Floyd + Ryan review matcher accuracy on real client data. Tune similarity threshold and Service Template completeness here, not later.</p>
+          <p class="ships" style="margin-top:8px;"><span class="lbl">Ships Mon AM wk 2</span>Sandbox runs producing valid Pending Reconciliation rows from real Notion + Asana data</p>
+          <p class="checkpoint-line"><strong>⚑ Go / no-go · Mon 5pm wk 2</strong> · Floyd + Ryan review matcher accuracy on real client data. Tune similarity threshold and Service Template completeness here, not later.</p>
         </div>
       </div>
 
       <div class="phase">
-        <div class="phase-tag">Phase 3 · AM/PM Wrap-Up<span class="days">Wed–Thu · wk 2</span></div>
+        <div class="phase-tag">Phase 3 · Today's Focus engine<span class="days">Tue–Fri · wk 2</span></div>
         <div class="phase-body">
           <p><span class="lbl">Lead</span>Whitecrow</p>
           <ul class="prose" style="margin:6px 0 0;">
-            <li><span class="lbl">Build</span>Priority scoring formula (urgency × 4 + size + criticality × 2 + sensitivity + slipped × 1.5).</li>
-            <li>AM Briefing State snapshotting.</li>
-            <li>PM diff + two-bucket logic.</li>
-            <li>One LLM call per wrap-up — risk lines + italic context.</li>
-            <li>Render to sandbox Daily Briefing page.</li>
-          </ul>
-          <p class="ships" style="margin-top:8px;"><span class="lbl">Ships Thu</span>Sandbox renders for Ryan + Manoli · format reviewed by Floyd</p>
-        </div>
-      </div>
-
-      <div class="phase">
-        <div class="phase-tag">Phase 4 · Today's Focus<span class="days">Fri wk 2 – Mon wk 3</span></div>
-        <div class="phase-body">
-          <p><span class="lbl">Lead</span>Whitecrow</p>
-          <ul class="prose" style="margin:6px 0 0;">
-            <li><span class="lbl">Build</span>Wire into existing Email Triage + Commitments DBs (live since Iter 1).</li>
-            <li>Implement four-rule filter pipeline + LLM ranker + marker-block renderer per v18 design.</li>
+            <li><span class="lbl">Build</span>v18 four-rule filter pipeline (name pattern, SOP drop, &gt;90d drop, cluster rollup).</li>
+            <li>Priority scoring formula (urgency × 4 + size + criticality × 2 + sensitivity + slipped × 1.5) for the background queue.</li>
+            <li>Briefing State snapshotting for the 16:00 slipped/cleared diff.</li>
+            <li>One Claude call · ranks 3–5 picks · generates risk lines + italic context from Interaction Log.</li>
+            <li>Marker-block renderer · morning state + afternoon state.</li>
+            <li>Wire to Email Triage DB (already populated by Iter 1).</li>
             <li>Output to sandbox page first, then Ryan's live AM Workspace page after Floyd sign-off.</li>
           </ul>
-          <p class="ships" style="margin-top:8px;"><span class="lbl">Ships Mon</span>Today's Focus running end-to-end against real data, sandbox-rendered</p>
+          <p class="ships" style="margin-top:8px;"><span class="lbl">Ships Fri wk 2</span>Today's Focus running end-to-end against real data, both morning + afternoon states sandbox-rendered</p>
         </div>
       </div>
 
       <div class="phase">
-        <div class="phase-tag">Phase 5 · Shadow + Cutover + Tune<span class="days">Tue–Fri · wk 3</span></div>
+        <div class="phase-tag">Phase 4 · Shadow + Cutover + Tune<span class="days">Mon–Fri · wk 3</span></div>
         <div class="phase-body">
           <p><span class="lbl">Lead</span>Whitecrow + Ryan opens daily</p>
           <ul class="prose" style="margin:6px 0 0;">
-            <li><span class="lbl">Tue–Wed</span><strong>Shadow.</strong> All five runs scheduled and live. Reconciler's Asana writes go through a double-gate — Ryan ticks Approve in Notion, <em>and</em> Floyd manually reviews each of the first ~10 creates before they push. Briefing pages render to real pages with a "Shadow Week" banner.</li>
-            <li><span class="lbl">Thu</span><strong>Cutover.</strong> Floyd removes the double-gate. Reconciler writes directly on approval. Banner removed.</li>
+            <li><span class="lbl">Mon–Wed</span><strong>Shadow.</strong> All three runs scheduled and live. Reconciler's Asana writes go through a double-gate — Ryan ticks Approve in Notion, <em>and</em> Floyd manually reviews each of the first ~10 creates before they push. Today's Focus block renders to Ryan's real workspace with a "Shadow Week" header.</li>
+            <li><span class="lbl">Thu</span><strong>Cutover.</strong> Floyd removes the double-gate. Reconciler writes directly on approval. Shadow header removed.</li>
             <li><span class="lbl">Thu–Fri</span><strong>Tune.</strong> Daily 5-min Slack with Ryan covering false positives, scoring tweaks, copy refinements. Whitecrow tunes from flags.</li>
           </ul>
-          <p class="ships" style="margin-top:8px;"><span class="lbl">Ships Fri</span>Unattended daily runs across all five schedules · Ryan owns format and editable Notion config DBs</p>
+          <p class="ships" style="margin-top:8px;"><span class="lbl">Ships Fri</span>Unattended daily runs across all three schedules · Ryan owns format and editable Notion config DBs (similarity threshold, scoring weights, verb list, assignee map)</p>
         </div>
       </div>
 
@@ -1312,12 +1362,12 @@
     <div class="totals">
       <div>
         <div class="label">Total engineering</div>
-        <div class="value"><strong>~65 hours</strong> over 3 weeks</div>
+        <div class="value"><strong>~55 hours</strong> over 3 weeks</div>
       </div>
     </div>
     <ul class="prose" style="margin-top:10px;">
-      <li><strong>Splits:</strong> P1 ~10h · P2 ~18h · P3 ~14h · P4 ~10h · P5 ~13h.</li>
-      <li><strong>Ryan's effort:</strong> 30-min mapping call (Mon wk 1) · 1-hour matcher accuracy review (Tue wk 2) · 30-min format review (Thu wk 2) · 5-min daily Slack across week 3 (~25 min).</li>
+      <li><strong>Splits:</strong> P1 ~8h · P2 ~18h · P3 ~18h · P4 ~11h.</li>
+      <li><strong>Ryan's effort:</strong> 30-min mapping call (Mon wk 1) · 1-hour matcher accuracy review (Mon wk 2) · 30-min format review (Fri wk 2) · 5-min daily Slack across week 3 (~25 min).</li>
     </ul>
   </section>
 
@@ -1331,25 +1381,27 @@
 
     <ul class="prose">
       <li><strong>During shadow + tune week.</strong> Daily Slack DM to Ryan asking what missed / false-flagged. Whitecrow tunes verb list, similarity thresholds, scoring weights, and copy from his flags.</li>
-      <li><strong>End of week 3.</strong> v19 stable, all five runs unattended. Hand off editable Notion config DBs to Ryan — he owns format from there.</li>
+      <li><strong>End of week 3.</strong> v19 stable, all three runs unattended. Hand off editable Notion config DBs to Ryan — he owns format from there.</li>
     </ul>
 
     <h3 style="margin-top:28px;">The iteration roadmap</h3>
 
     <ul class="prose">
-      <li><strong>Iteration 5 · Operational risks layer</strong> — payroll dependencies, BAS lodgement deadlines, ATO/ASIC dates surfaced as ambient warnings in the briefing page.</li>
-      <li><strong>Iteration 6+ · Manoli's full workspace</strong> — clone the Daily Briefing pattern · per-AM tuning of priority weights and config.</li>
-      <li><strong>Iteration 7+ · Client workspaces</strong> — clients see their own service progress in a read-only Notion view. Strict isolation. Requires the security model.</li>
-      <li><strong>Iteration 8+ · External system sync</strong> — Xero (bookkeeping/payroll) · XPM (contact sync) · NowInfinity / ASIC (entity register). Each additive — no destructive overwrite.</li>
-      <li><strong>Iteration 9+ · Warehouse + inference layer</strong> — BigQuery shadow logger captures every run event from day 1 of v19 if Sam wants the warehouse foundation now (additional ~10h, decision deferred).</li>
+      <li><strong>Iteration 5 · Manoli's workspace</strong> — clone the pattern. Same reconciler covers her clients (already a single reconciler, not per-AM). Today's Focus block on Manoli's workspace page · per-AM tuning of priority weights.</li>
+      <li><strong>Iteration 6 · Meetings → Commitments</strong> — capture meeting outputs (Zoom + manual). Populates the Commitments DB. Folds into Today's Focus as another input source — no architectural change to v19.</li>
+      <li><strong>Iteration 7 · Operational risks layer</strong> — payroll dependencies, BAS lodgement deadlines, ATO/ASIC dates surfaced as ambient warnings on the briefing block.</li>
+      <li><strong>Iteration 8 · Client workspaces</strong> — clients see their own service progress in a read-only Notion view. Strict isolation. Requires the security model.</li>
+      <li><strong>Iteration 9 · External system sync</strong> — Xero (bookkeeping/payroll) · XPM (contact sync) · NowInfinity / ASIC (entity register). Each additive — no destructive overwrite.</li>
+      <li><strong>Iteration 10 · Warehouse + inference layer</strong> — BigQuery shadow logger captures every run event from day 1 of v19 if Sam wants the warehouse foundation now (additional ~10h, decision deferred).</li>
     </ul>
 
     <h3 style="margin-top:28px;">What this is not</h3>
     <ul class="prose">
+      <li><strong>Not Manoli yet.</strong> Ryan only this iteration. Manoli is Iteration 5 — a clone with a different filter, not new engineering.</li>
+      <li><strong>Not commitments yet.</strong> Meetings → Commitments capture is its own iteration. Once it ships, commitments slot into Today's Focus as an input alongside Asana and email.</li>
       <li><strong>Not a two-way sync.</strong> Asana ↔ Notion bidirectional sync is deferred. The reconciler is one-way (Notion → Asana) and gated on human approval.</li>
       <li><strong>Not a data warehouse.</strong> No BigQuery yet. State lives in Notion.</li>
       <li><strong>Not an AI inference layer.</strong> Claude is used tactically for ranking and risk lines, not as a general query interface.</li>
-      <li><strong>Not a CRM replacement.</strong> Interaction Log and Commitments are read-only here.</li>
     </ul>
   </section>
 

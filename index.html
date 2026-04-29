@@ -564,20 +564,20 @@
   <h1>Today's Focus, made <span class="accent">whole.</span></h1>
 
   <p class="prose" style="font-size:17px; max-width:760px; margin-top:0;">
-    Two briefings a day on Ryan's Notion workspace. The <strong>morning brief</strong> shows what to focus on this week (anything due in the next 7 days), plus a 21-day on-the-radar wrap-up of what's coming after that, plus any tasks that should be in Asana but aren't — Ryan ticks one box and they get created. The <strong>afternoon brief</strong> shows what slipped, what was cleared, and what's now on the radar for tomorrow.
+    Two briefings a day on Ryan's Notion workspace. The <strong>morning brief</strong> shows what to focus on this week — only things due in the next 7 days — plus rolled-up flags for any client × service whose milestone chain has gaps in Asana. The <strong>afternoon brief</strong> shows what slipped, what's new, and what was cleared.
   </p>
 
   <ul class="prose" style="font-size:16px; max-width:760px; margin-top:14px; margin-bottom:28px;">
-    <li><strong>What Ryan does each day:</strong> opens the morning brief at 08:00 · works the focus list · scans the on-the-radar wrap-up · reviews any flagged "this isn't in Asana yet but is coming up" rows · checks the afternoon brief at 16:00 to see what slipped.</li>
-    <li><strong>How it decides what to surface:</strong> every open subtask in Asana is scored against five inputs — calendar, service-specific thresholds, milestone chain progress, Claude-reasoned effort estimate, and client sensitivity. Output is a colour: 🔴 act today · 🟠 this week · 🟡 on the radar · 🟢 background.</li>
-    <li><strong>How it spots missing tasks:</strong> the morning run cross-checks each client × service against the milestone chain in its Notion Service Template. Anything in the chain but not in Asana is surfaced as a <strong>flag</strong> on the brief — an "FYI, this milestone is coming up but doesn't exist in Asana yet" — so Ryan can decide whether to create it manually. <em>The system does not write to Asana in this build.</em> Asana writes are deferred to a future iteration.</li>
-    <li><strong>Scope:</strong> Ryan's workspace this build. Manoli + meeting-derived commitments are later iterations.</li>
+    <li><strong>What Ryan does each day:</strong> opens the morning brief at 08:00 · works the focus list · glances at the chain-gap flags · checks the afternoon brief at 16:00 to see what slipped.</li>
+    <li><strong>How it decides what to surface:</strong> every open subtask in Asana is scored against the milestone chain it lives inside. Each service template has thresholds (e.g. monthly report turns yellow at T-7, orange at T-3, red at T-1) and the system computes <strong>days-until-due</strong>, <strong>chain progress</strong>, <strong>Claude-reasoned effort</strong>, and <strong>client sensitivity</strong>. Output is one of three colours within this week's window: 🔴 act today · 🟠 this week · 🟢 background. Items further than 7 days out aren't shown.</li>
+    <li><strong>How chain gaps surface:</strong> the morning run cross-checks each client × service against the milestone chain in its Notion Service Template. <strong>One rolled-up flag per (client × service)</strong> with gaps — e.g. <em>"EMPAC · Quarterly BAS — has milestones coming up that aren't in Asana yet"</em>. No 10-page list of every missing subtask. <em>The system does not write to Asana in this build</em> — flags are informational only.</li>
+    <li><strong>Scope:</strong> Ryan's workspace, this-week focus only. The 21-day "on the radar" wrap-up, manual one-click auto-create per flag, and full auto-create are explicit next-step iterations.</li>
   </ul>
 
   <div class="pills">
     <span class="pill green">Ships week 3</span>
     <span class="pill blue">~50 hours engineering</span>
-    <span class="pill gold">Two briefings · read-only on Asana</span>
+    <span class="pill gold">This-week focus · read-only on Asana</span>
   </div>
 
   <!-- ============== SECTION 1 — FINDING ============== -->
@@ -623,14 +623,13 @@
     <p class="prose" style="margin-top:0;">Both briefings render to the <strong>"🎯 Today's Focus"</strong> block on Ryan's existing Notion AM Workspace page. The 08:00 brief is the planning view. The 16:00 brief is the close-out view. Each replaces the previous one in the same spot.</p>
 
     <h3 style="margin-top:24px;">The morning brief · 08:00</h3>
-    <p class="prose" style="margin-top:0;"><strong>What Ryan sees.</strong> Three sections, in order. The <strong>two windows</strong> matter: focus is only the coming 7 days, on-the-radar is the 8–21 day horizon:</p>
+    <p class="prose" style="margin-top:0;"><strong>What Ryan sees.</strong> Two sections, in order:</p>
     <ol class="prose">
-      <li><strong>🎯 Focus today · this-week window (T-0 to T-7)</strong> — only things due within the next 7 days surface here. The 3–5 most urgent rise to the top (red + orange). Each item shows service, what's blocking it, chain progress (e.g. "2 of 10 done"), and estimated hours-remaining.</li>
-      <li><strong>🟡 On the radar · 21-day wrap-up (T-8 to T-21)</strong> — everything due in the next 8–21 days that he should be aware of but doesn't need to act on yet. This is the planning horizon, kept deliberately separate from the focus list so this week's work isn't drowned in next-fortnight noise.</li>
-      <li><strong>🔧 Coming up · not in Asana yet</strong> — flags any client × service whose Notion milestone chain has subtasks that don't yet exist in Asana. Each row says <em>"this milestone is coming up but isn't a task yet"</em> with the suggested due date and assignee role, so Ryan can choose to create it manually in Asana if he wants. <strong>The system does not write to Asana in this build</strong> — it only flags. Asana auto-create is deferred to a future iteration.</li>
+      <li><strong>🎯 Focus this week (T-0 to T-7)</strong> — every open Asana subtask whose due date is within the next 7 days is scored and surfaced here, ordered red → orange. Each item shows service, what's blocking it, chain progress (e.g. "2 of 10 done"), and estimated hours-remaining. <strong>Anything due more than 7 days out doesn't appear in this build</strong> — that's the 21-day on-the-radar wrap-up, which is the next iteration after this.</li>
+      <li><strong>🔧 Chain gaps · service-instances with milestones not in Asana yet</strong> — <strong>one rolled-up flag per (client × service)</strong> with gaps. Reads as <em>"EMPAC · Quarterly BAS — milestones in this chain aren't in Asana yet"</em>, not as a list of every missing subtask. Ryan can tap into a flag to see the chain detail if he wants. <strong>The system does not write to Asana in this build</strong> — flags are informational. If Ryan wants the tasks, he creates them in Asana himself; one-click auto-create per flag is a next-step iteration.</li>
     </ol>
 
-    <p class="prose"><strong>What Ryan does.</strong> Reads the focus list. Works the items. Glances at the on-the-radar wrap-up. Reviews any "coming up · not in Asana" flags and decides whether to create those tasks himself. That's it.</p>
+    <p class="prose"><strong>What Ryan does.</strong> Reads the focus list. Works the items. Glances at the rolled-up chain-gap flags and decides whether to create any tasks manually. That's it.</p>
 
     <h3 style="margin-top:28px;">The afternoon brief · 16:00</h3>
     <p class="prose" style="margin-top:0;"><strong>What Ryan sees.</strong> A different shape — designed for end-of-day review, not planning:</p>
@@ -643,8 +642,8 @@
 
     <h3 style="margin-top:28px;">Why two distinct briefings instead of "the same thing twice"?</h3>
     <ul class="prose">
-      <li>The questions are different. Morning: <em>"What should I work on?"</em> Afternoon: <em>"Where am I now versus where I planned to be?"</em></li>
-      <li>The morning brief includes <em>everything</em> that should be on Ryan's plate today — including missing-task detection, which is the only daily moment where he needs to gate creates. Surfacing that twice a day adds noise.</li>
+      <li>The questions are different. Morning: <em>"What should I work on this week?"</em> Afternoon: <em>"Where am I now versus where I planned to be?"</em></li>
+      <li>Chain-gap flags only run in the morning. Surfacing them twice adds noise — by 4pm Ryan has already read the morning brief.</li>
       <li>The afternoon brief is a slip/clear diff against the morning snapshot. It can't compute that until the morning brief has been written.</li>
     </ul>
   </section>
@@ -655,48 +654,69 @@
       <span class="gbar"></span>
       <span class="eyebrow">03 · Urgency</span>
     </div>
-    <h2>How a task gets a colour.</h2>
+    <h2>Milestone chains and how a task becomes red, orange, or green.</h2>
 
-    <p class="prose" style="margin-top:0;">Every open subtask in Asana is scored once per briefing run. The output is one of four colours: 🔴 act today · 🟠 this week · 🟡 on the radar · 🟢 background. <strong>Two hard windows govern where things show up:</strong> red and orange only surface for items due in the coming 7 days; yellow only surfaces for items in the 8–21 day window. Past 21 days, items stay green. Five inputs decide the colour — four deterministic, one reasoned by Claude.</p>
+    <h3 style="margin-top:8px;">What a milestone chain is</h3>
+    <p class="prose" style="margin-top:0;">Every service Nine Advisory delivers — Quarterly BAS, Monthly Bookkeeping, Annual Statements, Weekly Payroll, etc. — has a fixed sequence of milestones that have to happen in order. The Quarterly BAS chain, for example:</p>
+    <div class="integration-note" style="margin-top:8px;">
+      <p style="font-family:'JetBrains Mono', monospace; font-size:13px; margin:0; line-height:1.7;">
+        Quarterly BAS chain (10 milestones)<br>
+        ──────────────────────────────────────<br>
+        1 · Gather records from client &nbsp;&nbsp;&nbsp;<span style="color:var(--ink-3);">offset −50d · offshore_lead</span><br>
+        2 · Reconcile bank feeds + GST &nbsp;&nbsp;&nbsp;<span style="color:var(--ink-3);">offset −43d · offshore_lead</span><br>
+        3 · Prepare draft BAS &nbsp;&nbsp;&nbsp;<span style="color:var(--ink-3);">offset −36d · offshore_lead</span><br>
+        4 · Senior review (GST + PAYG) &nbsp;&nbsp;&nbsp;<span style="color:var(--ink-3);">offset −29d · AM</span><br>
+        5 · Send to client for sign-off &nbsp;&nbsp;&nbsp;<span style="color:var(--ink-3);">offset −22d · AM</span><br>
+        ...<br>
+        10 · Close out &nbsp;&nbsp;&nbsp;<span style="color:var(--ink-3);">offset 0 · AM</span>
+      </p>
+    </div>
+    <ul class="prose" style="margin-top:14px;">
+      <li>Chains live in <strong>Notion Service Templates</strong>, one chain per service. Each milestone has <span class="mono">seq, name, days_offset, assignee_role</span>.</li>
+      <li>Each (client × service-instance) has an <strong>anchor date</strong> — the deadline the chain ends at (BAS lodgement date · payroll run · monthly close). The anchor lives on the Services subscription record.</li>
+      <li>Each milestone's <strong>computed due date</strong> = <span class="mono">anchor + days_offset</span>. <em>days_offset</em> is negative because milestones happen <em>before</em> the anchor. So milestone 4 of EMPAC's Q1 BAS, with anchor 28 May and offset −29d, is due 29 April.</li>
+      <li>Each milestone's <strong>assignee</strong> = <span class="mono">role → person</span>, resolved per client (offshore_lead → Sailesh for EMPAC, Sriram for Hudson; AM → Ryan; etc.).</li>
+      <li>Open subtasks in Asana are matched to their position in this chain. That match — <em>"this is milestone 4 of 10 in EMPAC's Q1 BAS"</em> — is the unit the urgency model scores.</li>
+    </ul>
 
+    <h3 style="margin-top:28px;">How <em>days until due</em> is measured · the T-N notation</h3>
+    <p class="prose" style="margin-top:0;"><span class="mono">T-N</span> just means "<strong>N days until this milestone's computed due date</strong>." Every morning, the system computes T-N freshly per subtask:</p>
+    <ul class="prose">
+      <li><span class="mono">T-7</span> = due in 7 days · <span class="mono">T-3</span> = due in 3 days · <span class="mono">T-1</span> = due tomorrow · <span class="mono">T-0</span> = due today · <span class="mono">T+2</span> = 2 days overdue.</li>
+      <li>Computed from the milestone's due date — which itself comes from <span class="mono">service_template.days_offset + service_instance.anchor_date</span>, not from a free-text Asana date. If Asana's date drifts from the template-computed date, the template wins.</li>
+      <li>Re-computed every run. T-3 this morning becomes T-2 tomorrow morning; the colour can change accordingly.</li>
+    </ul>
+
+    <h3 style="margin-top:28px;">How a task gets a colour</h3>
+    <p class="prose" style="margin-top:0;">Per service, the Notion Service Template defines three thresholds — <strong>red, orange, yellow</strong> — measured in days before due. The colour is then modified by chain progress, effort, and sensitivity. Below is the threshold table per service type:</p>
     <table style="margin-bottom:14px;">
       <thead>
         <tr>
-          <th style="width:26%;">Input</th>
-          <th>What it tells the system</th>
-          <th style="width:18%;">Source</th>
+          <th>Service template</th>
+          <th>🔴 red at</th>
+          <th>🟠 orange at</th>
+          <th>🟡 yellow at <span style="font-weight:400; color:var(--ink-3); font-size:12px;">(future iteration)</span></th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td><strong>1. Days until due</strong></td>
-          <td>How much calendar runway is left. Negative = overdue.</td>
-          <td>Asana</td>
-        </tr>
-        <tr>
-          <td><strong>2. Service threshold</strong></td>
-          <td>What "urgent" means for <em>this kind of work</em>. A monthly report turns orange at 3 days out; a BAS turns orange at 7 days out; a weekly payroll turns orange at 1 day out. Each service has its own rhythm, defined once in the Notion Service Template.</td>
-          <td>Notion · Service Template</td>
-        </tr>
-        <tr>
-          <td><strong>3. Chain progress</strong></td>
-          <td>Whether the milestone chain will actually finish in time at the current pace. 1 of 10 done at T-7 = chain won't land. 9 of 10 done at T-3 = it's fine.</td>
-          <td>Asana · parent + subtasks</td>
-        </tr>
-        <tr>
-          <td><strong>4. Effort estimate</strong></td>
-          <td><strong>Reasoned by Claude.</strong> From the subtask name, service template description, and any task history, Claude returns a difficulty band (S / M / L / XL) and estimated hours. Cached on the Asana task. A 30-minute task at T-3 reads differently from a 6-hour task at T-3.</td>
-          <td>Claude · cached on the task</td>
-        </tr>
-        <tr>
-          <td><strong>5. Sensitivity flag</strong></td>
-          <td>If the client is flagged sensitive in the Client Register, the state is bumped up one level. One-way; never bumps down.</td>
-          <td>Notion · Client Register</td>
-        </tr>
+        <tr><td>Weekly payroll</td><td>T-0 · due today</td><td>T-1</td><td>T-3</td></tr>
+        <tr><td>Monthly bookkeeping</td><td>T-1</td><td>T-3</td><td>T-7</td></tr>
+        <tr><td>Monthly report</td><td>T-1</td><td>T-3</td><td>T-7</td></tr>
+        <tr><td>Quarterly BAS</td><td>T-2</td><td>T-7</td><td>T-14</td></tr>
+        <tr><td>Annual statements</td><td>T-7</td><td>T-14</td><td>T-21</td></tr>
       </tbody>
     </table>
+    <p class="prose" style="font-size:14px; color:var(--ink-3); margin-top:0;">Thresholds are editable in Notion (Service Templates). Ryan tunes them as the system runs. The <strong>yellow</strong> column is shown for context — yellow is the 21-day on-the-radar wrap-up, which is the next iteration after this build. <strong>This build only surfaces red and orange (T-0 to T-7).</strong></p>
 
-    <h3 style="margin-top:24px;">The four colours</h3>
+    <h3 style="margin-top:24px;">What modifies the colour</h3>
+    <p class="prose" style="margin-top:0;">A subtask first lands in a colour based on its T-N versus the service threshold. Then three modifiers can push it up:</p>
+    <ul class="prose">
+      <li><strong>Chain progress.</strong> If the chain is behind pace — e.g. only 1 of 10 milestones done with 7 days to go — every remaining subtask in that chain bumps up one level. <em>Why:</em> the calendar says T-7 (yellow on a BAS), but at this rate the chain won't actually land. So those subtasks read as orange.</li>
+      <li><strong>Effort estimate.</strong> Claude estimates hours-remaining per subtask (see "How Claude estimates effort" below). If <span class="mono">est_hours_remaining / days_until_due</span> exceeds Ryan's working capacity, the subtask bumps up one level. <em>Why:</em> a 30-min task at T-3 is fine; a 6h task at T-1 is critical even though both are inside the orange band.</li>
+      <li><strong>Client sensitivity.</strong> Clients flagged <em>sensitive</em> in the Client Register bump up one level. One-way — never bumps down.</li>
+    </ul>
+
+    <h3 style="margin-top:24px;">The three colours surfaced this build</h3>
     <table style="margin-bottom:14px;">
       <thead>
         <tr>
@@ -708,39 +728,34 @@
       <tbody>
         <tr>
           <td><strong style="color:var(--red);">🔴 Critical</strong></td>
-          <td><strong>Within 7 days.</strong> Act today or it slips. Past the service's red threshold, overdue, or chain + effort say it can't finish at current pace.</td>
+          <td><strong>Act today or it slips.</strong> Past the service's red threshold, overdue, or modifiers escalated it from orange.</td>
           <td>Monthly bookkeeping at T-1 · BAS at T-2 · anything overdue · 6h of work left at T-1</td>
         </tr>
         <tr>
           <td><strong style="color:var(--orange);">🟠 This week</strong></td>
-          <td><strong>Within 7 days.</strong> Past the orange threshold. Should land in the next few days. Needs planning.</td>
+          <td><strong>Past the orange threshold.</strong> Should land in the next few days; needs planning.</td>
           <td>Monthly report at T-3 · BAS at T-7 · weekly payroll at T-1</td>
         </tr>
         <tr>
-          <td><strong style="color:#9C8500;">🟡 On the radar</strong></td>
-          <td><strong>Days 8 to 21.</strong> The 21-day wrap-up — Ryan should know it exists, not act yet. Past the yellow threshold.</td>
-          <td>Monthly report at T-10 · BAS at T-14 · annual statements at T-21</td>
-        </tr>
-        <tr>
           <td><strong style="color:var(--green-d);">🟢 Background</strong></td>
-          <td>More than 21 days out, or before the yellow threshold. Not surfaced.</td>
-          <td>Anything beyond the 21-day horizon · or earlier than its service's yellow point</td>
+          <td>Earlier than the orange threshold (or beyond 7 days out). Not shown in the brief in this build.</td>
+          <td>Monthly report at T-9 · BAS at T-15 · anything beyond 7 days</td>
         </tr>
       </tbody>
     </table>
 
     <h3 style="margin-top:24px;">Worked example · two BAS subtasks, both due in 7 days</h3>
-    <p class="prose" style="margin-top:0;">Same service, same calendar runway, different colours — because chain progress and effort differ:</p>
+    <p class="prose" style="margin-top:0;">Same service template, same T-7. They get different colours because chain progress and effort differ:</p>
     <ul class="prose">
-      <li><strong>EMPAC · BAS · "Reconcile bank feed"</strong> · T-7 · 1 of 10 chain subtasks done · Claude estimates 3h work. → <strong style="color:var(--orange);">🟠 orange</strong>. The BAS template would normally make T-7 yellow, but chain progress is too far behind, so it escalates one level.</li>
-      <li><strong>Hudson · BAS · "Final review"</strong> · T-7 · 8 of 10 done · Claude estimates 30min. → <strong style="color:var(--green-d);">🟢 green</strong>. T-7 would normally be yellow, but progress + effort show it's safely on track.</li>
+      <li><strong>EMPAC · BAS · "Reconcile bank feed"</strong> · T-7 · 1 of 10 chain milestones done · Claude estimates 3h work. → BAS template puts T-7 at <em>orange</em> baseline. Chain progress is far behind, modifier escalates → <strong style="color:var(--red);">🔴 red</strong>. Surfaces in Focus this week as critical.</li>
+      <li><strong>Hudson · BAS · "Final review"</strong> · T-7 · 8 of 10 done · Claude estimates 30 min. → BAS template puts T-7 at orange baseline, but chain is on pace and effort is small, so no escalation. → <strong style="color:var(--orange);">🟠 orange</strong>. Surfaces in Focus this week, lower priority.</li>
     </ul>
 
     <h3 style="margin-top:24px;">How Claude estimates effort</h3>
     <ul class="prose">
-      <li>One Claude (Haiku) call per new or changed subtask. Inputs: subtask name, parent service, service template description, any task description or comments, prior similar-subtask estimates.</li>
-      <li>Outputs are written to two custom fields on the Asana task: <strong>Difficulty</strong> (S / M / L / XL) and <strong>Est. Hours</strong> (number). Both are visible to Ryan and editable — if he overrides them, the system never overwrites his value.</li>
-      <li>Re-estimated only when the task itself changes. Steady-state cost is near zero — most tasks keep the same estimate week to week.</li>
+      <li>One Claude Haiku call per new or changed subtask, batched. Inputs: subtask name, parent service template, prior similar-subtask estimates.</li>
+      <li>Outputs cached in the <strong>Effort Estimates Notion DB</strong> (keyed by Asana task GID): Difficulty band (S / M / L / XL) and estimated hours. <strong>Read-only on Asana</strong> — nothing is written to Asana custom fields in this build.</li>
+      <li>Re-estimated only when the subtask changes. Steady-state cost is near zero — most tasks keep the same estimate week to week.</li>
     </ul>
   </section>
 
@@ -750,32 +765,33 @@
       <span class="gbar"></span>
       <span class="eyebrow">04 · Missing-task detection</span>
     </div>
-    <h2>How the morning brief flags gaps in Asana.</h2>
+    <h2>How the morning brief flags chain gaps · rolled up, not exhaustive.</h2>
 
-    <p class="prose" style="margin-top:0;">For every active client × service, Notion's <strong>Service Template</strong> defines the canonical milestone chain — an ordered list of subtasks with their offsets and assignee roles. The morning brief checks whether each chain is fully reflected in Asana. If anything's missing, it <strong>flags</strong> the gap on the brief — purely informational. <strong>The system does not write to Asana in this build.</strong> Ryan decides whether to create the task himself in Asana.</p>
+    <p class="prose" style="margin-top:0;">For every active client × service, Notion's <strong>Service Template</strong> defines the canonical milestone chain. The morning brief checks whether each chain is fully reflected in Asana. If anything's missing, it surfaces <strong>one rolled-up flag per (client × service)</strong> — not one row per missing milestone. <strong>The system does not write to Asana in this build.</strong> Flags are informational; Ryan decides whether to create tasks himself.</p>
 
-    <h3 style="margin-top:24px;">What the worker sees</h3>
+    <h3 style="margin-top:24px;">Rolled up · what the worker sees</h3>
     <ul class="prose">
-      <li>One flag row per (client × service) with at least one missing subtask.</li>
-      <li>Each row lists the missing subtasks with their computed due dates and role-assigned people, e.g. <em>"EMPAC · Q1 BAS — 3 milestones in the chain are not in Asana yet: <strong>Reconcile bank feed</strong> (offshore_lead, due 30 Apr), <strong>Senior review</strong> (AM, due 4 May), <strong>Lodge</strong> (AM, due 7 May)."</em></li>
-      <li>Phrasing leans informational: <em>"this milestone is coming up but isn't a task yet"</em> — Ryan reads it like a heads-up, not a checklist to action.</li>
-      <li>No tick boxes. No Asana writes. If Ryan wants the task, he creates it himself in Asana; the flag will simply disappear from tomorrow's brief once the system sees it.</li>
+      <li>One flag row per (client × service-instance) with at least one missing subtask. <strong>Not</strong> one row per missing milestone — Ryan never gets a 10-page list.</li>
+      <li>The row reads as a heads-up: <em>"EMPAC · Quarterly BAS Q1 — milestones in this chain aren't in Asana yet"</em>, with a one-line summary like <em>"3 of 10 milestones missing · earliest is due in 6 days."</em></li>
+      <li>Tap to expand if he wants the chain detail (full milestone list with computed dates and roles). Most of the time he won't need to — the rolled-up line tells him enough to decide whether to act.</li>
+      <li>If a service-instance's chain isn't in Asana <em>at all</em> (no parent task), the row simply says <em>"full chain not in Asana yet."</em></li>
+      <li>No tick boxes. No Asana writes. If Ryan wants tasks created, he does that himself in Asana; the flag disappears from the next brief once the system sees them.</li>
     </ul>
 
     <h3 style="margin-top:24px;">How the system detects gaps · step by step</h3>
     <ol class="prose">
       <li><strong>Read the chain from Notion.</strong> For each (client × service) the client subscribes to, read the service's milestone chain — an ordered list of <span class="mono">{seq, name, days_offset, assignee_role}</span>.</li>
-      <li><strong>Compute the target.</strong> For each milestone, compute its due date (<span class="mono">anchor_date + days_offset</span>) and resolve <span class="mono">role → person</span> (e.g. <em>offshore_lead → Sailesh</em>) using the Client Register.</li>
+      <li><strong>Compute the target chain.</strong> For each milestone, compute its due date (<span class="mono">anchor_date + days_offset</span>) and resolve <span class="mono">role → person</span> via the Client Register.</li>
       <li><strong>Read the actual.</strong> Pull the parent task + subtasks from the matching Asana project for this service-instance.</li>
-      <li><strong>Match target to actual.</strong> Fuzzy name match (similarity ≥ 0.85; matches below 0.92 noted as low-confidence). When auto-create ships in a future iteration, this will graduate to ID-stamped matching.</li>
-      <li><strong>Compute the diff.</strong> Anything in the target chain with no match in Asana is flagged. Existing subtasks are <em>never</em> touched — the system is read-only on Asana.</li>
-      <li><strong>Surface in the morning brief.</strong> One flag row per (client × service) with gaps. Informational only.</li>
+      <li><strong>Match target to actual.</strong> Fuzzy name match (similarity ≥ 0.85; matches below 0.92 noted as low-confidence).</li>
+      <li><strong>Compute the diff per service-instance.</strong> Count missing milestones. Find the earliest missing one (lowest computed due date).</li>
+      <li><strong>Surface as one rolled-up flag.</strong> If <span class="mono">missing_count ≥ 1</span>, emit one flag row for the service-instance. Header summarises count and earliest due date; expand reveals the full list.</li>
     </ol>
 
     <p class="prose"><strong>Two guarantees:</strong></p>
     <ul class="prose">
-      <li><strong>Read-only on Asana.</strong> The system never writes anything to Asana in this build. No new tasks, no edits, no field updates. Asana writes are a future iteration.</li>
-      <li><strong>Legacy work is never destroyed.</strong> Even when auto-create eventually ships, partial-chain handling will preserve existing subtasks — only missing ones would be added.</li>
+      <li><strong>Read-only on Asana.</strong> The system never writes anything to Asana in this build. No new tasks, no edits, no field updates. Manual one-click auto-create per flag and full auto-create are explicit next-step iterations.</li>
+      <li><strong>Legacy work is never destroyed.</strong> When auto-create eventually ships, partial-chain handling will preserve existing subtasks — only missing ones would be added.</li>
     </ul>
   </section>
 
@@ -875,7 +891,7 @@
     </div>
 
     <h3 style="margin-top:32px;">The morning brief · 08:00</h3>
-    <p style="margin-top:0; color:var(--ink-3); font-size:14px;">Three sections: focus today, on the radar, missing from Asana. Ryan reads top to bottom.</p>
+    <p style="margin-top:0; color:var(--ink-3); font-size:14px;">Two sections: focus this week (T-0 to T-7) and rolled-up chain-gap flags. Ryan reads top to bottom.</p>
     <div class="mockup-frame">
       <div class="mockup-chrome">
         <span class="dot" style="background:#FF6058;"></span>
@@ -889,10 +905,10 @@
           <div class="focus-meta">refreshed 08:03 AEST · next refresh 16:00</div>
         </div>
         <div class="urgent">
-          🔴 <strong>3 critical · 2 this week · 4 on the 21-day radar · 2 chain-flag rows.</strong> Lodge BAS Pandamich 2 days overdue. EMPAC Q1 BAS only 2 of 10 done with 3 days to go.
+          🔴 <strong>3 critical · 2 this week · 2 chain-gap flags.</strong> Lodge BAS Pandamich 2 days overdue. EMPAC Q1 BAS only 2 of 10 done with 3 days to go.
         </div>
 
-        <div class="section-divider" style="color:var(--red);">🎯 Focus today · this-week window (T-0 to T-7)</div>
+        <div class="section-divider" style="color:var(--red);">🎯 Focus this week (T-0 to T-7)</div>
         <ul class="focus-list todo">
           <li>
             <span class="check"></span>
@@ -941,68 +957,28 @@
           </li>
         </ul>
 
-        <div class="section-divider" style="color:#9C8500;">🟡 On the radar · 21-day wrap-up (T-8 to T-21)</div>
-        <ul class="focus-list todo">
-          <li>
-            <span class="check"></span>
-            <span class="pri">🟡</span>
-            <div>
-              <div class="item-title">📋 Pandamich · Q2 BAS</div>
-              <div class="item-context">3 of 10 done · due in 12 days (T-12). BAS template yellow at T-14. ~9h remaining.</div>
-              <div class="item-meta">on radar · pace slightly behind, watch</div>
-            </div>
-          </li>
-          <li>
-            <span class="check"></span>
-            <span class="pri">🟡</span>
-            <div>
-              <div class="item-title">📋 Cascade · Quarterly review prep</div>
-              <div class="item-context">1 of 7 done · due in 9 days (T-9). Quarterly review yellow at T-10.</div>
-              <div class="item-meta">on radar · plan for next week</div>
-            </div>
-          </li>
-          <li>
-            <span class="check"></span>
-            <span class="pri">🟡</span>
-            <div>
-              <div class="item-title">📋 Tussle · Annual Statements draft</div>
-              <div class="item-context">2 of 6 done · due in 18 days (T-18). Annual statements yellow at T-21.</div>
-              <div class="item-meta">on radar · pace OK</div>
-            </div>
-          </li>
-          <li>
-            <span class="check"></span>
-            <span class="pri">🟡</span>
-            <div>
-              <div class="item-title">📋 EMPAC · May fortnightly payroll</div>
-              <div class="item-context">0 of 4 done · due in 16 days (T-16). Payroll yellow window starts at T-21.</div>
-              <div class="item-meta">on radar · standard cadence</div>
-            </div>
-          </li>
-        </ul>
-
-        <div class="section-divider" style="color:var(--blue);">🔧 Coming up · not in Asana yet</div>
+        <div class="section-divider" style="color:var(--blue);">🔧 Chain gaps · service-instances with milestones not in Asana</div>
         <ul class="focus-list todo">
           <li>
             <span class="check"></span>
             <span class="pri">🔧</span>
             <div>
-              <div class="item-title">EMPAC · Quarterly BAS · Q1 2026 — full chain (10 milestones) not in Asana yet</div>
-              <div class="item-context">Anchor 28 May 2026. Tap to expand the chain detail. <em>Read-only flag — create manually in Asana if needed.</em></div>
+              <div class="item-title">EMPAC · Quarterly BAS · Q1 — milestones in this chain aren't in Asana yet</div>
+              <div class="item-context">Full chain not in Asana · 10 of 10 milestones missing · anchor 28 May. Earliest missing milestone is due in 6 days. <em>Tap for chain detail.</em></div>
             </div>
           </li>
           <li>
             <span class="check"></span>
             <span class="pri">🔧</span>
             <div>
-              <div class="item-title">Hudson · Monthly Bookkeeping · April 2026 — 3 milestones not in Asana yet</div>
-              <div class="item-context">5 of 8 already in Asana. Coming up: Aged payables review (offshore_lead, 23 Apr) · Management report draft (AM, 26 Apr) · Send to client (AM, 30 Apr). <em>Read-only flag.</em></div>
+              <div class="item-title">Hudson · Monthly Bookkeeping April — milestones in this chain aren't in Asana yet</div>
+              <div class="item-context">Partial · 3 of 8 milestones missing (5 already in Asana). Earliest missing is due in 4 days. <em>Tap for chain detail.</em></div>
             </div>
           </li>
         </ul>
 
         <div class="focus-footer">
-          run_id <span style="color:var(--green-d);">tf_2026-04-28_0803_am</span> · 5 focus / 4 radar / 2 chain flags · 24 background collapsed · sources: Asana (read-only) · Notion Service Templates · Email Triage · Interaction Log
+          run_id <span style="color:var(--green-d);">tf_2026-04-28_0803_am</span> · 5 focus this week · 2 chain-gap flags · 39 dropped (28 background, 11 past 7-day window) · sources: Asana (read-only) · Notion Service Templates · Email Triage · Interaction Log
         </div>
       </div>
     </div>
@@ -1115,7 +1091,7 @@
       <h4>Daily timeline</h4>
       <div class="clock-row">
         <span class="t">08:00</span>
-        <span class="what"><strong>Morning brief</strong> · scores all open subtasks · flags any chain subtasks not yet in Asana · writes the morning block.</span>
+        <span class="what"><strong>Morning brief</strong> · scores open subtasks within the 7-day window · flags any chain gaps per service-instance · writes the morning block.</span>
       </div>
       <div class="clock-row">
         <span class="t">16:00</span>
@@ -1136,8 +1112,8 @@
       <div class="pipe-row">
         <div class="pipe-num">2</div>
         <div>
-          <div class="pipe-title">Detect missing chain subtasks · build flags</div>
-          <div class="pipe-body">For each (client × subscribed service): expand the template chain (compute due dates from <span class="mono">anchor + offset</span>; resolve assignee roles to people). Match against Asana's subtask graph by fuzzy name (sim ≥ 0.85). Diff = milestones not in Asana. Group into one 🔧 "Coming up · not in Asana" flag row per service-instance.</div>
+          <div class="pipe-title">Detect chain gaps · build one rolled-up flag per service-instance</div>
+          <div class="pipe-body">For each (client × subscribed service): expand the template chain (compute due dates from <span class="mono">anchor + offset</span>; resolve assignee roles to people). Match against Asana's subtask graph by fuzzy name (sim ≥ 0.85). For every service-instance with at least one missing milestone, emit <strong>one</strong> 🔧 flag row — header summarises missing-count + earliest-due-date; expand reveals chain detail. Never one row per missing milestone.</div>
         </div>
         <div class="pipe-stat">deterministic<br><span class="arrow">in-memory</span></div>
       </div>
@@ -1152,8 +1128,8 @@
       <div class="pipe-row">
         <div class="pipe-num">4</div>
         <div>
-          <div class="pipe-title">Compute state per subtask · apply windows · bucket</div>
-          <div class="pipe-body">Per open subtask: <span class="mono">compute_state(days_until_due, service_threshold, chain_progress, effort_estimate, sensitivity_flag)</span> → 🔴 / 🟠 / 🟡 / 🟢. <strong>Apply the two windows:</strong> red/orange only if T-0 to T-7; yellow only if T-8 to T-21; otherwise green and dropped. Apply name-pattern + SOP + &gt;90d + cluster-rollup filters. Bucket: red+orange combined cap 5 → focus list · yellow cap 5 → on-radar wrap-up.</div>
+          <div class="pipe-title">Compute colour per subtask · apply 7-day window · bucket</div>
+          <div class="pipe-body">Per open subtask: compute baseline colour from days-until-due vs the service template threshold; apply chain-progress modifier, effort modifier, sensitivity modifier (each can escalate one level). <strong>Apply the 7-day window:</strong> only T-0 to T-7 surfaces. Anything past T-7 → not shown in this build. Apply name-pattern + SOP + &gt;90d + cluster-rollup filters. Bucket: red+orange → Focus this week (cap 5).</div>
         </div>
         <div class="pipe-stat">deterministic<br><span class="arrow">in-memory</span></div>
       </div>
@@ -1169,7 +1145,7 @@
         <div class="pipe-num">6</div>
         <div>
           <div class="pipe-title">Render + write</div>
-          <div class="pipe-body">Atomic rewrite of the "🎯 Today's Focus" marker block on Ryan's workspace page · 🎯 Focus today · 🟡 On the radar · 🔧 Coming up · not in Asana. Snapshot of state + chain + effort per surfaced subtask written to today's Briefing State row for the 16:00 diff. Run Log + Decision Log rows.</div>
+          <div class="pipe-body">Atomic rewrite of the "🎯 Today's Focus" marker block on Ryan's workspace page · 🎯 Focus this week · 🔧 Chain gaps. Snapshot of state + chain + effort per surfaced subtask written to today's Briefing State row for the 16:00 diff. Run Log + Decision Log rows.</div>
         </div>
         <div class="pipe-stat">~10 calls<br><span class="arrow">~2m total</span></div>
       </div>
@@ -1189,7 +1165,7 @@
         <div class="pipe-num">2</div>
         <div>
           <div class="pipe-title">Re-score · diff against morning</div>
-          <div class="pipe-body">Compute state per open subtask (same engine as morning, same 7-day / 21-day windows). Compare to morning snapshot: still-open red/orange items become 🔴 Slipped · items that escalated to red/orange today become ⚠️ New today · everything closed since 08:00 → ✅ Cleared. <strong>No chain-flag detection</strong> in this run.</div>
+          <div class="pipe-body">Compute colour per open subtask (same engine as morning, same 7-day window). Compare to morning snapshot: still-open red/orange items become 🔴 Slipped · items that escalated to red/orange today become ⚠️ New today · everything closed since 08:00 → ✅ Cleared. <strong>No chain-gap detection</strong> in this run.</div>
         </div>
         <div class="pipe-stat">deterministic<br><span class="arrow">in-memory</span></div>
       </div>
@@ -1246,7 +1222,7 @@
         </tr>
         <tr>
           <td><strong>Service Templates</strong> (chains + urgency thresholds)</td>
-          <td>Read · canonical milestone chain per service (ordered list of <span class="mono">seq, name, days_offset, assignee_role</span> as nested page children) plus per-service urgency thresholds <span class="mono">yellow_at / orange_at / red_at</span>. Drives both missing-task detection and the four-state urgency model.</td>
+          <td>Read · canonical milestone chain per service (ordered list of <span class="mono">seq, name, days_offset, assignee_role</span> as nested page children) plus per-service urgency thresholds <span class="mono">red_at / orange_at</span> (yellow_at also stored, used by the 21-day wrap-up iteration). Drives both chain-gap detection and the urgency colour model.</td>
           <td><span class="tag live">Existing Notion DB</span><br><span style="font-size:12px;color:var(--ink-3);">thresholds added in Phase 1</span></td>
         </tr>
         <tr>
@@ -1376,7 +1352,7 @@
           <ul class="prose" style="margin:4px 0 0;">
             <li>For each of 32 service-instances, expand the template chain: parent name = <span class="mono">"&lt;Service&gt; · &lt;Period&gt;"</span>, subtasks in seq order with <span class="mono">due = anchor + offset</span>, assignees from role resolution. 247 expected subtasks total.</li>
             <li><strong>Match by fuzzy name</strong> (sim ≥ 0.85). 232 match (217 ≥ 0.92 confident · 15 at 0.85–0.92 noted as low-confidence). 15 unmatched.</li>
-            <li><strong>Output:</strong> 10 missing subtasks across 4 service-instances → 4 🔧 "Coming up · not in Asana" flag rows. Read-only — no writes.</li>
+            <li><strong>Group missing milestones by service-instance.</strong> 15 unmatched milestones distributed across 4 service-instances. Output: <strong>4 rolled-up 🔧 flag rows</strong> — one per service-instance, regardless of how many milestones each is missing.</li>
           </ul>
         </div>
       </div>
@@ -1399,10 +1375,10 @@
         <div class="body">
           <div class="h">Compute state per subtask · apply windows · filter · bucket</div>
           <ul class="prose" style="margin:4px 0 0;">
-            <li>For each open subtask: <span class="mono">compute_state()</span> from days-until-due + service threshold + chain progress + effort estimate + sensitivity.</li>
-            <li><strong>Apply windows.</strong> Only T-0 to T-7 can be red/orange. Only T-8 to T-21 can be yellow. Anything past 21 days → green and dropped.</li>
+            <li>For each open subtask: compute baseline colour from days-until-due vs service threshold; apply chain-progress + effort + sensitivity modifiers.</li>
+            <li><strong>Apply the 7-day window.</strong> Only T-0 to T-7 can surface. Anything past T-7 → not shown.</li>
             <li>Apply name-pattern + SOP + &gt;90d + cluster-rollup filters.</li>
-            <li>Bucket: 5 in red+orange (focus list), 4 in yellow (21-day on-radar), 28 dropped to background.</li>
+            <li>Bucket: 5 in red+orange (Focus this week). 32 past the window or filtered out.</li>
           </ul>
         </div>
       </div>
@@ -1425,10 +1401,10 @@
         <div class="body">
           <div class="h">Render + write</div>
           <ul class="prose" style="margin:4px 0 0;">
-            <li>Atomic <span class="mono">PATCH</span> on the "🎯 Today's Focus" marker block: 🎯 Focus today (5) · 🟡 On the radar 21-day (4) · 🔧 Coming up · not in Asana (4 flag rows · read-only).</li>
-            <li>Write today's morning Briefing State row (state + chain + effort per surfaced subtask) for the 16:00 diff.</li>
-            <li>Run Log row + one Decision Log row per scored candidate (with state, threshold that fired, effort inputs).</li>
-            <li><span class="mono">run_id=tf_2026-04-28_0803_am, scored=247, surfaced=9, chain_flags=4, runtime=61s, status=success</span>.</li>
+            <li>Atomic <span class="mono">PATCH</span> on the "🎯 Today's Focus" marker block: 🎯 Focus this week (5) · 🔧 Chain gaps (4 rolled-up flag rows · read-only).</li>
+            <li>Write today's morning Briefing State row (colour + chain + effort per surfaced subtask) for the 16:00 diff.</li>
+            <li>Run Log row + one Decision Log row per scored candidate (with colour, threshold that fired, modifiers applied).</li>
+            <li><span class="mono">run_id=tf_2026-04-28_0803_am, scored=247, surfaced_focus=5, chain_flags=4, runtime=61s, status=success</span>.</li>
           </ul>
         </div>
       </div>
@@ -1517,10 +1493,10 @@
           <ul class="prose" style="margin:6px 0 0;">
             <li><span class="lbl">Detection</span>Service Templates parser · expand chains into typed structures · <span class="mono">days_offset → due_date</span> from anchor · role-to-person resolution from Client Register.</li>
             <li>Fuzzy name matcher (sim ≥ 0.85) per service-instance. Low-confidence flag below 0.92.</li>
-            <li><span class="lbl">Flagging</span>Build "Coming up · not in Asana" flag rows from the diff — informational, no Asana writes.</li>
+            <li><span class="lbl">Flagging</span>One rolled-up "Chain gaps" flag row per (client × service-instance) with missing milestones. Header summarises count + earliest due date. Expand reveals chain detail. No Asana writes.</li>
             <li><span class="lbl">Scoring</span>Effort estimator (Claude Haiku, batched, cached in the Effort Estimates Notion DB).</li>
-            <li><span class="mono">compute_state()</span> engine — five inputs (days-until-due, service threshold, chain progress, effort estimate, sensitivity) → 🔴 / 🟠 / 🟡 / 🟢. <strong>Window enforcement:</strong> red/orange only T-0 to T-7, yellow only T-8 to T-21. Threshold table editable in Notion — no redeploy to retune.</li>
-            <li>Bucket + cap: red+orange combined cap 5 → focus list · yellow cap 5 → 21-day on-radar.</li>
+            <li>Colour engine — baseline from T-N vs service template threshold; modifiers from chain progress, effort estimate, sensitivity. <strong>7-day window enforcement:</strong> only T-0 to T-7 surface in this build. Threshold table editable in Notion — no redeploy to retune.</li>
+            <li>Bucket + cap: red+orange combined cap 5 → Focus this week.</li>
             <li>Four-rule filter pipeline (name pattern, SOP drop, &gt;90d drop, cluster rollup).</li>
             <li>Briefing State snapshotting for the afternoon slip/clear diff.</li>
             <li>One Claude Sonnet call orders within buckets and writes per-item reasoning.</li>
@@ -1555,9 +1531,9 @@
       </div>
     </div>
     <ul class="prose" style="margin-top:10px;">
-      <li><strong>Splits:</strong> P1 ~6h · P2 ~33h (detection + matcher + flagger + scoring engine + reasoning + renderers) · P3 ~11h.</li>
+      <li><strong>Splits:</strong> P1 ~6h · P2 ~33h (detection + matcher + rolled-up flagger + scoring engine + reasoning + renderers) · P3 ~11h.</li>
       <li><strong>Ryan's effort:</strong> 30-min mapping call (Mon wk 1) · 1-hour go/no-go review (Fri wk 2) · 30-min format review · 5-min daily Slack across week 3 (~25 min).</li>
-      <li>Auto-create as a future iteration is roughly +15h (Asana write scope, custom fields, partial-chain handling, double-gate during shadow).</li>
+      <li><strong>Future-iteration sizing</strong> (separate engagements): 21-day wrap-up ~5h · manual one-click auto-create per flag ~10h · full auto-create ~10h on top.</li>
     </ul>
   </section>
 
@@ -1574,10 +1550,12 @@
       <li><strong>End of week 3.</strong> System stable, both briefs unattended. Hand off editable Notion config (Service Template thresholds, similarity threshold, verb list, assignee map) — Ryan owns tuning from there.</li>
     </ul>
 
-    <h3 style="margin-top:28px;">The iteration roadmap</h3>
+    <h3 style="margin-top:28px;">The iteration roadmap · what comes after this build</h3>
 
     <ul class="prose">
-      <li><strong>Next · Auto-create on Asana</strong> — graduate chain flags from informational to actionable. Add Asana write scope · three custom fields (Milestone Template ID, Difficulty, Est. Hours) · ID-stamped matching · Auto-create tick on each chain-flag row · double-gate during shadow. ~15h on top of this build. Trigger when Ryan + Sam are confident the flagging is accurate.</li>
+      <li><strong>Next · 21-day on-the-radar wrap-up</strong> — extend the morning brief with a yellow section showing service-instances due in T-8 to T-21. Same scoring engine, just opens the window from 7 days to 21 days. ~5h. Trigger as soon as Ryan wants forward visibility past this week.</li>
+      <li><strong>Next · Manual one-click auto-create per flag</strong> — graduate chain-gap flags from read-only to actionable, but only on Ryan's explicit click. Each rolled-up flag row gets a "Create these in Asana" button; tapping it expands the chain and lets Ryan tick which milestones to create (or all of them). The system writes only what's ticked. Adds Asana write scope and three custom fields (Milestone Template ID · Difficulty · Est. Hours). ~10h. Trigger when Ryan is confident the flagging is accurate.</li>
+      <li><strong>Then · Full auto-create</strong> — the system creates missing milestones on its own once a chain has been confirmed by Ryan twice in a row. No manual click per service-instance. Includes ID-stamped matching, partial-chain handling, double-gated shadow week. ~10h on top of manual auto-create. Trigger after manual auto-create has run cleanly for ~2 weeks.</li>
       <li><strong>Manoli's workspace</strong> — clone the pattern. Same detection + scoring engine covers her clients. Today's Focus block on Manoli's workspace page · per-AM tuning of thresholds.</li>
       <li><strong>Meetings → Commitments</strong> — capture meeting outputs (Zoom + manual). Populates the Commitments DB. Folds into the morning brief as another input source — no architectural change.</li>
       <li><strong>Operational risks layer</strong> — payroll dependencies, BAS lodgement deadlines, ATO/ASIC dates surfaced as ambient warnings on the brief.</li>
@@ -1586,9 +1564,10 @@
       <li><strong>Warehouse + inference layer</strong> — BigQuery shadow logger captures every run event from day one if Sam wants the warehouse foundation now (additional ~10h, decision deferred).</li>
     </ul>
 
-    <h3 style="margin-top:28px;">What this is not</h3>
+    <h3 style="margin-top:28px;">What this build is not</h3>
     <ul class="prose">
-      <li><strong>Not writing to Asana.</strong> Read-only this build. Chain gaps are flagged for Ryan, not auto-created. Auto-create is the explicit next iteration once flagging accuracy is proven.</li>
+      <li><strong>Not the 21-day wrap-up.</strong> Only this week (T-0 to T-7) surfaces. The 21-day on-the-radar view is the explicit next iteration.</li>
+      <li><strong>Not writing to Asana.</strong> Read-only this build. Chain gaps are flagged for Ryan, not auto-created. Manual one-click auto-create per flag, then full auto-create, are the next two iterations.</li>
       <li><strong>Not Manoli yet.</strong> Ryan only this build — clone is a future iteration.</li>
       <li><strong>Not commitments yet.</strong> Meetings → Commitments capture is its own iteration.</li>
       <li><strong>Not a two-way sync.</strong> Asana ↔ Notion bidirectional sync is deferred.</li>

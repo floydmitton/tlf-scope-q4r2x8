@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Today's Focus, made whole · Scope v19 · Whitecrow × Nine Advisory</title>
+<title>Today's Focus, made whole · Whitecrow × Nine Advisory</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -558,7 +558,7 @@
     <span class="gbar"></span>
     <span>Whitecrow × Nine Advisory</span>
     <span style="opacity:0.4;">·</span>
-    <span>Today's Focus, made whole · Scope v19 · 29 Apr 2026</span>
+    <span>Today's Focus, made whole · 29 Apr 2026</span>
   </div>
 
   <h1>Today's Focus, made <span class="accent">whole.</span></h1>
@@ -569,7 +569,7 @@
     <li><strong>The urgency model:</strong> service-specific thresholds drive a four-state colour code — 🔴 act today · 🟠 this week · 🟡 on the radar · 🟢 background. Monthly reports turn yellow at T-7, BAS at T-14, weekly payroll at T-1. Chain progress modifies the state — <em>2 of 10 due Friday</em> turns red even on a normally-yellow service.</li>
     <li><strong>When:</strong> 06:00 reconciler · 08:00 + 16:00 briefing (same block, refreshed twice — not two different views).</li>
     <li><strong>Reads:</strong> Notion (Client Register · Services · Service Templates with milestone chains and per-service thresholds · Interaction Log) · Asana (10 client projects) · email triage output.</li>
-    <li><strong>Scope:</strong> Ryan's workspace only this iteration. Manoli + meeting-derived commitments come later. <strong>Commitments DB is intentionally not read in v19.</strong></li>
+    <li><strong>Scope:</strong> Ryan's workspace only this iteration. Manoli + meeting-derived commitments come later. <strong>Commitments DB is intentionally not read in this build.</strong></li>
   </ul>
 
   <div class="pills">
@@ -587,8 +587,8 @@
     <h2>Today's Focus surfaces what's there. Nothing checks what's missing.</h2>
 
     <ul class="prose">
-      <li>v18 finds <strong>Ryan's work in subtask names</strong> rather than assignee fields. Carries forward unchanged.</li>
-      <li>v19 adds a second finding: <strong>Asana custom-field metadata is essentially empty</strong> across all 10 client projects. Industry, AM, state, complexity, service mix — none of it lives in Asana.</li>
+      <li><strong>Ryan's work lives in subtask names</strong>, not assignee fields. The briefing reads parent + subtask structure, not just top-level tasks.</li>
+      <li><strong>Asana custom-field metadata is essentially empty</strong> across all 10 client projects. Industry, AM, state, complexity, service mix — none of it lives in Asana.</li>
     </ul>
 
     <div class="pull">
@@ -605,8 +605,8 @@
     <ul class="prose">
       <li>Even when a service's tasks exist in Asana, <strong>Asana has no native concept of "this BAS is 2 of 10 milestones done with 3 days to go."</strong> Each milestone is just a task in a list. There's no shape to the chain.</li>
       <li>That shape is what tells Ryan which service is actually at risk. <strong>2-of-10 due Friday</strong> needs his attention now. <strong>9-of-10 due Friday</strong> is a 30-minute review on Friday morning.</li>
-      <li>The Notion Service Templates already define the canonical milestone chain for each of the 19 services. v19 makes that chain a first-class structure in Asana — and uses chain progress as a top-tier scoring signal in Today's Focus.</li>
-      <li><strong>Implication.</strong> v19 has three jobs: (1) materialise every service's milestone chain in Asana with computed dates and role-derived assignees, (2) make chain progress visible and quantifiable, (3) surface the result in Today's Focus with reasoning Ryan can trust.</li>
+      <li>The Notion Service Templates already define the canonical milestone chain for each of the 19 services. This system makes that chain a first-class structure in Asana — and uses chain progress as a top-tier scoring signal in Today's Focus.</li>
+      <li><strong>Implication.</strong> Three jobs: (1) materialise every service's milestone chain in Asana with computed dates and role-derived assignees, (2) make chain progress visible and quantifiable, (3) surface the result in Today's Focus with reasoning Ryan can trust.</li>
     </ul>
   </section>
 
@@ -640,7 +640,7 @@
     <ul class="prose">
       <li><strong>One briefing.</strong> Single marker block on Ryan's existing AM Workspace page. Same shape both times — refreshed at 08:00 with the start-of-day picture, refreshed at 16:00 with where things stand at end of day. <em>Not</em> a separate "morning view" and "afternoon view" — one surface, two refreshes.</li>
       <li>The block always shows: 🔴 critical · 🟠 this week · 🟡 on the radar · ✅ cleared since last refresh — sorted by service-specific urgency state.</li>
-      <li>Same atomic marker-block write pattern as v18. Same Notion page.</li>
+      <li>One atomic marker-block write per refresh on Ryan's existing AM Workspace page.</li>
     </ul>
 
     <h3>Why two layers and not one?</h3>
@@ -713,7 +713,7 @@
         </tr>
         <tr>
           <td><strong style="color:#9C8500;">🟡 On the radar</strong></td>
-          <td>Past <span class="mono">yellow_at</span>. Early visibility — Ryan should know it exists, not act yet. <strong>This is the surface that didn't exist in v18.</strong></td>
+          <td>Past <span class="mono">yellow_at</span>. Early visibility — Ryan should know it exists, not act yet.</td>
           <td>Monthly report at T-7 · BAS at T-14 · annual statements at T-30 · low-priority task at T-5</td>
         </tr>
         <tr>
@@ -1120,7 +1120,7 @@
         <div class="pipe-num">4</div>
         <div>
           <div class="pipe-title">Filter · bucket by state · diff</div>
-          <div class="pipe-body">v18 four-rule filter pipeline runs first (name pattern, SOP drop, &gt;90d drop, cluster rollup). Surviving candidates are bucketed by their state: 🔴 red and 🟠 orange surface at the top (combined cap 5); 🟡 yellow forms the on-radar queue (cap 5); 🟢 green dropped. The 16:00 run also diffs against this morning's Briefing State to compute slipped + cleared.</div>
+          <div class="pipe-body">A four-rule filter runs first (name pattern, SOP drop, &gt;90d drop, cluster rollup). Surviving candidates are bucketed by their state: 🔴 red and 🟠 orange surface at the top (combined cap 5); 🟡 yellow forms the on-radar queue (cap 5); 🟢 green dropped. The 16:00 run also diffs against this morning's Briefing State to compute slipped + cleared.</div>
         </div>
         <div class="pipe-stat">deterministic<br><span class="arrow">in-memory</span></div>
       </div>
@@ -1168,52 +1168,52 @@
         <tr>
           <td><strong>NA Client Register</strong></td>
           <td>Read · active clients, AM ownership, Asana Project URL, sensitivity flags.</td>
-          <td><span class="tag live">Live</span><br><span style="font-size:12px;color:var(--ink-3);">Iter 0</span></td>
+          <td><span class="tag live">Existing Notion DB</span></td>
         </tr>
         <tr>
           <td><strong>Services</strong></td>
           <td>Read · client × service subscriptions.</td>
-          <td><span class="tag live">Live</span><br><span style="font-size:12px;color:var(--ink-3);">Iter 0</span></td>
+          <td><span class="tag live">Existing Notion DB</span></td>
         </tr>
         <tr>
           <td><strong>Service Templates</strong> (with chains + urgency thresholds)</td>
           <td>Read · canonical milestone chains for all 19 services. Each chain is an ordered list of milestones with <span class="mono">seq, name, days_offset, assignee_role</span>. Chains are nested children of each Service Template page in Notion. <strong>Each template also carries urgency thresholds</strong> <span class="mono">yellow_at / orange_at / red_at</span> (days before due) plus a <span class="mono">criticality</span> tag — these drive the four-state urgency model in Today's Focus. The reconciler expands chains into Asana parent + subtask graphs; Today's Focus reads chain progress and thresholds to compute per-subtask state.</td>
-          <td><span class="tag live">Live</span><br><span style="font-size:12px;color:var(--ink-3);">Iter 0 · v19 adds thresholds</span></td>
+          <td><span class="tag live">Existing Notion DB</span><br><span style="font-size:12px;color:var(--ink-3);">thresholds added in Phase 1</span></td>
         </tr>
         <tr>
           <td><strong>Interaction Log</strong></td>
           <td>Read · most-recent contact, sentiment, decision flags · feeds italic context lines.</td>
-          <td><span class="tag live">Live</span><br><span style="font-size:12px;color:var(--ink-3);">Iter 0</span></td>
+          <td><span class="tag live">Existing Notion DB</span></td>
         </tr>
         <tr>
           <td><strong>Email Triage</strong></td>
-          <td>Read · today's email triage output (already populated by Iter 1 daily run at 07:50).</td>
-          <td><span class="tag live">Live</span><br><span style="font-size:12px;color:var(--ink-3);">Iter 1</span></td>
+          <td>Read · today's email triage output (populated upstream by an existing daily run at 07:50).</td>
+          <td><span class="tag live">Existing Notion DB</span></td>
         </tr>
         <tr>
           <td><strong>Pending Reconciliation</strong></td>
           <td>Read + Write · detected gaps, Approve checkbox, Created flag (system-managed).</td>
-          <td><span class="tag new">New DB</span><br><span style="font-size:12px;color:var(--ink-3);">v19 · Phase 1</span></td>
+          <td><span class="tag new">New Notion DB</span><br><span style="font-size:12px;color:var(--ink-3);">Phase 1</span></td>
         </tr>
         <tr>
           <td><strong>Reconciliation Log</strong></td>
           <td>Write · per-reconciler-run summary (clients scanned, expected, present, missing, runtime, status).</td>
-          <td><span class="tag new">New DB</span><br><span style="font-size:12px;color:var(--ink-3);">v19 · Phase 1</span></td>
+          <td><span class="tag new">New Notion DB</span><br><span style="font-size:12px;color:var(--ink-3);">Phase 1</span></td>
         </tr>
         <tr>
           <td><strong>Briefing State</strong></td>
           <td>Read + Write · one row per day (Ryan). Snapshot of morning picks + background queue, used for the 16:00 slipped/cleared diff.</td>
-          <td><span class="tag new">New DB</span><br><span style="font-size:12px;color:var(--ink-3);">v19 · Phase 1</span></td>
+          <td><span class="tag new">New Notion DB</span><br><span style="font-size:12px;color:var(--ink-3);">Phase 1</span></td>
         </tr>
         <tr>
           <td><strong>Run Log + Decision Log</strong></td>
           <td>Write · per-run summary + one row per candidate considered. Filterable by client, date, surfaced/not.</td>
-          <td><span class="tag live">Live</span><br><span style="font-size:12px;color:var(--ink-3);">v18 · extended</span></td>
+          <td><span class="tag live">Existing Notion DB</span></td>
         </tr>
         <tr>
           <td><strong>Ryan's AM Workspace page</strong></td>
           <td>Write · single marker-block "🎯 Today's Focus." Atomically rewritten at 08:00 + 16:00.</td>
-          <td><span class="tag live">Live</span><br><span style="font-size:12px;color:var(--ink-3);">v18 · existing page</span></td>
+          <td><span class="tag live">Existing Notion page</span></td>
         </tr>
         <tr>
           <td><strong>Asana — 10 client projects</strong></td>
@@ -1241,9 +1241,8 @@
     <h2>Integration model and a 06:00 walkthrough.</h2>
 
     <ul class="prose">
-      <li>Same runtime as v18 — Cowork. No new infrastructure.</li>
-      <li>One new playbook beside Today's Focus: the Reconciler.</li>
-      <li>Today's Focus playbook is extended (background queue + slipped/cleared logic) — same marker block, richer content.</li>
+      <li>Runtime is Cowork (Anthropic's agentic runtime) — Floyd's existing automation stack. No new infrastructure.</li>
+      <li>Two playbooks: the Reconciler (06:00) and Today's Focus (08:00 + 16:00).</li>
       <li>Walkthrough below is the <strong>06:00 reconciler run</strong> on Tuesday 28 April · synthetic data · total elapsed ~40 seconds.</li>
     </ul>
 
@@ -1254,29 +1253,29 @@
           <th style="width:20%;">System</th>
           <th style="width:18%;">MCP connector</th>
           <th style="width:24%;">Auth</th>
-          <th>What v19 adds</th>
+          <th>What this system does with it</th>
         </tr>
       </thead>
       <tbody>
         <tr>
           <td><strong>Asana</strong></td>
           <td><span class="mono">asana-mcp</span></td>
-          <td>OAuth on Floyd's account (same as v18)</td>
-          <td>Reads Milestone Template ID custom field · writes new tasks for approved rows · stamps template IDs.</td>
+          <td>OAuth on Floyd's account</td>
+          <td>Reads tasks + subtasks (with Milestone Template ID, Difficulty, Est. Hours custom fields) · writes new tasks for approved Pending Reconciliation rows · stamps template IDs · writes effort estimates back to custom fields.</td>
         </tr>
         <tr>
           <td><strong>Notion</strong></td>
           <td><span class="mono">notion-mcp</span></td>
-          <td>Same integration token as v18</td>
-          <td>Reads Service Templates milestone chains · writes Pending Reconciliation rows · maintains Reconciliation Log + Briefing State · atomic marker-block rewrites on Ryan's AM Workspace page.</td>
+          <td>Workspace integration token</td>
+          <td>Reads Service Templates milestone chains + thresholds · writes Pending Reconciliation rows · maintains Reconciliation Log + Briefing State · atomic marker-block rewrites on Ryan's AM Workspace page.</td>
         </tr>
       </tbody>
     </table>
 
     <h3>B · Notion write pattern</h3>
     <ul class="prose">
-      <li>Same atomic marker-block pattern as v18.</li>
-      <li><strong>One page only:</strong> Ryan's existing AM Workspace page. The "🎯 Today's Focus" marker block is rewritten morning + afternoon. v19 expands what goes inside the block — it does not change which page or which block.</li>
+      <li>Atomic marker-block rewrites — the "🎯 Today's Focus" block is replaced as a unit, never partially rendered.</li>
+      <li><strong>One page only:</strong> Ryan's existing AM Workspace page. The marker block is rewritten at 08:00 and 16:00.</li>
       <li>Reconciler writes to <strong>Pending Reconciliation DB</strong> (rows) — not to any page block.</li>
     </ul>
 
@@ -1301,7 +1300,7 @@
           <div class="h">Token refresh</div>
           <ul class="prose" style="margin:4px 0 0;">
             <li>Wake 5 min before trigger.</li>
-            <li>Refresh Asana OAuth token. Same flow as v18.</li>
+            <li>Refresh Asana OAuth token.</li>
           </ul>
         </div>
       </div>
@@ -1338,7 +1337,7 @@
           <div class="h">Pull Asana state</div>
           <ul class="prose" style="margin:4px 0 0;">
             <li>For each of 9 active client projects: <span class="api">GET /projects/{gid}/tasks?completed_since=now-30d</span> with subtasks expanded · with <span class="mono">Milestone Template ID</span> custom field.</li>
-            <li>~30 Asana calls in ~15s. Rate limit unchanged from v18.</li>
+            <li>~30 Asana calls in ~15s, well within rate limits.</li>
           </ul>
         </div>
       </div>
@@ -1430,8 +1429,8 @@
     <h3 style="margin-top:28px;">E · Auditability</h3>
     <ul class="prose">
       <li><strong>Reconciliation Log</strong> — per reconciler run · clients scanned, milestones expected/present/missing, approvals applied, low-confidence count, runtime, status.</li>
-      <li><strong>Run Log</strong> (extended from v18) — per Today's Focus run · source counts, surfaced count, runtime, errors.</li>
-      <li><strong>Decision Log</strong> (from v18, extended) — one row per candidate · LLM reasoning · which rule dropped it or how it was ranked.</li>
+      <li><strong>Run Log</strong> — per Today's Focus run · source counts, surfaced count, runtime, errors.</li>
+      <li><strong>Decision Log</strong> — one row per candidate · LLM reasoning · which rule dropped it or how it was ranked.</li>
       <li>All Ryan-visible. Filterable. 90-day rolling retention.</li>
     </ul>
   </section>
@@ -1491,7 +1490,7 @@
         <div class="phase-body">
           <p><span class="lbl">Lead</span>Whitecrow</p>
           <ul class="prose" style="margin:6px 0 0;">
-            <li><span class="lbl">Build</span>v18 four-rule filter pipeline (name pattern, SOP drop, &gt;90d drop, cluster rollup).</li>
+            <li><span class="lbl">Build</span>Four-rule filter pipeline (name pattern, SOP drop, &gt;90d drop, cluster rollup).</li>
             <li><strong>Chain-progress reader.</strong> Per service-instance: count <span class="mono">subtasks_total / done</span> · compute <span class="mono">days_until_due</span> per subtask · derive <span class="mono">chain_pressure</span>. Attach to every open subtask.</li>
             <li><strong>Effort estimator.</strong> Detect new + changed subtasks · batch one Claude Haiku 4.5 call to estimate <span class="mono">Difficulty</span> (S/M/L/XL) and <span class="mono">Est. Hours</span> · write to Asana custom fields · respect <span class="mono">manual_override</span> when Ryan edits the values directly.</li>
             <li><strong>compute_state() engine.</strong> Per subtask: <span class="mono">compute_state(days_until_due, service_template.thresholds, chain_progress, effort_estimate, sensitivity_flag)</span> → 🔴 / 🟠 / 🟡 / 🟢. Each non-calendar input can escalate the state by one band. Threshold table is editable in Notion (Service Templates) — no code redeploy to retune.</li>
@@ -1499,7 +1498,7 @@
             <li>Briefing State snapshotting (chain progress per service-instance + computed state + effort per surfaced subtask) for the 16:00 slipped/cleared diff.</li>
             <li>One Claude Sonnet 4.6 call · orders within state buckets · generates per-item reasoning combining state + chain + effort + Interaction Log context.</li>
             <li>Marker-block renderer · single state-grouped block · 08:00 + 16:00 atomic rewrites.</li>
-            <li>Wire to Email Triage DB (already populated by Iter 1).</li>
+            <li>Wire to the existing Email Triage DB.</li>
             <li>Output to sandbox page first, then Ryan's live AM Workspace page after Floyd sign-off.</li>
           </ul>
           <p class="ships" style="margin-top:8px;"><span class="lbl">Ships Fri wk 2</span>Today's Focus running end-to-end · four-state urgency engine + Claude-reasoned effort estimates surfacing the right items at the right state · both 08:00 + 16:00 states sandbox-rendered</p>
@@ -1544,18 +1543,18 @@
 
     <ul class="prose">
       <li><strong>During shadow + tune week.</strong> Daily Slack DM to Ryan asking what missed / false-flagged. Whitecrow tunes verb list, similarity thresholds, scoring weights, and copy from his flags.</li>
-      <li><strong>End of week 3.</strong> v19 stable, all three runs unattended. Hand off editable Notion config DBs to Ryan — he owns format from there.</li>
+      <li><strong>End of week 3.</strong> System stable, all three runs unattended. Hand off editable Notion config DBs to Ryan — he owns format from there.</li>
     </ul>
 
     <h3 style="margin-top:28px;">The iteration roadmap</h3>
 
     <ul class="prose">
       <li><strong>Iteration 5 · Manoli's workspace</strong> — clone the pattern. Same reconciler covers her clients (already a single reconciler, not per-AM). Today's Focus block on Manoli's workspace page · per-AM tuning of priority weights.</li>
-      <li><strong>Iteration 6 · Meetings → Commitments</strong> — capture meeting outputs (Zoom + manual). Populates the Commitments DB. Folds into Today's Focus as another input source — no architectural change to v19.</li>
+      <li><strong>Iteration 6 · Meetings → Commitments</strong> — capture meeting outputs (Zoom + manual). Populates the Commitments DB. Folds into Today's Focus as another input source — no architectural change to this build.</li>
       <li><strong>Iteration 7 · Operational risks layer</strong> — payroll dependencies, BAS lodgement deadlines, ATO/ASIC dates surfaced as ambient warnings on the briefing block.</li>
       <li><strong>Iteration 8 · Client workspaces</strong> — clients see their own service progress in a read-only Notion view. Strict isolation. Requires the security model.</li>
       <li><strong>Iteration 9 · External system sync</strong> — Xero (bookkeeping/payroll) · XPM (contact sync) · NowInfinity / ASIC (entity register). Each additive — no destructive overwrite.</li>
-      <li><strong>Iteration 10 · Warehouse + inference layer</strong> — BigQuery shadow logger captures every run event from day 1 of v19 if Sam wants the warehouse foundation now (additional ~10h, decision deferred).</li>
+      <li><strong>Iteration 10 · Warehouse + inference layer</strong> — BigQuery shadow logger captures every run event from day one if Sam wants the warehouse foundation now (additional ~10h, decision deferred).</li>
     </ul>
 
     <h3 style="margin-top:28px;">What this is not</h3>
@@ -1569,8 +1568,8 @@
   </section>
 
   <footer>
-    <div>Whitecrow.com · Prepared for Sam Musgrave, Nine Advisory · Builds on the v18 Today's Focus playbook</div>
-    <div>v19 · 29 April 2026</div>
+    <div>Whitecrow.com · Prepared for Sam Musgrave, Nine Advisory</div>
+    <div>29 April 2026</div>
   </footer>
 
 </div>

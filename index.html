@@ -564,20 +564,20 @@
   <h1>Today's Focus, made <span class="accent">whole.</span></h1>
 
   <p class="prose" style="font-size:17px; max-width:760px; margin-top:0;">
-    Two briefings a day on Ryan's Notion workspace. The <strong>morning brief</strong> shows what to focus on this week — only things due in the next 7 days — plus rolled-up flags for any client × service whose milestone chain has gaps in Asana. The <strong>afternoon brief</strong> shows what slipped, what's new, and what was cleared.
+    Two sequential sprints, both shipping into the same Notion brief on Ryan's workspace. <strong>Sprint 1 — Today's Focus</strong> ships first: a daily list of what's due in the next 7 days, scored against the milestone chain each task lives inside. <strong>Sprint 2 — Chain gaps</strong> ships a week later: rolled-up flags showing which (client × service) milestone chains have subtasks that should be in Asana but aren't.
   </p>
 
   <ul class="prose" style="font-size:16px; max-width:760px; margin-top:14px; margin-bottom:28px;">
-    <li><strong>What Ryan does each day:</strong> opens the morning brief at 08:00 · works the focus list · glances at the chain-gap flags · checks the afternoon brief at 16:00 to see what slipped.</li>
-    <li><strong>How it decides what to surface:</strong> every open subtask in Asana is scored against the milestone chain it lives inside. Each service template has thresholds (e.g. monthly report turns yellow at T-7, orange at T-3, red at T-1) and the system computes <strong>days-until-due</strong>, <strong>chain progress</strong>, <strong>Claude-reasoned effort</strong>, and <strong>client sensitivity</strong>. Output is one of three colours within this week's window: 🔴 act today · 🟠 this week · 🟢 background. Items further than 7 days out aren't shown.</li>
-    <li><strong>How chain gaps surface:</strong> the morning run cross-checks each client × service against the milestone chain in its Notion Service Template. <strong>One rolled-up flag per (client × service)</strong> with gaps — e.g. <em>"EMPAC · Quarterly BAS — has milestones coming up that aren't in Asana yet"</em>. No 10-page list of every missing subtask. <em>The system does not write to Asana in this build</em> — flags are informational only.</li>
-    <li><strong>Scope:</strong> Ryan's workspace, this-week focus only. The 21-day "on the radar" wrap-up, manual one-click auto-create per flag, and full auto-create are explicit next-step iterations.</li>
+    <li><strong>Sprint 1 · Today's Focus.</strong> Every morning at 08:00, every open Asana subtask due in the next 7 days is scored against four inputs (T-N vs service threshold, milestone chain progress, Claude-reasoned effort, client sensitivity) and surfaced in colour: 🔴 act today · 🟠 this week. Afternoon brief at 16:00 shows what slipped and what was cleared. <strong>Independent of Sprint 2 — this can ship and run on its own.</strong></li>
+    <li><strong>Sprint 2 · Chain gaps from Asana.</strong> Builds on top of Sprint 1's chain mapping. The same engine that scored chain progress in Sprint 1 is reused to compare each (client × service) chain against what's actually in Asana. Anything in the chain but not in Asana → <strong>one rolled-up flag per service-instance</strong> in the morning brief: e.g. <em>"EMPAC · Quarterly BAS — milestones in this chain aren't in Asana yet."</em> Read-only — no writes. Auto-create comes later.</li>
+    <li><strong>Why this order.</strong> Sprint 1 forces the chain mapping (services → milestones with offsets and roles) to be solid. Sprint 2 then leans on that mapping to spot gaps. Doing them in one combined sprint risks shipping nothing for three weeks; doing them in this order means Ryan has a working brief in week 2 and chain-gap detection layered on in week 3.</li>
+    <li><strong>Scope:</strong> Ryan's workspace, this-week focus only. 21-day on-the-radar wrap-up, manual one-click auto-create per flag, and full auto-create are explicit next-step iterations.</li>
   </ul>
 
   <div class="pills">
-    <span class="pill green">Ships week 3</span>
-    <span class="pill blue">~50 hours engineering</span>
-    <span class="pill gold">This-week focus · read-only on Asana</span>
+    <span class="pill green">Sprint 1 ships wk 2 · Sprint 2 ships wk 3</span>
+    <span class="pill blue">~50 hours engineering total</span>
+    <span class="pill gold">Read-only on Asana</span>
   </div>
 
   <!-- ============== SECTION 1 — FINDING ============== -->
@@ -616,35 +616,46 @@
   <section>
     <div class="section-eyebrow">
       <span class="gbar"></span>
-      <span class="eyebrow">02 · Ryan's day</span>
+      <span class="eyebrow">02 · Ryan's day · two sprints</span>
     </div>
-    <h2>Two briefings. One workspace.</h2>
+    <h2>Two sprints. Two briefings. One workspace.</h2>
 
-    <p class="prose" style="margin-top:0;">Both briefings render to the <strong>"🎯 Today's Focus"</strong> block on Ryan's existing Notion AM Workspace page. The 08:00 brief is the planning view. The 16:00 brief is the close-out view. Each replaces the previous one in the same spot.</p>
+    <p class="prose" style="margin-top:0;">Both sprints render their output to the <strong>"🎯 Today's Focus"</strong> block on Ryan's existing Notion AM Workspace page. The 08:00 brief is the planning view. The 16:00 brief is the close-out view. Each replaces the previous one in the same spot.</p>
 
-    <h3 style="margin-top:24px;">The morning brief · 08:00</h3>
-    <p class="prose" style="margin-top:0;"><strong>What Ryan sees.</strong> Two sections, in order:</p>
-    <ol class="prose">
-      <li><strong>🎯 Focus this week (T-0 to T-7)</strong> — every open Asana subtask whose due date is within the next 7 days is scored and surfaced here, ordered red → orange. Each item shows service, what's blocking it, chain progress (e.g. "2 of 10 done"), and estimated hours-remaining. <strong>Anything due more than 7 days out doesn't appear in this build</strong> — that's the 21-day on-the-radar wrap-up, which is the next iteration after this.</li>
-      <li><strong>🔧 Chain gaps · service-instances with milestones not in Asana yet</strong> — <strong>one rolled-up flag per (client × service)</strong> with gaps. Reads as <em>"EMPAC · Quarterly BAS — milestones in this chain aren't in Asana yet"</em>, not as a list of every missing subtask. Ryan can tap into a flag to see the chain detail if he wants. <strong>The system does not write to Asana in this build</strong> — flags are informational. If Ryan wants the tasks, he creates them in Asana himself; one-click auto-create per flag is a next-step iteration.</li>
-    </ol>
+    <h3 style="margin-top:24px;">Sprint 1 · Today's Focus · the focus list itself</h3>
+    <p class="prose" style="margin-top:0;"><strong>Ships first.</strong> Independently useful — Ryan gets a working morning brief once this sprint is live, even before Sprint 2 layers on chain-gap flags.</p>
+    <p class="prose"><strong>The morning brief · 08:00 · what Ryan sees:</strong></p>
+    <ul class="prose">
+      <li><strong>🎯 Focus this week (T-0 to T-7)</strong> — every open Asana subtask whose due date is within the next 7 days is scored and surfaced, ordered red → orange. Each item shows service, what's blocking it, chain progress (e.g. "2 of 10 done"), and estimated hours-remaining.</li>
+      <li>Anything due more than 7 days out doesn't appear in this build — that's the 21-day on-the-radar wrap-up, an explicit next iteration.</li>
+    </ul>
+    <p class="prose"><strong>What Ryan does.</strong> Reads the focus list. Works the items. That's the whole flow until Sprint 2 ships.</p>
 
-    <p class="prose"><strong>What Ryan does.</strong> Reads the focus list. Works the items. Glances at the rolled-up chain-gap flags and decides whether to create any tasks manually. That's it.</p>
+    <h3 style="margin-top:28px;">Sprint 2 · Chain gaps · "this milestone isn't in Asana yet"</h3>
+    <p class="prose" style="margin-top:0;"><strong>Ships a week after Sprint 1.</strong> Layers a second section underneath the focus list, in the same morning brief.</p>
+    <p class="prose"><strong>What Ryan sees, after Sprint 2 ships:</strong></p>
+    <ul class="prose">
+      <li><strong>🔧 Chain gaps · service-instances with milestones not in Asana yet</strong> — <strong>one rolled-up flag per (client × service)</strong> with gaps. Reads as <em>"EMPAC · Quarterly BAS — milestones in this chain aren't in Asana yet"</em>, not a list of every missing subtask. Tap to expand for the chain detail.</li>
+      <li>Sprint 1 already mapped each Asana subtask to its milestone chain (that's what fed chain progress into the focus colour). Sprint 2 reuses the same mapping to spot the gaps — <em>"the chain says there should be 10 milestones; only 7 are in Asana; here are the 3 that aren't."</em></li>
+      <li><strong>Read-only on Asana.</strong> Flags are informational. If Ryan wants the tasks created, he does that manually in Asana; the flag disappears from the next brief once the system sees them. One-click auto-create per flag and full auto-create are next-step iterations.</li>
+    </ul>
+    <p class="prose"><strong>What Ryan does, after Sprint 2 ships.</strong> Reads the focus list. Glances at the rolled-up chain-gap flags. Decides whether to create any tasks manually.</p>
 
     <h3 style="margin-top:28px;">The afternoon brief · 16:00</h3>
-    <p class="prose" style="margin-top:0;"><strong>What Ryan sees.</strong> A different shape — designed for end-of-day review, not planning:</p>
+    <p class="prose" style="margin-top:0;"><strong>Belongs to Sprint 1.</strong> The afternoon brief ships with Sprint 1 — it's purely about the focus list (slip / new / cleared diff). Chain gaps are a once-a-day morning concern in Sprint 2; the afternoon brief never re-runs that detection.</p>
+    <p class="prose"><strong>What Ryan sees:</strong></p>
     <ol class="prose">
       <li><strong>🔴 Slipped from this morning</strong> — items that were on the morning focus list and are still open. Each shows why it didn't move.</li>
-      <li><strong>⚠️ New today, still open</strong> — anything that escalated to red or orange during the day (a deadline crossed a threshold, a chain fell behind, a sensitive client emailed). Catches things that didn't exist this morning.</li>
+      <li><strong>⚠️ New today, still open</strong> — anything that escalated to red or orange during the day (a deadline crossed a threshold, a chain fell behind, a sensitive client emailed).</li>
       <li><strong>✅ Cleared today</strong> — count of what was completed since 08:00, with a one-line summary.</li>
     </ol>
-    <p class="prose"><strong>What Ryan does.</strong> Reviews slipped + new items. Decides what to roll into tomorrow. The afternoon brief does <em>not</em> show missing-task detection — that's a once-a-day morning concern.</p>
+    <p class="prose"><strong>What Ryan does.</strong> Reviews slipped + new items. Decides what to roll into tomorrow.</p>
 
     <h3 style="margin-top:28px;">Why two distinct briefings instead of "the same thing twice"?</h3>
     <ul class="prose">
       <li>The questions are different. Morning: <em>"What should I work on this week?"</em> Afternoon: <em>"Where am I now versus where I planned to be?"</em></li>
-      <li>Chain-gap flags only run in the morning. Surfacing them twice adds noise — by 4pm Ryan has already read the morning brief.</li>
       <li>The afternoon brief is a slip/clear diff against the morning snapshot. It can't compute that until the morning brief has been written.</li>
+      <li>Chain-gap flags (Sprint 2) only run in the morning. Surfacing them twice adds noise — by 4pm Ryan has already read the morning brief.</li>
     </ul>
   </section>
 
@@ -652,9 +663,11 @@
   <section>
     <div class="section-eyebrow">
       <span class="gbar"></span>
-      <span class="eyebrow">03 · Urgency</span>
+      <span class="eyebrow">03 · Urgency · Sprint 1</span>
     </div>
-    <h2>Milestone chains and how a task becomes red, orange, or green.</h2>
+    <h2>Sprint 1 · Milestone chains and how a task becomes red, orange, or green.</h2>
+
+    <p class="prose" style="margin-top:0;">This section describes Sprint 1 — the focus list itself. The chain mapping built here (services → milestones with offsets and roles) is the foundation Sprint 2 builds on, so Sprint 1 always ships first.</p>
 
     <h3 style="margin-top:8px;">What a milestone chain is</h3>
     <p class="prose" style="margin-top:0;">Every service Nine Advisory delivers — Quarterly BAS, Monthly Bookkeeping, Annual Statements, Weekly Payroll, etc. — has a fixed sequence of milestones that have to happen in order. The Quarterly BAS chain, for example:</p>
@@ -763,11 +776,13 @@
   <section>
     <div class="section-eyebrow">
       <span class="gbar"></span>
-      <span class="eyebrow">04 · Missing-task detection</span>
+      <span class="eyebrow">04 · Chain gaps · Sprint 2</span>
     </div>
-    <h2>How the morning brief flags chain gaps · rolled up, not exhaustive.</h2>
+    <h2>Sprint 2 · Flagging chain gaps · rolled up, not exhaustive.</h2>
 
-    <p class="prose" style="margin-top:0;">For every active client × service, Notion's <strong>Service Template</strong> defines the canonical milestone chain. The morning brief checks whether each chain is fully reflected in Asana. If anything's missing, it surfaces <strong>one rolled-up flag per (client × service)</strong> — not one row per missing milestone. <strong>The system does not write to Asana in this build.</strong> Flags are informational; Ryan decides whether to create tasks himself.</p>
+    <p class="prose" style="margin-top:0;"><strong>Sprint 2 ships a week after Sprint 1.</strong> By that point, Sprint 1 has already done the hard work — mapping every service template's milestone chain, computing per-milestone due dates from <span class="mono">anchor + days_offset</span>, and matching each open Asana subtask to its position in that chain. Sprint 2 reuses the same mapping in a different direction: instead of asking <em>"is this Asana subtask on track?"</em>, it asks <em>"are all the milestones in the chain actually in Asana?"</em></p>
+
+    <p class="prose">If anything's missing, Sprint 2 surfaces <strong>one rolled-up flag per (client × service)</strong> — not one row per missing milestone. <strong>Read-only on Asana.</strong> Flags are informational; Ryan decides whether to create tasks himself. Auto-create comes later.</p>
 
     <h3 style="margin-top:24px;">Rolled up · what the worker sees</h3>
     <ul class="prose">
@@ -890,8 +905,8 @@
       </div>
     </div>
 
-    <h3 style="margin-top:32px;">The morning brief · 08:00</h3>
-    <p style="margin-top:0; color:var(--ink-3); font-size:14px;">Two sections: focus this week (T-0 to T-7) and rolled-up chain-gap flags. Ryan reads top to bottom.</p>
+    <h3 style="margin-top:32px;">The morning brief · 08:00 · <span style="color:var(--ink-3); font-weight:500; font-size:15px;">after both sprints have shipped</span></h3>
+    <p style="margin-top:0; color:var(--ink-3); font-size:14px;">Two sections: 🎯 Focus this week (Sprint 1) and 🔧 Chain gaps (Sprint 2 layered in). Until Sprint 2 ships in week 3, the brief shows only the focus list.</p>
     <div class="mockup-frame">
       <div class="mockup-chrome">
         <span class="dot" style="background:#FF6058;"></span>
@@ -983,8 +998,8 @@
       </div>
     </div>
 
-    <h3 style="margin-top:32px;">The afternoon brief · 16:00</h3>
-    <p style="margin-top:0; color:var(--ink-3); font-size:14px;">Different shape — designed for end-of-day review. Slipped, new today, cleared. No missing-task detection.</p>
+    <h3 style="margin-top:32px;">The afternoon brief · 16:00 · <span style="color:var(--ink-3); font-weight:500; font-size:15px;">Sprint 1</span></h3>
+    <p style="margin-top:0; color:var(--ink-3); font-size:14px;">Different shape — designed for end-of-day review. Slipped, new today, cleared. No chain-gap detection (that's a once-a-day morning concern in Sprint 2).</p>
     <div class="mockup-frame">
       <div class="mockup-chrome">
         <span class="dot" style="background:#FF6058;"></span>
@@ -1085,7 +1100,9 @@
     </div>
     <h2>Two daily runs.</h2>
 
-    <p class="prose" style="margin-top:0;">Each run reads from Asana + Notion, computes state per open subtask, and writes one block to Ryan's workspace. <strong>The system is read-only on Asana</strong> — no writes in this build. Effort estimates from Claude are cached in Notion (a small new DB), not Asana custom fields. Nothing else happens between runs.</p>
+    <p class="prose" style="margin-top:0;">Each run reads from Asana + Notion, computes state per open subtask, and writes one block to Ryan's workspace. <strong>The system is read-only on Asana</strong> — no writes in this build. Effort estimates from Claude are cached in Notion (a small new DB), not Asana custom fields.</p>
+
+    <p class="prose"><strong>Sprint split visible in the pipeline.</strong> After Phase 0 groundwork ships, Sprint 1's morning pipeline runs steps 1–6 below — that's the focus list, end-to-end. Sprint 2 adds <strong>step 2.5 (chain-gap detection)</strong> a week later; everything else is unchanged. Below shows the final pipeline once both sprints have shipped, with Sprint 2's step explicitly labelled.</p>
 
     <div class="clock">
       <h4>Daily timeline</h4>
@@ -1104,7 +1121,7 @@
       <div class="pipe-row">
         <div class="pipe-num">1</div>
         <div>
-          <div class="pipe-title">Read Notion + Asana</div>
+          <div class="pipe-title"><span style="font-size:11px; color:var(--ink-3); letter-spacing:0.06em;">SPRINT 1</span> · Read Notion + Asana</div>
           <div class="pipe-body">Notion: Client Register · Services (subscriptions + anchor dates) · Service Templates with chains + thresholds · Interaction Log · Effort Estimates DB (cached Difficulty + Est. Hours per Asana task GID) · yesterday's Briefing State (for slipped detection at the start of day). Asana: tasks + subtasks across all 10 client projects (read-only).</div>
         </div>
         <div class="pipe-stat">~36 calls<br><span class="arrow">read</span></div>
@@ -1112,15 +1129,23 @@
       <div class="pipe-row">
         <div class="pipe-num">2</div>
         <div>
-          <div class="pipe-title">Detect chain gaps · build one rolled-up flag per service-instance</div>
-          <div class="pipe-body">For each (client × subscribed service): expand the template chain (compute due dates from <span class="mono">anchor + offset</span>; resolve assignee roles to people). Match against Asana's subtask graph by fuzzy name (sim ≥ 0.85). For every service-instance with at least one missing milestone, emit <strong>one</strong> 🔧 flag row — header summarises missing-count + earliest-due-date; expand reveals chain detail. Never one row per missing milestone.</div>
+          <div class="pipe-title"><span style="font-size:11px; color:var(--ink-3); letter-spacing:0.06em;">SPRINT 1</span> · Expand chains · match Asana subtasks to milestone positions</div>
+          <div class="pipe-body">For each (client × subscribed service): expand the template chain (compute due dates from <span class="mono">anchor + offset</span>; resolve assignee roles). Match every open Asana subtask to its position in a chain by fuzzy name (sim ≥ 0.85; below 0.92 noted as low-confidence). Compute per-subtask <strong>chain progress</strong> (subtasks_done / total) and feed that into Sprint 1's colour engine.</div>
+        </div>
+        <div class="pipe-stat">deterministic<br><span class="arrow">in-memory</span></div>
+      </div>
+      <div class="pipe-row" style="background:rgba(36,19,95,0.04);">
+        <div class="pipe-num">2.5</div>
+        <div>
+          <div class="pipe-title"><span style="font-size:11px; color:var(--blue); letter-spacing:0.06em;">SPRINT 2 · added wk 3</span> · Detect chain gaps · build rolled-up flags</div>
+          <div class="pipe-body">Reuses the chain expansion + match output from step 2. For every service-instance with at least one milestone <em>not</em> matched in Asana, emit <strong>one</strong> 🔧 flag row — header summarises missing-count + earliest-due-date; expand reveals chain detail. Never one row per missing milestone.</div>
         </div>
         <div class="pipe-stat">deterministic<br><span class="arrow">in-memory</span></div>
       </div>
       <div class="pipe-row llm">
         <div class="pipe-num">3</div>
         <div>
-          <div class="pipe-title">Estimate effort for new + changed subtasks</div>
+          <div class="pipe-title"><span style="font-size:11px; color:var(--ink-3); letter-spacing:0.06em;">SPRINT 1</span> · Estimate effort for new + changed subtasks</div>
           <div class="pipe-body">Identify Asana subtasks that lack a cached Difficulty + Est. Hours in the Effort Estimates Notion DB, plus any whose name / description / comments have changed. One Claude Haiku batch call writes the outputs back to <strong>the Notion cache</strong> (not Asana — read-only). Skipped if zero candidates.</div>
         </div>
         <div class="pipe-stat" style="color:var(--green-d);">~1 call<br><span class="arrow">~3s · skip if 0</span></div>
@@ -1128,15 +1153,15 @@
       <div class="pipe-row">
         <div class="pipe-num">4</div>
         <div>
-          <div class="pipe-title">Compute colour per subtask · apply 7-day window · bucket</div>
-          <div class="pipe-body">Per open subtask: compute baseline colour from days-until-due vs the service template threshold; apply chain-progress modifier, effort modifier, sensitivity modifier (each can escalate one level). <strong>Apply the 7-day window:</strong> only T-0 to T-7 surfaces. Anything past T-7 → not shown in this build. Apply name-pattern + SOP + &gt;90d + cluster-rollup filters. Bucket: red+orange → Focus this week (cap 5).</div>
+          <div class="pipe-title"><span style="font-size:11px; color:var(--ink-3); letter-spacing:0.06em;">SPRINT 1</span> · Compute colour · apply 7-day window · bucket</div>
+          <div class="pipe-body">Per open subtask: compute baseline colour from days-until-due vs the service template threshold; apply chain-progress + effort + sensitivity modifiers (each can escalate one level). <strong>Apply the 7-day window:</strong> only T-0 to T-7 surfaces. Anything past T-7 → not shown in this build. Apply name-pattern + SOP + &gt;90d + cluster-rollup filters. Bucket: red+orange → Focus this week (cap 5).</div>
         </div>
         <div class="pipe-stat">deterministic<br><span class="arrow">in-memory</span></div>
       </div>
       <div class="pipe-row llm">
         <div class="pipe-num">5</div>
         <div>
-          <div class="pipe-title">Order within buckets · write reasoning</div>
+          <div class="pipe-title"><span style="font-size:11px; color:var(--ink-3); letter-spacing:0.06em;">SPRINT 1</span> · Order within buckets · write reasoning</div>
           <div class="pipe-body">One Claude Sonnet call orders items within each state bucket and writes per-item reasoning combining state + chain + effort + Interaction Log context.</div>
         </div>
         <div class="pipe-stat" style="color:var(--green-d);">1 call<br><span class="arrow">~6s</span></div>
@@ -1144,14 +1169,15 @@
       <div class="pipe-row">
         <div class="pipe-num">6</div>
         <div>
-          <div class="pipe-title">Render + write</div>
-          <div class="pipe-body">Atomic rewrite of the "🎯 Today's Focus" marker block on Ryan's workspace page · 🎯 Focus this week · 🔧 Chain gaps. Snapshot of state + chain + effort per surfaced subtask written to today's Briefing State row for the 16:00 diff. Run Log + Decision Log rows.</div>
+          <div class="pipe-title"><span style="font-size:11px; color:var(--ink-3); letter-spacing:0.06em;">SPRINT 1 + 2</span> · Render + write</div>
+          <div class="pipe-body">Atomic rewrite of the "🎯 Today's Focus" marker block on Ryan's workspace page. Sprint 1 renders 🎯 Focus this week. Sprint 2 (once shipped) layers 🔧 Chain gaps underneath. Snapshot of state + chain + effort per surfaced subtask written to today's Briefing State row for the 16:00 diff. Run Log + Decision Log rows.</div>
         </div>
         <div class="pipe-stat">~10 calls<br><span class="arrow">~2m total</span></div>
       </div>
     </div>
 
-    <h3 style="margin-top:32px;">Afternoon brief pipeline · 16:00</h3>
+    <h3 style="margin-top:32px;">Afternoon brief pipeline · 16:00 · <span style="color:var(--ink-3); font-weight:500; font-size:14px;">Sprint 1 only</span></h3>
+    <p class="prose" style="margin-top:0;">Ships with Sprint 1 in week 2. Chain-gap detection from Sprint 2 does not run in the afternoon — by 4pm Ryan has already read the morning's flags.</p>
     <div class="pipeline">
       <div class="pipe-row">
         <div class="pipe-num">1</div>
@@ -1462,62 +1488,67 @@
       <span class="gbar"></span>
       <span class="eyebrow">09 · Build plan</span>
     </div>
-    <h2>Three weeks. Three phases.</h2>
+    <h2>Three weeks. Two sprints. One groundwork phase.</h2>
 
     <ul class="prose">
-      <li>Whitecrow does the engineering.</li>
-      <li>Ryan: ~3 hours total (mapping call · matcher + chain review · format review · 5-min daily Slack in week 3).</li>
-      <li>Each phase ships something concrete by Friday.</li>
+      <li><strong>Sprint 1 · Today's Focus</strong> ships at the end of week 2. Independently useful — Ryan gets a working morning and afternoon brief on his real workspace before Sprint 2 begins.</li>
+      <li><strong>Sprint 2 · Chain gaps</strong> ships at the end of week 3. Layers the rolled-up chain-gap flag section into the same morning brief.</li>
+      <li>Whitecrow does the engineering. Ryan ~3 hours total: mapping call, two go/no-go reviews, daily 5-min Slack during shadow.</li>
     </ul>
 
     <div class="phases">
 
       <div class="phase">
-        <div class="phase-tag">Phase 1 · Groundwork<span class="days">Mon · wk 1</span></div>
+        <div class="phase-tag">Phase 0 · Groundwork<span class="days">Mon · wk 1</span></div>
         <div class="phase-body">
           <p><span class="lbl">Lead</span>Whitecrow + 30-min mapping call with Ryan</p>
           <ul class="prose" style="margin:6px 0 0;">
             <li><span class="lbl">Build</span>New Notion DBs: <strong>Briefing State</strong> (snapshot per brief, for slip/clear diff), <strong>Effort Estimates</strong> (cached Difficulty + Est. Hours per Asana task GID).</li>
-            <li>Audit Service Templates: ensure each has a parseable milestone chain (<span class="mono">seq, name, days_offset, assignee_role</span>) and add per-service <strong>urgency thresholds</strong> (<span class="mono">yellow_at / orange_at / red_at</span>). Whitecrow proposes defaults from current client cadence; Ryan reviews on the mapping call.</li>
+            <li>Audit Service Templates: ensure each has a parseable milestone chain (<span class="mono">seq, name, days_offset, assignee_role</span>) and add per-service <strong>urgency thresholds</strong> (<span class="mono">red_at / orange_at</span>; <span class="mono">yellow_at</span> stored for the future 21-day wrap-up).</li>
             <li>Asana + Notion MCPs wired into Cowork (Asana on read-only scope).</li>
             <li><strong>No Asana setup required</strong> — read-only in this build, no custom fields, no project changes.</li>
           </ul>
-          <p class="ships" style="margin-top:8px;"><span class="lbl">Ships Mon</span>Notion DBs in place · Service Templates audited · cold reads validated in dev</p>
+          <p class="ships" style="margin-top:8px;"><span class="lbl">Ships Mon wk 1</span>Notion DBs in place · Service Templates audited · cold reads validated in dev</p>
         </div>
       </div>
 
       <div class="phase checkpoint">
-        <div class="phase-tag">Phase 2 · Detection + scoring engine<span class="days">Tue wk 1 – Fri wk 2</span></div>
+        <div class="phase-tag">Sprint 1 · Today's Focus · the focus list itself<span class="days">Tue wk 1 – Fri wk 2</span></div>
         <div class="phase-body">
-          <p><span class="lbl">Lead</span>Whitecrow</p>
+          <p><span class="lbl">Lead</span>Whitecrow · ~28h engineering</p>
           <ul class="prose" style="margin:6px 0 0;">
-            <li><span class="lbl">Detection</span>Service Templates parser · expand chains into typed structures · <span class="mono">days_offset → due_date</span> from anchor · role-to-person resolution from Client Register.</li>
-            <li>Fuzzy name matcher (sim ≥ 0.85) per service-instance. Low-confidence flag below 0.92.</li>
-            <li><span class="lbl">Flagging</span>One rolled-up "Chain gaps" flag row per (client × service-instance) with missing milestones. Header summarises count + earliest due date. Expand reveals chain detail. No Asana writes.</li>
-            <li><span class="lbl">Scoring</span>Effort estimator (Claude Haiku, batched, cached in the Effort Estimates Notion DB).</li>
-            <li>Colour engine — baseline from T-N vs service template threshold; modifiers from chain progress, effort estimate, sensitivity. <strong>7-day window enforcement:</strong> only T-0 to T-7 surface in this build. Threshold table editable in Notion — no redeploy to retune.</li>
+            <li><span class="lbl">Chain mapping</span>Service Templates parser · expand chains into typed structures · <span class="mono">days_offset → due_date</span> from anchor · role-to-person resolution from Client Register. <em>This is the foundation Sprint 2 reuses.</em></li>
+            <li><span class="lbl">Subtask matching</span>Match every open Asana subtask to its position in the chain by fuzzy name (sim ≥ 0.85; below 0.92 flagged low-confidence). Used here to compute chain progress per subtask; reused in Sprint 2 to spot gaps.</li>
+            <li><span class="lbl">Scoring</span>Effort estimator (Claude Haiku, batched, cached in Effort Estimates Notion DB).</li>
+            <li>Colour engine — baseline from T-N vs service template threshold; modifiers from chain progress, effort estimate, sensitivity. <strong>7-day window enforcement:</strong> only T-0 to T-7 surface. Threshold table editable in Notion.</li>
             <li>Bucket + cap: red+orange combined cap 5 → Focus this week.</li>
             <li>Four-rule filter pipeline (name pattern, SOP drop, &gt;90d drop, cluster rollup).</li>
             <li>Briefing State snapshotting for the afternoon slip/clear diff.</li>
             <li>One Claude Sonnet call orders within buckets and writes per-item reasoning.</li>
             <li>Marker-block renderer for both morning + afternoon shapes; atomic rewrites.</li>
             <li>Wire to existing Email Triage DB. Sandbox first; live workspace after Floyd sign-off.</li>
+            <li><span class="lbl">Wk 2 shadow</span>Wed–Fri wk 2: morning + afternoon brief shadows on Ryan's real workspace with a "Shadow Week" header. Read-only on Asana — no destructive risk.</li>
           </ul>
-          <p class="ships" style="margin-top:8px;"><span class="lbl">Ships Fri wk 2</span>Both briefs running end-to-end against real Notion + Asana data, sandbox-rendered. Read-only on Asana, scored items grouped by state, slip/clear diff working.</p>
-          <p class="checkpoint-line"><strong>⚑ Go / no-go · Fri 5pm wk 2</strong> · Floyd + Ryan review on real client data: matcher accuracy, threshold tuning, chain reasoning, effort estimates. One hour with Ryan.</p>
+          <p class="ships" style="margin-top:8px;"><span class="lbl">Ships Fri wk 2</span>Sprint 1 live: morning brief with Focus this week + afternoon brief with slip/clear/cleared diff. Running unattended on Ryan's real workspace.</p>
+          <p class="checkpoint-line"><strong>⚑ Sprint 1 go/no-go · Fri 5pm wk 2</strong> · Floyd + Ryan review one week of real briefs. Tune thresholds, fuzzy similarity, reasoning copy. Decision: cut Sprint 2 scope or proceed as planned. One hour with Ryan.</p>
         </div>
       </div>
 
-      <div class="phase">
-        <div class="phase-tag">Phase 3 · Shadow · Cutover · Tune<span class="days">Mon–Fri · wk 3</span></div>
+      <div class="phase checkpoint">
+        <div class="phase-tag">Sprint 2 · Chain gaps · "milestones not in Asana yet"<span class="days">Mon – Fri · wk 3</span></div>
         <div class="phase-body">
-          <p><span class="lbl">Lead</span>Whitecrow + Ryan opens daily</p>
+          <p><span class="lbl">Lead</span>Whitecrow · ~17h engineering</p>
           <ul class="prose" style="margin:6px 0 0;">
-            <li><span class="lbl">Mon–Wed</span><strong>Shadow.</strong> Both briefs scheduled and live on Ryan's real workspace with a "Shadow Week" header. Read-only on Asana means there's no destructive risk — shadow is purely about format + accuracy.</li>
-            <li><span class="lbl">Thu</span><strong>Cutover.</strong> Shadow header removed.</li>
-            <li><span class="lbl">Thu–Fri</span><strong>Tune.</strong> Daily 5-min Slack with Ryan covering false positives, threshold tweaks, reasoning copy. Whitecrow tunes from flags.</li>
+            <li><span class="lbl">Reuse</span>The chain expansion + fuzzy matcher built in Sprint 1 are the foundation. Sprint 2 inverts them: instead of "is this Asana subtask on track?", ask "are all milestones in the chain in Asana?"</li>
+            <li><span class="lbl">Detect</span>For each (client × service-instance) compute the diff: target chain milestones − matched Asana subtasks = missing. Count + earliest-due-date per service-instance.</li>
+            <li><span class="lbl">Flag</span>One rolled-up "🔧 Chain gaps" row per service-instance with missing milestones. Header summarises count + earliest due date. Tap-to-expand reveals chain detail. <strong>Never one row per missing milestone.</strong></li>
+            <li><span class="lbl">Render</span>Layer the chain-gaps section underneath Focus this week in the morning brief. Atomic rewrite of the same marker block. <strong>No new section in the afternoon brief</strong> — chain gaps are a once-a-day morning concern.</li>
+            <li><span class="lbl">Mon–Wed wk 3 shadow</span>Chain-gaps section shadows on Ryan's workspace alongside the now-live Sprint 1 brief.</li>
+            <li><span class="lbl">Thu</span><strong>Cutover.</strong> Shadow header removed. Both sprints live and unattended.</li>
+            <li><span class="lbl">Thu–Fri</span><strong>Tune.</strong> Daily 5-min Slack with Ryan: false-positive flags, threshold tweaks, reasoning copy.</li>
           </ul>
-          <p class="ships" style="margin-top:8px;"><span class="lbl">Ships Fri</span>Unattended daily runs · Ryan owns editable Notion config (Service Template thresholds, similarity, verb list, assignee map).</p>
+          <p class="ships" style="margin-top:8px;"><span class="lbl">Ships Fri wk 3</span>Sprint 2 live: rolled-up chain-gap flags in the morning brief. Both sprints running unattended.</p>
+          <p class="checkpoint-line"><strong>⚑ Sprint 2 go/no-go · Fri 5pm wk 3</strong> · Floyd + Ryan review chain-gap accuracy. Decision: schedule next iteration (21-day wrap-up, manual one-click auto-create, or full auto-create).</p>
         </div>
       </div>
 
@@ -1531,9 +1562,9 @@
       </div>
     </div>
     <ul class="prose" style="margin-top:10px;">
-      <li><strong>Splits:</strong> P1 ~6h · P2 ~33h (detection + matcher + rolled-up flagger + scoring engine + reasoning + renderers) · P3 ~11h.</li>
-      <li><strong>Ryan's effort:</strong> 30-min mapping call (Mon wk 1) · 1-hour go/no-go review (Fri wk 2) · 30-min format review · 5-min daily Slack across week 3 (~25 min).</li>
-      <li><strong>Future-iteration sizing</strong> (separate engagements): 21-day wrap-up ~5h · manual one-click auto-create per flag ~10h · full auto-create ~10h on top.</li>
+      <li><strong>Splits:</strong> Phase 0 groundwork ~5h · Sprint 1 ~28h (chain mapping + matcher + scoring engine + reasoning + renderers + shadow) · Sprint 2 ~17h (gap detection + rolled-up flagger + render integration + shadow).</li>
+      <li><strong>Ryan's effort:</strong> 30-min mapping call (Mon wk 1) · 1-hour Sprint 1 go/no-go (Fri wk 2) · 1-hour Sprint 2 go/no-go (Fri wk 3) · 5-min daily Slack across wk 3 (~25 min).</li>
+      <li><strong>Future-iteration sizing</strong> (separate engagements after Sprint 2): 21-day wrap-up ~5h · manual one-click auto-create per flag ~10h · full auto-create ~10h on top.</li>
     </ul>
   </section>
 
